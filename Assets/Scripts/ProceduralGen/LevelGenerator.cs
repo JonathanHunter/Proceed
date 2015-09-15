@@ -87,10 +87,12 @@ namespace Assets.Scripts.ProceduralGen
             return SequenceChecker.ErrorCheckSequence(arr, seed, rangeMin, rangeMax);
         }
 
+        /// <summary> Spawns the sequence of blocks. </summary>
+        /// <param name="sequence"> The sequence of blocks to instantiate. </param>
         private void InstantiateGameObjects(int[] sequence)
         {
             levelRef = new GameObject("map");
-            GameObject curBlock;
+            GameObject curBlock = null, lastBlock = null;
             for (int i = 0; i < sequence.Length; i++)
             {
                 if(sequence[i] == -1)
@@ -98,7 +100,9 @@ namespace Assets.Scripts.ProceduralGen
                 else
                     curBlock = Instantiate(blockSet.blocks[sequence[i]].gameObject);
                 curBlock.transform.parent = levelRef.transform;
-                curBlock.transform.localPosition = new Vector3(i * blockSet.blocks[sequence[i]].length, 0, 0);
+                float startX = lastBlock == null ? 0 : lastBlock.gameObject.transform.position.x;
+                curBlock.transform.localPosition = new Vector3(startX + blockSet.blocks[sequence[i]].length, 0, 0);
+                lastBlock = curBlock;
             }
         }
     }
