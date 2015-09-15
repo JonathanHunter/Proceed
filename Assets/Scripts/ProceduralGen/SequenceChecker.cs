@@ -14,25 +14,26 @@ namespace Assets.Scripts.ProceduralGen
 
         private static int TotalAttempts = 10000;
 
-        /// <summary> Error checks a sequence of rooms and fixes any invalid series </summary>
+        /// <summary> Error checks a sequence of rooms and fixes any invalid series. </summary>
         /// <param name="input"> The sequence of rooms. </param>
+        /// <exception cref="UnableToCorrectSequenceException"> Thrown if the sequence can't be repaired. </exception>
         /// <returns> An error checked sequence of rooms. </returns>
-        public static int[] ErrorCheckSequence(int[] input, int seed)
+        public static int[] ErrorCheckSequence(int[] input, int seed, int rangeMin, int rangeMax)
         {
             Random.seed = seed;
             List<int> sequence = new List<int>();
             sequence.Add(input[0]);
             for (int i = 0; i < input.Length - 1; i++)
-                sequence.Add(replaceNumber(i, input));
+                sequence.Add(ReplaceNumber(i, input, rangeMin, rangeMax));
             return sequence.ToArray();
         }
 
-        /// <summary> Replaces the next number in the sequence with a valid one</summary>
-        /// <param name="index"> The currently correct number</param>
-        /// <param name="arr"> The input array</param>
-        /// <exception cref="UnableToCorrectSequenceException"> Thrown if the sequence can't be repaired </exception>
-        /// <returns> The new number </returns>
-        private static int replaceNumber(int index, int[] arr)
+        /// <summary> Replaces the next number in the sequence with a valid one. </summary>
+        /// <param name="index"> The currently correct number. </param>
+        /// <param name="arr"> The input array. </param>
+        /// <exception cref="UnableToCorrectSequenceException"> Thrown if the sequence can't be repaired. </exception>
+        /// <returns> The new number. </returns>
+        private static int ReplaceNumber(int index, int[] arr, int rangeMin, int rangeMax)
         {
             if (index >= arr.Length - 1)
                 return -1;
@@ -42,14 +43,14 @@ namespace Assets.Scripts.ProceduralGen
                 int temp = 0;
                 int attemps = 0;
                 bool failed = false;
-                while (!failed && invalidFollowUp[arr[index]].Contains(temp = Random.Range(0, invalidFollowUp.Length)))
+                while (!failed && invalidFollowUp[arr[index]].Contains(temp = Random.Range(rangeMin, rangeMax)))
                 {
                     if (++attemps > TotalAttempts)
                         failed = true;
                 }
 
                 if (failed)
-                    throw new UnableToCorrectSequenceException("Failed to find a good replacement for " + arr[index + 1] + " given " + invalidFollowUp[arr[index]]);
+                    return -1;
                 return temp;
             }
             return arr[index + 1];
