@@ -267,6 +267,13 @@ namespace Assets.Scripts.Util
             Default();
         }
 
+        /// <summary> Resets all the bindings to default. </summary>
+        public static void Default()
+        {
+            DefaultKey();
+            DefaultPad();
+        }
+
         void Update()
         {
             if (Input.anyKey)
@@ -285,6 +292,66 @@ namespace Assets.Scripts.Util
             }
         }
 
+        /// <summary> Used to see if the user has pressed any monitored input. </summary>
+        /// <returns> True if any of the buttons have been pressed. </returns>
+        public static bool AnyInput()
+        {
+            foreach (bool b in bools)
+                if (b) return true;
+            foreach (bool b in boolsUp)
+                if (b) return true;
+            foreach (bool b in boolsHeld)
+                if (b) return true;
+            foreach (bool b in boolsFreshPress)
+                if (b) return true;
+            foreach (bool b in boolsFreshPressDeleteOnRead)
+                if (b) return true;
+            return false;
+        }
+
+        /// <summary> Used to see if the user hit any button on the controller. </summary>
+        /// <returns> True if the user hit any input on the controller. </returns>
+        public static bool AnyPadInput()
+        {
+            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickX) != 0)
+                return true;
+            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickY) != 0)
+                return true;
+            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickX) != 0)
+                return true;
+            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickY) != 0)
+                return true;
+            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadX) != 0)
+                return true;
+            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadY) != 0)
+                return true;
+            if (ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.LeftTrigger) != 0)
+                return true;
+            if (ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.RightTrigger) != 0)
+                return true;
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.A))
+                return true;
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.B))
+                return true;
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.X))
+                return true;
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Y))
+                return true;
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftBumper))
+                return true;
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightBumper))
+                return true;
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Back))
+                return true;
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Start))
+                return true;
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftStickClick))
+                return true;
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightStickClick))
+                return true;
+            return false;
+        }
+
         /// <summary> Updates all the values for a specific input based on the keyboard. </summary>
         /// <param name="input"> The input to update. </param>
         private void updateKey(int input)
@@ -295,6 +362,120 @@ namespace Assets.Scripts.Util
             else if (Input.GetKeyUp(keyBoard[input]))
                 keyUp = true;
 
+            UpdateBools(key, keyUp, input, 1f);
+        }
+
+        /// <summary> Updates all the values for a specific input based on a controller. </summary>
+        /// <param name="input"> The input to update. </param>
+        private void updatePad(int input)
+        {
+            switch (gamePad[input])
+            {
+                case LEFT_STICK_RIGHT:  UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickX)); break;
+                case LEFT_STICK_LEFT:   UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickX)); break;
+                case LEFT_STICK_UP:     UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickY)); break;
+                case LEFT_STICK_DOWN:   UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickY)); break;
+                case RIGHT_STICK_RIGHT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickX)); break;
+                case RIGHT_STICK_LEFT:  UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickX)); break;
+                case RIGHT_STICK_UP:    UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickY)); break;
+                case RIGHT_STICK_DOWN:  UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickY)); break;
+                case DPAD_RIGHT:        UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadX)); break;
+                case DPAD_LEFT:         UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadX)); break;
+                case DPAD_UP:           UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadY)); break;
+                case DPAD_DOWN:         UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadY)); break;
+                case LEFT_TRIGGER:      UpdateAxis(input, ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.LeftTrigger)); break;
+                case RIGHT_TRIGGER:     UpdateAxis(input, ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.RightTrigger)); break;
+                default:                UpdateButton(input); break;
+            }
+        }
+
+        /// <summary> Update the buttons corresponding to axis. </summary>
+        /// <param name="input"> The input to update. </param>
+        /// <param name="data"> The data from the axis. </param>
+        private void UpdateAxis(int input, float data)
+        {
+            bool key = false, keyUp = false;
+
+            if(gamePad[input] == LEFT_STICK_LEFT || gamePad[(int)input] == LEFT_STICK_DOWN || gamePad[(int)input] == RIGHT_STICK_LEFT || gamePad[(int)input] == RIGHT_STICK_DOWN ||
+               gamePad[input] == DPAD_LEFT || gamePad[input] == DPAD_LEFT)
+            {
+                if (data < 0)
+                    key = true;
+                else if (bools[input])
+                    keyUp = true;
+            }
+            else
+            {
+                if (data > 0)
+                    key = true;
+                else if (bools[input])
+                    keyUp = true;
+            }
+
+            UpdateBools(key, keyUp, input, data);
+        }
+
+        /// <summary> Update the buttons corresponding to buttons. </summary>
+        /// <param name="input"> The input to update. </param>
+        private void UpdateButton(int input)
+        {
+            bool key = false, keyUp = false;
+
+            if (GetButton(gamePad[input]))
+                key = true;
+            else if (GetButtonUp(gamePad[input]))
+                keyUp = true;
+
+            UpdateBools(key, keyUp, input, 1f);
+        }
+
+        /// <summary> Input.GetKey for the specific controller button. </summary>
+        /// <param name="button"> The specific controller button. </param>
+        /// <returns> True if that button has been pressed. </returns>
+        private bool GetButton(string button)
+        {
+            switch (button)
+            {
+                case A: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.A);
+                case B: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.B);
+                case X: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.X);
+                case Y: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Y);
+                case RB: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightBumper);
+                case LB: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftBumper);
+                case START: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Start);
+                case BACK: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Back);
+                case LEFT_STICK: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftStickClick);
+                default: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightStickClick);
+            }
+        }
+
+        /// <summary> Input.GetKeyUp for the specific controller button. </summary>
+        /// <param name="button"> The specific controller button. </param>
+        /// <returns> True if that button has been released. </returns>
+        private bool GetButtonUp(string button)
+        {
+            switch (button)
+            {
+                case A: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.A);
+                case B: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.B);
+                case X: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.X);
+                case Y: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Y);
+                case RB: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.RightBumper);
+                case LB: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.LeftBumper);
+                case START: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Start);
+                case BACK: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Back);
+                case LEFT_STICK: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.LeftStickClick);
+                default: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.RightStickClick);
+            }
+        }
+
+        /// <summary> Actually does the updating of the bools. </summary>
+        /// <param name="key"> Whether this input has been activated. </param>
+        /// <param name="keyUp"> Whether this input has just been released. </param>
+        /// <param name="input"> The input to update. </param>
+        /// <param name="data"> The value for the raw data. </param>
+        private void UpdateBools(bool key, bool keyUp, int input, float data)
+        {
             if (boolsFreshPressAccessed[input])
             {
                 boolsFreshPressAccessed[input] = false;
@@ -332,13 +513,13 @@ namespace Assets.Scripts.Util
             }
             if (raws[input] != 0 && key)
             {
-                rawsFreshPress[input] = 1f;
-                rawsFreshPressDeleteOnRead[input] = 1f;
+                rawsFreshPress[input] = data;
+                rawsFreshPressDeleteOnRead[input] = data;
             }
             if (key)
             {
-                raws[input] = 1f;
-                rawsHeld[input] = 1f;
+                raws[input] = data;
+                rawsHeld[input] = data;
                 rawsUp[input] = 0f;
             }
             else if (keyUp)
@@ -348,107 +529,10 @@ namespace Assets.Scripts.Util
                 rawsFreshPress[input] = 0f;
                 rawsFreshPressDeleteOnRead[input] = 0f;
                 rawsFreshPressAccessed[input] = false;
-                rawsUp[input] = 1f;
+                rawsUp[input] = data;
             }
             else
                 rawsUp[input] = 0f;
-        }
-        private static void updatePad(int state, string axes)
-        {
-            float input = Input.GetAxis(axes);
-            bool key = false, keyUp = false;
-            if (axes == LEFT_STICK_LEFT || axes == LEFT_STICK_UP || axes == RIGHT_STICK_LEFT || axes == RIGHT_STICK_UP || axes == DPAD_LEFT || axes == DPAD_DOWN || axes == RIGHT_TRIGGER)
-            {
-                if (input < 0)
-                    key = true;
-                else if ((bools & state) != 0)
-                    keyUp = true;
-            }
-            else if (input > 0)
-                key = true;
-            else if ((bools & state) != 0)
-                keyUp = true;
-
-            if ((boolsFreshPressAccessed & state) != 0)
-            {
-                boolsFreshPressAccessed = (boolsFreshPressAccessed & ~state);
-                boolsFreshPress = (boolsFreshPress & ~state);
-                boolsFreshPressDeleteOnRead = (boolsFreshPressDeleteOnRead & ~state);
-            }
-            if (((bools & state) == 0) && key)
-            {
-                boolsFreshPress = boolsFreshPress | state;
-                boolsFreshPressDeleteOnRead = (boolsFreshPressDeleteOnRead | state);
-            }
-            if (key)
-            {
-                bools = bools | state;
-                boolsHeld = boolsHeld | state;
-                boolsUp = boolsUp & ~state;
-            }
-            else if (keyUp)
-            {
-                bools = bools & ~state;
-                boolsHeld = boolsHeld & ~state;
-                boolsFreshPress = boolsFreshPress & ~state;
-                boolsFreshPressDeleteOnRead = (boolsFreshPressDeleteOnRead & ~state);
-                boolsUp = boolsUp | state;
-                boolsFreshPressAccessed = (boolsFreshPressAccessed & ~state);
-            }
-            else
-                boolsUp = boolsUp & ~state;
-        }
-
-        public static void Default()
-        {
-            DefaultKey();
-            DefaultPad();
-        }
-
-        public static bool AnyInput()
-        {
-            return bools != 0 || boolsFreshPress != 0 || boolsHeld != 0 || boolsUp != 0;
-        }
-
-        public static bool AnyPadInput()
-        {
-            if (UserInput.GetAxis(LEFT_STICK_RIGHT) != 0)
-                return true;
-            if (UserInput.GetAxis(LEFT_STICK_UP) != 0)
-                return true;
-            if (UserInput.GetAxis(RIGHT_STICK_RIGHT) != 0)
-                return true;
-            if (UserInput.GetAxis(RIGHT_STICK_UP) != 0)
-                return true;
-            if (UserInput.GetAxis(DPAD_RIGHT) != 0)
-                return true;
-            if (UserInput.GetAxis(DPAD_UP) != 0)
-                return true;
-            if (UserInput.GetAxis(LEFT_TRIGGER) != 0)
-                return true;
-            if (UserInput.GetAxis(RIGHT_TRIGGER) != 0)
-                return true;
-            if (UserInput.GetAxis(A) != 0)
-                return true;
-            if (UserInput.GetAxis(B) != 0)
-                return true;
-            if (UserInput.GetAxis(X) != 0)
-                return true;
-            if (UserInput.GetAxis(Y) != 0)
-                return true;
-            if (UserInput.GetAxis(LB) != 0)
-                return true;
-            if (UserInput.GetAxis(RB) != 0)
-                return true;
-            if (UserInput.GetAxis(BACK) != 0)
-                return true;
-            if (UserInput.GetAxis(START) != 0)
-                return true;
-            if (UserInput.GetAxis(LEFT_STICK) != 0)
-                return true;
-            if (UserInput.GetAxis(RIGHT_STICK) != 0)
-                return true;
-            return false;
         }
     }
 }

@@ -36,32 +36,6 @@ namespace Assets.Scripts.Util
         private const string DPAD_PS_STICK_X = "DpadPSStickX";
         private const string DPAD_PS_STICK_Y = "DpadPSStickY";
 
-        private static float GetAxisData(string axisName, bool rawInput = false)
-        {
-            if (rawInput)
-                return Input.GetAxisRaw(axisName);
-            else
-                return Input.GetAxis(axisName);
-        }
-
-        public static bool GetButtonDown(Buttons btn, int joyStickNumber = 0)
-        {
-            KeyCode btnKeyCode = GetKeyCode(btn, joyStickNumber);
-            return Input.GetKeyDown(btnKeyCode);
-        }
-
-        public static bool GetButtonUp(Buttons btn, int joyStickNumber = 0)
-        {
-            KeyCode btnKeyCode = GetKeyCode(btn, joyStickNumber);
-            return Input.GetKeyUp(btnKeyCode);
-        }
-
-        public static bool GetButton(Buttons btn, int joyStickNumber = 0)
-        {
-            KeyCode btnKeyCode = GetKeyCode(btn, joyStickNumber);
-            return Input.GetKey(btnKeyCode);
-        }
-
         public static ControlType GetControlType()
         {
             if (Input.GetJoystickNames().Length > 0)
@@ -75,7 +49,25 @@ namespace Assets.Scripts.Util
             return ControlType.Xbox;
         }
 
-        public static float GetAxis(Axis axisName, bool rawInput = false)
+        public static bool GetButton(Buttons btn, int joyStickNumber = 0)
+        {
+            KeyCode btnKeyCode = GetKeyCode(btn, joyStickNumber);
+            return Input.GetKey(btnKeyCode);
+        }
+
+        public static bool GetButtonUp(Buttons btn, int joyStickNumber = 0)
+        {
+            KeyCode btnKeyCode = GetKeyCode(btn, joyStickNumber);
+            return Input.GetKeyUp(btnKeyCode);
+        }
+
+        public static bool GetButtonDown(Buttons btn, int joyStickNumber = 0)
+        {
+            KeyCode btnKeyCode = GetKeyCode(btn, joyStickNumber);
+            return Input.GetKeyDown(btnKeyCode);
+        }
+
+        public static float GetAxis(Axis axisName)
         {
             float result = 0;
             ControlType inControlType = GetControlType();
@@ -84,7 +76,7 @@ namespace Assets.Scripts.Util
                 case Axis.RightStickY:
                     if (inControlType == ControlType.PS3)
                     {
-                        result = GetAxisData(RIGHT_PS_STICK_Y, rawInput);
+                        result = Input.GetAxisRaw(RIGHT_PS_STICK_Y);
                         break;
                     }
                     switch (Application.platform)
@@ -93,18 +85,18 @@ namespace Assets.Scripts.Util
                         case RuntimePlatform.OSXEditor:
                         case RuntimePlatform.OSXPlayer:
                         case RuntimePlatform.OSXWebPlayer:
-                            result = GetAxisData(RIGHT_OSX_STICK_Y, rawInput);
+                            result = Input.GetAxisRaw(RIGHT_OSX_STICK_Y);
                             break;
                         case RuntimePlatform.LinuxPlayer:
                         default:
-                            result = GetAxisData(RIGHT_WIN_STICK_Y, rawInput);
+                            result = Input.GetAxisRaw(RIGHT_WIN_STICK_Y);
                             break;
                     }
                     break;
                 case Axis.RightStickX:
                     if (inControlType == ControlType.PS3)
                     {
-                        result = GetAxisData(RIGHT_PS_STICK_X, rawInput);
+                        result = Input.GetAxisRaw(RIGHT_PS_STICK_X);
                         break;
                     }
                     switch (Application.platform)
@@ -113,11 +105,11 @@ namespace Assets.Scripts.Util
                         case RuntimePlatform.OSXEditor:
                         case RuntimePlatform.OSXPlayer:
                         case RuntimePlatform.OSXWebPlayer:
-                            result = GetAxisData(RIGHT_OSX_STICK_X, rawInput);
+                            result = Input.GetAxisRaw(RIGHT_OSX_STICK_X);
                             break;
                         case RuntimePlatform.LinuxPlayer:
                         default:
-                            result = GetAxisData(RIGHT_WIN_STICK_X, rawInput);
+                            result = Input.GetAxisRaw(RIGHT_WIN_STICK_X);
                             break;
                     }
                     break;
@@ -130,7 +122,7 @@ namespace Assets.Scripts.Util
                         case RuntimePlatform.OSXWebPlayer:
                         case RuntimePlatform.LinuxPlayer:
                         default:
-                            result = GetAxisData(LEFT_STICK_Y, rawInput);
+                            result = Input.GetAxisRaw(LEFT_STICK_Y);
                             break;
                     }
                     break;
@@ -143,20 +135,20 @@ namespace Assets.Scripts.Util
                         case RuntimePlatform.OSXWebPlayer:
                         case RuntimePlatform.LinuxPlayer:
                         default:
-                            result = GetAxisData(LEFT_STICK_X, rawInput);
+                            result = Input.GetAxisRaw(LEFT_STICK_X);
                             break;
                     }
                     break;
                 case Axis.DPadY:
                     if (inControlType == ControlType.PS3)
                     {
-                        result = GetAxisData(DPAD_PS_STICK_Y, rawInput);
+                        result = Input.GetAxisRaw(DPAD_PS_STICK_Y);
                         break;
                     }
                     switch (Application.platform)
                     {
                         case RuntimePlatform.LinuxPlayer:
-                            result = GetAxisData(DPAD_LINUX_STICK_Y, rawInput);
+                            result = Input.GetAxisRaw(DPAD_LINUX_STICK_Y);
                             break;
                         case RuntimePlatform.OSXDashboardPlayer:
                         case RuntimePlatform.OSXEditor:
@@ -166,20 +158,20 @@ namespace Assets.Scripts.Util
                             if (result == 0) result = (Input.GetKey(KeyCode.JoystickButton5) ? 1 : 0);
                             break;
                         default:
-                            result = GetAxisData(DPAD_WIN_STICK_Y, rawInput);
+                            result = Input.GetAxisRaw(DPAD_WIN_STICK_Y);
                             break;
                     }
                     break;
                 case Axis.DPadX:
                     if (inControlType == ControlType.PS3)
                     {
-                        result = GetAxisData(DPAD_PS_STICK_X, rawInput);
+                        result = Input.GetAxisRaw(DPAD_PS_STICK_X);
                         break;
                     }
                     switch (Application.platform)
                     {
                         case RuntimePlatform.LinuxPlayer:
-                            result = GetAxisData(DPAD_LINUX_STICK_X, rawInput);
+                            result = Input.GetAxisRaw(DPAD_LINUX_STICK_X);
                             break;
                         case RuntimePlatform.OSXDashboardPlayer:
                         case RuntimePlatform.OSXEditor:
@@ -189,7 +181,7 @@ namespace Assets.Scripts.Util
                             if (result == 0) result = (Input.GetKey(KeyCode.JoystickButton8) ? 1 : 0);
                             break;
                         default:
-                            result = GetAxisData(DPAD_WIN_STICK_X, rawInput);
+                            result = Input.GetAxisRaw(DPAD_WIN_STICK_X);
                             break;
                     }
                     break;
@@ -197,7 +189,7 @@ namespace Assets.Scripts.Util
             return result;
         }
 
-        public static float GetTrigger(Triggers trgName, bool rawInput = false)
+        public static float GetTrigger(Triggers trgName)
         {
             float result = 0;
             ControlType inControlType = GetControlType();
@@ -215,13 +207,13 @@ namespace Assets.Scripts.Util
                         case RuntimePlatform.OSXEditor:
                         case RuntimePlatform.OSXPlayer:
                         case RuntimePlatform.OSXWebPlayer:
-                            result = GetAxisData(LEFT_OSX_TRIGGER, rawInput);
+                            result = Input.GetAxisRaw(LEFT_OSX_TRIGGER);
                             break;
                         case RuntimePlatform.LinuxPlayer:
-                            result = GetAxisData(LEFT_LINUX_TRIGGER, rawInput);
+                            result = Input.GetAxisRaw(LEFT_LINUX_TRIGGER);
                             break;
                         default:
-                            result = GetAxisData(LEFT_WIN_TRIGGER, rawInput);
+                            result = Input.GetAxisRaw(LEFT_WIN_TRIGGER);
                             break;
                     }
                     break;
@@ -237,13 +229,13 @@ namespace Assets.Scripts.Util
                         case RuntimePlatform.OSXEditor:
                         case RuntimePlatform.OSXPlayer:
                         case RuntimePlatform.OSXWebPlayer:
-                            result = GetAxisData(RIGHT_OSX_TRIGGER, rawInput);
+                            result = Input.GetAxisRaw(RIGHT_OSX_TRIGGER);
                             break;
                         case RuntimePlatform.LinuxPlayer:
-                            result = GetAxisData(RIGHT_LINUX_TRIGGER, rawInput);
+                            result = Input.GetAxisRaw(RIGHT_LINUX_TRIGGER);
                             break;
                         default:
-                            result = GetAxisData(RIGHT_WIN_TRIGGER, rawInput);
+                            result = Input.GetAxisRaw(RIGHT_WIN_TRIGGER);
                             break;
                     }
                     break;
