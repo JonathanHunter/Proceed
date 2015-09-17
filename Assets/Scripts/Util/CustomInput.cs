@@ -482,7 +482,7 @@ namespace Assets.Scripts.Util
                 boolsFreshPress[input] = false;
                 boolsFreshPressDeleteOnRead[input] = false;
             }
-            if (bools[input] && key)
+            if (!bools[input] && key)
             {
                 boolsFreshPress[input] = true;
                 boolsFreshPressDeleteOnRead[input] = true;
