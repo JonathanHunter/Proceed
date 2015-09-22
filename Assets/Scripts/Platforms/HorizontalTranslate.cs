@@ -2,8 +2,13 @@
 using System.Collections;
 
 public class HorizontalTranslate : MonoBehaviour {
-    public float speed, maxTranslate;
+    /// <summary> speed at which the platform moves </summary>
+    public float speed;
 
+    /// <summary> maximum distance the platform will move </summary>
+    public float maxTranslate;
+
+    /// <summary> keeps track of how far the platform has moved </summary>
     float translated;
 
 	// Use this for initialization
@@ -16,6 +21,7 @@ public class HorizontalTranslate : MonoBehaviour {
         transform.Translate(speed, 0f, 0f);
         translated += Mathf.Abs(speed);
 
+        // reverse direction
         if (translated >= maxTranslate) {
             speed *= -1;
             translated = 0.0f;
