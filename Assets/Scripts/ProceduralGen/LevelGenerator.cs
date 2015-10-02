@@ -27,6 +27,7 @@ namespace Assets.Scripts.ProceduralGen
                 Destroy(this.gameObject);
             }
             levelInProgress = false;
+            StartLevel();
         }
 
         /// <summary> Starts a new Level. </summary>
@@ -35,7 +36,7 @@ namespace Assets.Scripts.ProceduralGen
             if (levelInProgress)
                 EndLevel();
             DetermineDifficulty();
-            int[] level = GenerateLevel(gameState.difficulty, 0, gameState.difficulty, Random.Range(0,50000));
+            int[] level = GenerateLevel(gameState.difficulty, 0, gameState.difficulty > blockSet.blocks.Length ? blockSet.blocks.Length : gameState.difficulty, Random.Range(0,50000));
             InstantiateGameObjects(level);
             levelInProgress = true;
         }
@@ -92,18 +93,23 @@ namespace Assets.Scripts.ProceduralGen
         private void InstantiateGameObjects(int[] sequence)
         {
             levelRef = new GameObject("map");
-            GameObject curBlock = null, lastBlock = null;
+            Block curBlock = null, lastBlock = null;
+            lastBlock = Instantiate(blockSet.startBlock.gameObject).GetComponent<Block>();
+            lastBlock.transform.parent = levelRef.transform;
+            lastBlock.transform.localPosition = new Vector3(0, 0, 0);
             for (int i = 0; i < sequence.Length; i++)
             {
-                if(sequence[i] == -1)
-                    curBlock = Instantiate(blockSet.ErrorBlock.gameObject);
+                if (sequence[i] == -1)
+                    curBlock = Instantiate(blockSet.ErrorBlock.gameObject).GetComponent<Block>();
                 else
-                    curBlock = Instantiate(blockSet.blocks[sequence[i]].gameObject);
+                    curBlock = Instantiate(blockSet.blocks[sequence[i]].gameObject).GetComponent<Block>();
                 curBlock.transform.parent = levelRef.transform;
-                float startX = lastBlock == null ? 0 : lastBlock.gameObject.transform.position.x;
-                curBlock.transform.localPosition = new Vector3(startX + blockSet.blocks[sequence[i]].length, 0, 0);
+                curBlock.transform.localPosition = new Vector3(lastBlock.endBlock.position.x, 0, 0);
                 lastBlock = curBlock;
             }
+            curBlock = Instantiate(blockSet.endBlock.gameObject).GetComponent<Block>();
+            curBlock.transform.parent = levelRef.transform;
+            curBlock.transform.localPosition = new Vector3(lastBlock.endBlock.position.x, 0, 0);
         }
     }
 }
