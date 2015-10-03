@@ -8,6 +8,9 @@ namespace Assets.Scripts.ProceduralGen
         /// <summary> The set of blocks used to generate levels. </summary>
         [SerializeField]
         private BlockSet blockSet;
+        /// <summary> Ref to player </summary>
+        [SerializeField]
+        private Player.PlayerController player;
 
         /// <summary> Reference t the current GameState. </summary>
         private GameState gameState;
@@ -39,6 +42,7 @@ namespace Assets.Scripts.ProceduralGen
             int[] level = GenerateLevel(gameState.difficulty, 0, gameState.difficulty > blockSet.blocks.Length ? blockSet.blocks.Length : gameState.difficulty, Random.Range(0,50000));
             InstantiateGameObjects(level);
             levelInProgress = true;
+            player.transform.position = new Vector3(0, 0, 0);
         }
 
         /// <summary> Cleans up all the objects in a scene related to the level. </summary>

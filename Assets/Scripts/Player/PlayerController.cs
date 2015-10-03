@@ -23,9 +23,10 @@ namespace Assets.Scripts.Player
         private static bool doOnce = false;
         private static bool jump = false;
 
+        private static int health = 5;
+
 
         //state machine vars
-
         private static bool invun = false;
         private static float invunTime = .5f;
         private static float invunTimer = 0;
@@ -50,6 +51,12 @@ namespace Assets.Scripts.Player
 
         void Update()
         {
+            if (health <= 0 || this.transform.position.y < -20)
+            {
+                health = 5;
+                transform.position = new Vector3(0, 0, 0);
+                FindObjectOfType<GameState>().playerDeaths++;
+            }
             bool move = false;
             if (CustomInput.Bool(CustomInput.UserInput.Up) || CustomInput.Bool(CustomInput.UserInput.Down) || CustomInput.Bool(CustomInput.UserInput.Left) || CustomInput.Bool(CustomInput.UserInput.Right))
                 move = true;
@@ -60,6 +67,7 @@ namespace Assets.Scripts.Player
             {
                 hit = false;
                 invunTimer -= Time.deltaTime;
+                invun = true;
             }
             else
             {
@@ -84,7 +92,8 @@ namespace Assets.Scripts.Player
         {
             if (col.gameObject.tag == "enemy" && !invun)
             {
-                //todo stuff
+                if(!invun)
+                    hit = true;
             }
         }
 
@@ -92,7 +101,9 @@ namespace Assets.Scripts.Player
         {
             if(col.gameObject.tag == "Level end")
             {
-                //todo stuff
+                ProceduralGen.LevelGenerator level = FindObjectOfType<ProceduralGen.LevelGenerator>();
+                level.EndLevel();
+                level.StartLevel();
             }
         }
 
@@ -105,9 +116,10 @@ namespace Assets.Scripts.Player
         private void TouchingSomething()
         {
             RaycastHit temp;
-            if (Physics.Raycast(foot.position, -this.transform.up, out temp, .5f))
+            if (Physics.Raycast(foot.position, new Vector3(0,1,0), out temp, .5f))
                 inAir = false;
-            inAir = true;
+            else
+                inAir = true;
         }
 
         //fixed update runs on a timed cycle (for physics stuff)
@@ -188,15 +200,14 @@ namespace Assets.Scripts.Player
             }
         }
         private static void InAir()
-        {
+        { 
         }
 
         private static void Hit()
         {
             if (!doOnce)
             {
-                //TODO take damage
-                damage = 0;
+                health--;
                 doOnce = true;
                 invunTimer = invunTime;
                 invun = true;
@@ -205,6 +216,7 @@ namespace Assets.Scripts.Player
 
         private static void Dead()
         {
+
         }
     }
 }
