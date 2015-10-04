@@ -60,7 +60,14 @@ namespace Assets.Scripts.Player
             bool move = false;
             if (CustomInput.Bool(CustomInput.UserInput.Up) || CustomInput.Bool(CustomInput.UserInput.Down) || CustomInput.Bool(CustomInput.UserInput.Left) || CustomInput.Bool(CustomInput.UserInput.Right))
                 move = true;
+
+
             TouchingSomething();
+            if ((int)currState == 3 && !inAir)
+            {
+                jump = true;
+            }
+
             //get next state
             currState = machine.update(inAir, move, hit, animDone);
             if (invunTimer > 0)
@@ -84,6 +91,8 @@ namespace Assets.Scripts.Player
                 jump = false;
                 hit = false;
                 anim.SetInteger("state", (int)currState);
+
+
             }
             prevState = currState;
         }
@@ -101,6 +110,7 @@ namespace Assets.Scripts.Player
         {
             if(col.gameObject.tag == "Level end")
             {
+                this.transform.parent = null;
                 ProceduralGen.LevelGenerator level = FindObjectOfType<ProceduralGen.LevelGenerator>();
                 level.EndLevel();
                 level.StartLevel();
@@ -115,18 +125,28 @@ namespace Assets.Scripts.Player
         //detects if you are in the air
         private void TouchingSomething()
         {
+            int playerLayerMask = 1 << 8;
+            //Invert the layer mask to check all but the player's layer:
+            playerLayerMask = ~playerLayerMask;
             RaycastHit temp;
-            if (Physics.Raycast(foot.position, new Vector3(0,1,0), out temp, .5f))
+            if (Physics.Raycast(new Vector3(foot.position.x, foot.position.y + 0.2f, foot.position.z), new Vector3(0, -1, 0), out temp, .2f, playerLayerMask))
+            {
                 inAir = false;
+                Debug.DrawRay(new Vector3(foot.position.x, foot.position.y + 0.2f, foot.position.z), new Vector3(0, .2f, 0), Color.red);
+                this.transform.parent = temp.collider.transform.parent;
+            }
             else
+            {
+                this.transform.parent = null;
                 inAir = true;
+            }
         }
 
         //fixed update runs on a timed cycle (for physics stuff)
         void FixedUpdate()
         {
             if (currState == Enums.PlayerState.Moving ||
-                currState == Enums.PlayerState.InAir )
+                currState == Enums.PlayerState.InAir || currState == Enums.PlayerState.Jump)
             {
                 //the following logic will accuratly rotate the player to the direction they want to go
                 float up = CustomInput.Bool(CustomInput.UserInput.Up) ? CustomInput.Raw(CustomInput.UserInput.Up) : CustomInput.Raw(CustomInput.UserInput.Down);
@@ -163,12 +183,20 @@ namespace Assets.Scripts.Player
                         transform.rotation = Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan(right / up), 0);
                 }
                 //TODO:movement logic
+
+                if((int)currState == 1 || (int)currState == 2 || (int)currState == 3)
+                {
+                    this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z) + 0.1f * -this.transform.right;
+                    //print(this.transform.right);
+                }
             }
             //STATE MACHINE SAY JUMP NOW!!!
             if (jump)
             {
                 //TODO: jump logic
-            }
+                this.gameObject.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z) - 0.1f * this.transform.right + 0.15f*this.transform.up;
+                //Debug.Log("jumped");
+            }else if(true)
             if (currState == Enums.PlayerState.Hit)
             {
                 //TODO: knockback logic
