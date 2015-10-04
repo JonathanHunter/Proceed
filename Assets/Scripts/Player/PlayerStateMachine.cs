@@ -79,8 +79,8 @@ namespace Assets.Scripts.Player
                 return Enums.PlayerState.Hit;
             if (animDone)
                 return Enums.PlayerState.InAir;
-            if (!inAir)
-                return Enums.PlayerState.Idle;
+            /*if (!inAir)
+                return Enums.PlayerState.Idle;*/
             return Enums.PlayerState.Jump;
         }
         private static Enums.PlayerState Attack(bool inAir, bool move, bool hit, bool animDone)

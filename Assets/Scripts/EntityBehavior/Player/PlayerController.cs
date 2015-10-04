@@ -37,7 +37,7 @@ using System.Collections;
         // Animation Communication
         void UpdateAnimationCtrl()
         {
-            animControl.SetInteger("Horizontal", true);
+            //animControl.SetInteger("Horizontal", true);
 
         }
     }
