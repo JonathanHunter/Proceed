@@ -28,7 +28,7 @@ namespace Assets.Scripts.Util
         private const string RIGHT_PS_STICK_X =     "RightPSStickX";
         private const string RIGHT_PS_STICK_Y =     "RightPSStickY";
         private const string LEFT_STICK_Y =         "LeftStickY";
-        private const string LEFT_STICK_X =         "LefStickX";
+        private const string LEFT_STICK_X =         "LeftStickX";
         private const string DPAD_WIN_STICK_Y =     "DpadWinStickY";
         private const string DPAD_WIN_STICK_X =     "DpadWinStickX";
         private const string DPAD_LINUX_STICK_X =   "DpadLinuxStickX";
