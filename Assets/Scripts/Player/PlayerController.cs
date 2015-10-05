@@ -151,10 +151,6 @@ namespace Assets.Scripts.Player
                 //the following logic will accuratly rotate the player to the direction they want to go
                 float up = CustomInput.Bool(CustomInput.UserInput.Up) ? CustomInput.Raw(CustomInput.UserInput.Up) : CustomInput.Raw(CustomInput.UserInput.Down);
                 float right = CustomInput.Bool(CustomInput.UserInput.Right) ? CustomInput.Raw(CustomInput.UserInput.Right) : CustomInput.Raw(CustomInput.UserInput.Left);
-                if (CustomInput.Bool(CustomInput.UserInput.Left) && right > 0)
-                    right *= -1;
-                if (CustomInput.Bool(CustomInput.UserInput.Down) && up > 0)
-                    up *= -1;
 
                 float magnitude = Mathf.Sqrt(up * up + right * right);
                 if (up == 0 && right == 0)

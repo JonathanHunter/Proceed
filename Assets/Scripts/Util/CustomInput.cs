@@ -7,20 +7,36 @@ namespace Assets.Scripts.Util
         /// <summary> This is used to define user inputs, changed to add or remove buttons. </summary>
         public enum UserInput { Up, Down, Left, Right, Attack, Jump, Pause, Accept, Cancel }
 
+        /// <summary> This is used to define whether to return a positive or negative value for a specfic raw input. </summary>
+        public static void RawSign()
+        {
+            if (rawSign == null)
+                throw new System.AccessViolationException(UnitializedMessage);
+            rawSign[(int)UserInput.Up] =        1;
+            rawSign[(int)UserInput.Down] =      -1;
+            rawSign[(int)UserInput.Left] =      -1;
+            rawSign[(int)UserInput.Right] =     1;
+            rawSign[(int)UserInput.Attack] =    1;
+            rawSign[(int)UserInput.Jump] =      1;
+            rawSign[(int)UserInput.Pause] =     1;
+            rawSign[(int)UserInput.Accept] =    1;
+            rawSign[(int)UserInput.Cancel] =    1;
+        }
+
         /// <summary> This is used to define the default keybindings. </summary>
         public static void DefaultKey()
         {
             if (keyBoard == null)
                 throw new System.AccessViolationException(UnitializedMessage);
-            keyBoard[(int)UserInput.Up] = KeyCode.W;
-            keyBoard[(int)UserInput.Down] = KeyCode.S;
-            keyBoard[(int)UserInput.Left] = KeyCode.A;
-            keyBoard[(int)UserInput.Right] = KeyCode.D;
-            keyBoard[(int)UserInput.Attack] = KeyCode.K;
-            keyBoard[(int)UserInput.Jump] = KeyCode.J;
-            keyBoard[(int)UserInput.Pause] = KeyCode.Escape;
-            keyBoard[(int)UserInput.Accept] = KeyCode.K;
-            keyBoard[(int)UserInput.Cancel] = KeyCode.J;
+            keyBoard[(int)UserInput.Up] =       KeyCode.W;
+            keyBoard[(int)UserInput.Down] =     KeyCode.S;
+            keyBoard[(int)UserInput.Left] =     KeyCode.A;
+            keyBoard[(int)UserInput.Right] =    KeyCode.D;
+            keyBoard[(int)UserInput.Attack] =   KeyCode.K;
+            keyBoard[(int)UserInput.Jump] =     KeyCode.J;
+            keyBoard[(int)UserInput.Pause] =    KeyCode.Escape;
+            keyBoard[(int)UserInput.Accept] =   KeyCode.K;
+            keyBoard[(int)UserInput.Cancel] =   KeyCode.J;
         }
 
         /// <summary> This is used to define the default controller bindings. </summary>
@@ -28,15 +44,15 @@ namespace Assets.Scripts.Util
         {
             if (gamePad == null)
                 throw new System.AccessViolationException(UnitializedMessage);
-            gamePad[(int)UserInput.Up] = LEFT_STICK_UP;
-            gamePad[(int)UserInput.Down] = LEFT_STICK_DOWN;
-            gamePad[(int)UserInput.Left] = LEFT_STICK_LEFT;
-            gamePad[(int)UserInput.Right] = LEFT_STICK_RIGHT;
-            gamePad[(int)UserInput.Attack] = A;
-            gamePad[(int)UserInput.Jump] = B;
-            gamePad[(int)UserInput.Pause] = START;
-            gamePad[(int)UserInput.Accept] = A;
-            gamePad[(int)UserInput.Cancel] = B;
+            gamePad[(int)UserInput.Up] =        LEFT_STICK_UP;
+            gamePad[(int)UserInput.Down] =      LEFT_STICK_DOWN;
+            gamePad[(int)UserInput.Left] =      LEFT_STICK_LEFT;
+            gamePad[(int)UserInput.Right] =     LEFT_STICK_RIGHT;
+            gamePad[(int)UserInput.Attack] =    A;
+            gamePad[(int)UserInput.Jump] =      B;
+            gamePad[(int)UserInput.Pause] =     START;
+            gamePad[(int)UserInput.Accept] =    A;
+            gamePad[(int)UserInput.Cancel] =    B;
         }
 
         // Modification of the code below this should be unecessary.
@@ -236,6 +252,9 @@ namespace Assets.Scripts.Util
             gamePad[(int)input] = button;
         }
 
+        // Array to for the user to specify the sign of the number they want from raw data
+        private static int[] rawSign;
+
         // Boolean as to whether or not a controller is being used.
         private static bool usingPad = false;
 
@@ -263,6 +282,9 @@ namespace Assets.Scripts.Util
 
             keyBoard = new KeyCode[System.Enum.GetNames(typeof(UserInput)).Length];
             gamePad = new string[System.Enum.GetNames(typeof(UserInput)).Length];
+            rawSign = new int[System.Enum.GetNames(typeof(UserInput)).Length];
+
+            RawSign();
 
             Default();
         }
@@ -514,12 +536,20 @@ namespace Assets.Scripts.Util
             if (raws[input] != 0 && key)
             {
                 rawsFreshPress[input] = data;
+                if (Mathf.Sign(rawsFreshPress[input]) != Mathf.Sign(rawSign[input]))
+                    rawsFreshPress[input] = -rawsFreshPress[input];
                 rawsFreshPressDeleteOnRead[input] = data;
+                if (Mathf.Sign(rawsFreshPressDeleteOnRead[input]) != Mathf.Sign(rawSign[input]))
+                    rawsFreshPressDeleteOnRead[input] = -rawsFreshPressDeleteOnRead[input];
             }
             if (key)
             {
                 raws[input] = data;
+                if (Mathf.Sign(raws[input]) != Mathf.Sign(rawSign[input]))
+                    raws[input] = -raws[input];
                 rawsHeld[input] = data;
+                if (Mathf.Sign(rawsHeld[input]) != Mathf.Sign(rawSign[input]))
+                    rawsHeld[input] = -rawsHeld[input];
                 rawsUp[input] = 0f;
             }
             else if (keyUp)
@@ -530,6 +560,8 @@ namespace Assets.Scripts.Util
                 rawsFreshPressDeleteOnRead[input] = 0f;
                 rawsFreshPressAccessed[input] = false;
                 rawsUp[input] = data;
+                if (Mathf.Sign(rawsUp[input]) != Mathf.Sign(rawSign[input]))
+                    rawsUp[input] = -rawsUp[input];
             }
             else
                 rawsUp[input] = 0f;
