@@ -15,26 +15,26 @@ namespace Assets.Scripts.Util
         public enum Buttons { A, B, X, Y, RightBumper, LeftBumper, Back, Start, LeftStickClick, RightStickClick };
         public enum Triggers { RightTrigger, LeftTrigger };
         public enum ControlType { Xbox, PS3 };
-        private const string LEFT_OSX_TRIGGER = "LeftOSXTrigger";
-        private const string LEFT_LINUX_TRIGGER = "LeftLinuxTrigger";
-        private const string LEFT_WIN_TRIGGER = "LeftWinTrigger";
-        private const string RIGHT_OSX_TRIGGER = "RightOSXTrigger";
-        private const string RIGHT_LINUX_TRIGGER = "RightLinuxTrigger";
-        private const string RIGHT_WIN_TRIGGER = "RightWinTrigger";
-        private const string RIGHT_OSX_STICK_Y = "RightOSXStickY";
-        private const string RIGHT_WIN_STICK_Y = "RightWinStickY";
-        private const string RIGHT_OSX_STICK_X = "RightOSXStickX";
-        private const string RIGHT_WIN_STICK_X = "RightWinStickX";
-        private const string RIGHT_PS_STICK_X = "RightPSStickX";
-        private const string RIGHT_PS_STICK_Y = "RightPSStickY";
-        private const string LEFT_STICK_Y = "Vertical";
-        private const string LEFT_STICK_X = "Horizontal";
-        private const string DPAD_WIN_STICK_Y = "DpadWinStickY";
-        private const string DPAD_WIN_STICK_X = "DpadWinStickX";
-        private const string DPAD_LINUX_STICK_X = "DpadLinuxStickX";
-        private const string DPAD_LINUX_STICK_Y = "DpadLinuxStickY";
-        private const string DPAD_PS_STICK_X = "DpadPSStickX";
-        private const string DPAD_PS_STICK_Y = "DpadPSStickY";
+        private const string LEFT_OSX_TRIGGER =     "LeftOSXTrigger";
+        private const string LEFT_LINUX_TRIGGER =   "LeftLinuxTrigger";
+        private const string LEFT_WIN_TRIGGER =     "LeftWinTrigger";
+        private const string RIGHT_OSX_TRIGGER =    "RightOSXTrigger";
+        private const string RIGHT_LINUX_TRIGGER =  "RightLinuxTrigger";
+        private const string RIGHT_WIN_TRIGGER =    "RightWinTrigger";
+        private const string RIGHT_OSX_STICK_Y =    "RightOSXStickY";
+        private const string RIGHT_WIN_STICK_Y =    "RightWinStickY";
+        private const string RIGHT_OSX_STICK_X =    "RightOSXStickX";
+        private const string RIGHT_WIN_STICK_X =    "RightWinStickX";
+        private const string RIGHT_PS_STICK_X =     "RightPSStickX";
+        private const string RIGHT_PS_STICK_Y =     "RightPSStickY";
+        private const string LEFT_STICK_Y =         "LeftStickY";
+        private const string LEFT_STICK_X =         "LefStickX";
+        private const string DPAD_WIN_STICK_Y =     "DpadWinStickY";
+        private const string DPAD_WIN_STICK_X =     "DpadWinStickX";
+        private const string DPAD_LINUX_STICK_X =   "DpadLinuxStickX";
+        private const string DPAD_LINUX_STICK_Y =   "DpadLinuxStickY";
+        private const string DPAD_PS_STICK_X =      "DpadPSStickX";
+        private const string DPAD_PS_STICK_Y =      "DpadPSStickY";
 
         public static ControlType GetControlType()
         {
