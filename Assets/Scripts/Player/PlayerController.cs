@@ -12,16 +12,17 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private float jumpForce = 13.5f;
         [SerializeField]
-        private float moveForce = 200f;
+        private float moveForce = 20f;
         [SerializeField]
         private float maxSpeed = 4f;
         [SerializeField]
         private float maxKnockbackSpeed = 4f;
         [SerializeField]
-        private float airControl = 0.3f;
+        private float airControl = 0.7f;
 
         private static bool doOnce = false;
         private static bool jump = false;
+        private static bool knockBack = false;
 
         private static int health = 5;
 
@@ -40,9 +41,12 @@ namespace Assets.Scripts.Player
         private state[] doState;
         private Enums.PlayerState prevState = 0;
         private Enums.PlayerState currState = 0;
+        private Rigidbody rgbdy;
+        private bool move = false;
 
         void Awake()
         {
+            rgbdy = this.gameObject.GetComponent<Rigidbody>();
             //state machine init
             machine = new PlayerStateMachine();
             doState = new state[] { Idle, Moving, InAir, Jump, Attack, Hit, Dead };
@@ -51,17 +55,19 @@ namespace Assets.Scripts.Player
 
         void Update()
         {
+            float up = CustomInput.Bool(CustomInput.UserInput.Up) ? CustomInput.Raw(CustomInput.UserInput.Up) : CustomInput.Raw(CustomInput.UserInput.Down);
+            float right = CustomInput.Bool(CustomInput.UserInput.Right) ? CustomInput.Raw(CustomInput.UserInput.Right) : CustomInput.Raw(CustomInput.UserInput.Left);
+            float magnitude = new Vector2(up, right).magnitude;
+            anim.SetFloat("speed", magnitude);
             if (health <= 0 || this.transform.position.y < -20)
             {
                 health = 5;
                 transform.position = new Vector3(0, 0, 0);
                 FindObjectOfType<GameState>().playerDeaths++;
             }
-            bool move = false;
-            if (CustomInput.Bool(CustomInput.UserInput.Up) || CustomInput.Bool(CustomInput.UserInput.Down) || CustomInput.Bool(CustomInput.UserInput.Left) || CustomInput.Bool(CustomInput.UserInput.Right))
+            move = false;
+            if (magnitude !=0)
                 move = true;
-
-
             TouchingSomething();
             if ((int)currState == 3 && !inAir)
             {
@@ -145,14 +151,16 @@ namespace Assets.Scripts.Player
         //fixed update runs on a timed cycle (for physics stuff)
         void FixedUpdate()
         {
+            rgbdy.AddForce(2 * Physics.gravity * rgbdy.mass);
             if (currState == Enums.PlayerState.Moving ||
                 currState == Enums.PlayerState.InAir || currState == Enums.PlayerState.Jump)
             {
                 //the following logic will accuratly rotate the player to the direction they want to go
                 float up = CustomInput.Bool(CustomInput.UserInput.Up) ? CustomInput.Raw(CustomInput.UserInput.Up) : CustomInput.Raw(CustomInput.UserInput.Down);
                 float right = CustomInput.Bool(CustomInput.UserInput.Right) ? CustomInput.Raw(CustomInput.UserInput.Right) : CustomInput.Raw(CustomInput.UserInput.Left);
-
-                float magnitude = Mathf.Sqrt(up * up + right * right);
+                float magnitude = new Vector2(up, right).magnitude;
+                if (magnitude > 1)
+                    magnitude = 1;
                 if (up == 0 && right == 0)
                 {
 
@@ -178,25 +186,35 @@ namespace Assets.Scripts.Player
                     else
                         transform.rotation = Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan(right / up), 0);
                 }
-                //TODO:movement logic
 
-                if((int)currState == 1 || (int)currState == 2 || (int)currState == 3)
+                if(currState == Enums.PlayerState.Moving)
                 {
-                    this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z) + 0.1f * -this.transform.right;
-                    //print(this.transform.right);
+                   rgbdy.AddForce(-this.transform.right * moveForce * magnitude);
+                    if (rgbdy.velocity.x > maxSpeed)
+                        rgbdy.velocity = new Vector3(maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
+                    if (rgbdy.velocity.z > maxSpeed)
+                        rgbdy.velocity = new Vector3(rgbdy.velocity.x, rgbdy.velocity.y, maxSpeed);
+                }
+                if((currState == Enums.PlayerState.InAir || currState == Enums.PlayerState.Jump) && move)
+                {
+                    rgbdy.AddForce(-this.transform.right * moveForce * airControl * magnitude, ForceMode.Acceleration);
+                    if (rgbdy.velocity.x > maxSpeed)
+                        rgbdy.velocity = new Vector3(maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
                 }
             }
-            //STATE MACHINE SAY JUMP NOW!!!
+            //if (!inAir)
+            //    rgbdy.velocity = new Vector3(rgbdy.velocity.x, 0, rgbdy.velocity.z);
             if (jump)
             {
-                //TODO: jump logic
-                this.gameObject.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z) - 0.1f * this.transform.right + 0.15f*this.transform.up;
-                //Debug.Log("jumped");
-            }else if(true)
-            if (currState == Enums.PlayerState.Hit)
-            {
-                //TODO: knockback logic
+                rgbdy.AddForce(this.transform.up * jumpForce, ForceMode.Impulse);
+                jump = false;
             }
+            if (knockBack)
+            {
+                rgbdy.AddForce(this.transform.right * maxKnockbackSpeed, ForceMode.Impulse);
+                knockBack = false;
+            }
+
         }
 
         private static void Idle()
@@ -235,6 +253,7 @@ namespace Assets.Scripts.Player
                 doOnce = true;
                 invunTimer = invunTime;
                 invun = true;
+                knockBack = true;
             }
         }
 

@@ -88,7 +88,6 @@ GameObject:
   - 33: {fileID: 3360026}
   - 65: {fileID: 6549746}
   - 23: {fileID: 2370720}
-  - 114: {fileID: 11448464}
   m_Layer: 0
   m_Name: HorizontalTranslatePlatform
   m_TagString: Untagged
@@ -216,20 +215,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &11448464
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 198412}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2c8626d35740224aa2f711395855ef5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointA: {fileID: 489942}
-  pointB: {fileID: 409942}
-  speed: .5
 --- !u!114 &11471494
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -243,7 +228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointA: {fileID: 489942}
   pointB: {fileID: 409942}
-  speed: .5
+  speed: .25
 --- !u!114 &11480048
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -268,6 +253,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: length
       value: 47.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: speed
+      value: .25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
