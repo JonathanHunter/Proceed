@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Util;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.Player
 {
@@ -43,6 +44,12 @@ namespace Assets.Scripts.Player
         private Enums.PlayerState currState = 0;
         private Rigidbody rgbdy;
         private bool move = false;
+        
+        // Gameplay Status (sluggish, poisoned, super speed, invincible)
+        bool sluggish;
+
+        // Miscellenious 
+        private Image UnderWaterGUI;
 
         void Awake()
         {
@@ -58,7 +65,15 @@ namespace Assets.Scripts.Player
             float up = CustomInput.Bool(CustomInput.UserInput.Up) ? CustomInput.Raw(CustomInput.UserInput.Up) : CustomInput.Raw(CustomInput.UserInput.Down);
             float right = CustomInput.Bool(CustomInput.UserInput.Right) ? CustomInput.Raw(CustomInput.UserInput.Right) : CustomInput.Raw(CustomInput.UserInput.Left);
             float magnitude = new Vector2(up, right).magnitude;
+
+            #region StatusEffects
+            if(sluggish)
+            {
+                anim.speed = 0.6f;
+            }
+            #endregion
             anim.SetFloat("speed", magnitude);
+
             if (health <= 0 || this.transform.position.y < -20)
             {
                 health = 5;
@@ -116,13 +131,31 @@ namespace Assets.Scripts.Player
         {
             if(col.gameObject.tag == "Level end")
             {
+                // Reset Status
+                if (sluggish)
+                {
+                    sluggish = false;
+                    UnderWaterGUI.enabled = false;
+                }
                 this.transform.parent = null;
                 ProceduralGen.LevelGenerator level = FindObjectOfType<ProceduralGen.LevelGenerator>();
                 level.EndLevel();
                 level.StartLevel();
+               
+            }else if(col.gameObject.CompareTag("Water"))
+            {
+                UnderWaterGUI = FindObjectOfType<Image>();
             }
         }
 
+        void OnTriggerStay(Collider col)
+        {
+            if(col.gameObject.CompareTag("Water"))
+            {
+                sluggish = true;
+                UnderWaterGUI.enabled = true;
+            }
+        }
         public void AnimDetector()
         {
             animDone = true;
@@ -189,17 +222,37 @@ namespace Assets.Scripts.Player
 
                 if(currState == Enums.PlayerState.Moving)
                 {
-                   rgbdy.AddForce(-this.transform.right * moveForce * magnitude);
-                    if (rgbdy.velocity.x > maxSpeed)
-                        rgbdy.velocity = new Vector3(maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
-                    if (rgbdy.velocity.z > maxSpeed)
-                        rgbdy.velocity = new Vector3(rgbdy.velocity.x, rgbdy.velocity.y, maxSpeed);
+                    if (sluggish)
+                    {
+                        rgbdy.AddForce(-this.transform.right * (0.6f) * moveForce * magnitude);
+                        if (rgbdy.velocity.x > (0.6f) * maxSpeed)
+                            rgbdy.velocity = new Vector3((0.6f) * maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
+                        if (rgbdy.velocity.z > maxSpeed)
+                            rgbdy.velocity = new Vector3(rgbdy.velocity.x, rgbdy.velocity.y, (0.6f) * maxSpeed);
+                    }
+                    else
+                    {
+                        rgbdy.AddForce(-this.transform.right * moveForce * magnitude);
+                        if (rgbdy.velocity.x > maxSpeed)
+                            rgbdy.velocity = new Vector3(maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
+                        if (rgbdy.velocity.z > maxSpeed)
+                            rgbdy.velocity = new Vector3(rgbdy.velocity.x, rgbdy.velocity.y, maxSpeed);
+                    }
                 }
                 if((currState == Enums.PlayerState.InAir || currState == Enums.PlayerState.Jump) && move)
                 {
-                    rgbdy.AddForce(-this.transform.right * moveForce * airControl * magnitude, ForceMode.Acceleration);
-                    if (rgbdy.velocity.x > maxSpeed)
-                        rgbdy.velocity = new Vector3(maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
+                    if (sluggish)
+                    {
+                        rgbdy.AddForce(-this.transform.right * (0.6f) * moveForce * airControl * magnitude, ForceMode.Acceleration);
+                        if (rgbdy.velocity.x > (0.6f)*maxSpeed)
+                            rgbdy.velocity = new Vector3((0.6f)*maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
+                    }
+                    else
+                    {
+                        rgbdy.AddForce(-this.transform.right * moveForce * airControl * magnitude, ForceMode.Acceleration);
+                        if (rgbdy.velocity.x > maxSpeed)
+                            rgbdy.velocity = new Vector3(maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
+                    }
                 }
             }
             //if (!inAir)
