@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Level end
+  - Water
   layers:
   - Default
   - TransparentFX
