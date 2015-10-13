@@ -70,7 +70,7 @@ Rigidbody:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 123236}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 10
   m_Drag: 0
   m_AngularDrag: .0500000007
   m_UseGravity: 1
@@ -89,8 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1481d48211bf62e4b92faf3235210e66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  lifetime: 0
+  speed: 30
   platform: {fileID: 442356, guid: d2e1c5048e870bc4ba2e97e93f078e83, type: 2}
 --- !u!135 &13587454
 SphereCollider:
@@ -117,7 +116,7 @@ Prefab:
       objectReference: {fileID: 442356, guid: d2e1c5048e870bc4ba2e97e93f078e83, type: 2}
     - target: {fileID: 0}
       propertyPath: speed
-      value: 5
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_IsKinematic
@@ -129,7 +128,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Mass
-      value: 1
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Force.x
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
