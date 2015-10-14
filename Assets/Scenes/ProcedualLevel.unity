@@ -185,6 +185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 624481874}
+  speed: .5
 --- !u!1 &425925471
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,7 +283,16 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 447282, guid: d09cd3f884b7f1a46817d1aeb14acf40, type: 2}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11494098, guid: d09cd3f884b7f1a46817d1aeb14acf40, type: 2}
+      propertyPath: ragdoll
+      value: 
+      objectReference: {fileID: 11408342, guid: d6f0a98f39947e1409ffb4a70fe0abb2,
+        type: 2}
+    - target: {fileID: 167824, guid: d09cd3f884b7f1a46817d1aeb14acf40, type: 2}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d09cd3f884b7f1a46817d1aeb14acf40, type: 2}

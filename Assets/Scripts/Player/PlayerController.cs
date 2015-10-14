@@ -44,8 +44,18 @@ namespace Assets.Scripts.Player
         private Rigidbody rgbdy;
         private bool move = false;
 
+		//Death Variables
+		private float respawnTimerReset = 0;
+		public float respawnTimer = 3f;
+		public ragdollBody ragdoll;
+		public ragdollBody tempRag;
+		private bool ragdollIsActive = false;
+		private Vector3 originalScale;
+
         void Awake()
         {
+			respawnTimerReset = respawnTimer;
+			originalScale = this.transform.localScale;
             rgbdy = this.gameObject.GetComponent<Rigidbody>();
             //state machine init
             machine = new PlayerStateMachine();
@@ -55,17 +65,38 @@ namespace Assets.Scripts.Player
 
         void Update()
         {
+			if(Input.GetKeyUp (KeyCode.U)){
+				die();
+			}
+
             float up = CustomInput.Bool(CustomInput.UserInput.Up) ? CustomInput.Raw(CustomInput.UserInput.Up) : CustomInput.Raw(CustomInput.UserInput.Down);
             float right = CustomInput.Bool(CustomInput.UserInput.Right) ? CustomInput.Raw(CustomInput.UserInput.Right) : CustomInput.Raw(CustomInput.UserInput.Left);
-            float magnitude = new Vector2(up, right).magnitude;
+			float magnitude = new Vector2(up, right).magnitude;
             anim.SetFloat("speed", magnitude);
             if (health <= 0 || this.transform.position.y < -20)
             {
-                health = 5;
-                transform.position = new Vector3(0, 0, 0);
-                FindObjectOfType<GameState>().playerDeaths++;
+				//Create a ragdoll until we respawn
+				if(respawnTimer >0){
+					if(!ragdollIsActive){
+						die();
+						//this.GetComponent<Rigidbody>().useGravity = false;
+					}
+					//this.gameObject.transform.position = new Vector3(tempRag.HipN.position.x+1,tempRag.HipN.position.y, tempRag.HipN.position.z + 1);
+					respawnTimer-=Time.deltaTime;
+				}
+				else{
+					//respawn
+					gameObject.transform.localScale = originalScale;
+					ragdollIsActive=false;
+					respawnTimer = respawnTimerReset;
+	                health = 5;
+	                transform.position = new Vector3(0, 0, 0);
+	                FindObjectOfType<GameState>().playerDeaths++;
+					//this.GetComponent<Rigidbody>().useGravity = true;
+				}
             }
             move = false;
+
             if (magnitude !=0)
                 move = true;
             TouchingSomething();
@@ -73,7 +104,6 @@ namespace Assets.Scripts.Player
             {
                 jump = true;
             }
-
             //get next state
             currState = machine.update(inAir, move, hit, animDone);
             if (invunTimer > 0)
@@ -86,7 +116,6 @@ namespace Assets.Scripts.Player
             {
                 invun = false;
             }
-
             //run state
             doState[(int)currState]();
             //state clean up
@@ -101,7 +130,7 @@ namespace Assets.Scripts.Player
 
             }
             prevState = currState;
-        }
+		}
 
         void OnCollisionEnter(Collision col)
         {
@@ -150,7 +179,8 @@ namespace Assets.Scripts.Player
 
         //fixed update runs on a timed cycle (for physics stuff)
         void FixedUpdate()
-        {
+		{
+			if(!ragdollIsActive){
             rgbdy.AddForce(2 * Physics.gravity * rgbdy.mass);
             if (currState == Enums.PlayerState.Moving ||
                 currState == Enums.PlayerState.InAir || currState == Enums.PlayerState.Jump)
@@ -214,7 +244,7 @@ namespace Assets.Scripts.Player
                 rgbdy.AddForce(this.transform.right * maxKnockbackSpeed, ForceMode.Impulse);
                 knockBack = false;
             }
-
+			}
         }
 
         private static void Idle()
@@ -261,5 +291,14 @@ namespace Assets.Scripts.Player
         {
 
         }
+
+		public void die(){
+			health = 0;
+			gameObject.transform.localScale = new Vector3(.001f, .001f, .001f);
+			ragdollIsActive=true;
+			tempRag = GameObject.Instantiate<ragdollBody>(ragdoll);
+			tempRag.transform.position = this.transform.position;
+			tempRag.destructionTimer = respawnTimer; //We set this so the ragdoll only exists as long as we're dead
+		}
     }
 }
