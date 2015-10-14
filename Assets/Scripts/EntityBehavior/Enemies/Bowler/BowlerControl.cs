@@ -13,7 +13,6 @@ public class BowlerControl : MonoBehaviour {
 	void Start ()
     {
         rb = GetComponent<Rigidbody>();
-        rb.velocity = platform.right * speed;
 	}
 	
 	// Update is called once per frame
@@ -23,7 +22,8 @@ public class BowlerControl : MonoBehaviour {
         {
             Destroy(gameObject);
         }
-	}
+
+    }
 
     void FixedUpdate()
     {
