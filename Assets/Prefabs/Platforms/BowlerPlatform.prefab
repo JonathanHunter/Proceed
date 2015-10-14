@@ -55,7 +55,7 @@ GameObject:
   - 4: {fileID: 459972}
   - 114: {fileID: 11493194}
   m_Layer: 0
-  m_Name: Bowlers
+  m_Name: BowlerSpawns
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
