@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using Assets.Scripts.Util;
 
 namespace Assets.Scripts.Player
@@ -10,6 +11,10 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private Transform foot;
         [SerializeField]
+        private AudioSource soundPlayer;
+        [SerializeField]
+        private emitterController emitter;
+        [SerializeField]
         private float jumpForce = 13.5f;
         [SerializeField]
         private float moveForce = 20f;
@@ -19,6 +24,12 @@ namespace Assets.Scripts.Player
         private float maxKnockbackSpeed = 4f;
         [SerializeField]
         private float airControl = 0.7f;
+        [SerializeField]
+        private AudioClip[] step1;
+        [SerializeField]
+        private AudioClip[] step2;
+        [SerializeField]
+        private AudioClip[] landing;
 
         private static bool doOnce = false;
         private static bool jump = false;
@@ -26,6 +37,9 @@ namespace Assets.Scripts.Player
 
         private static int health = 5;
 
+        private enum BlockMaterial { Wood, Ice, Sand };
+        private BlockMaterial curMat;
+        private float magnitude;
 
         //state machine vars
         private static bool invun = false;
@@ -44,18 +58,20 @@ namespace Assets.Scripts.Player
         private Rigidbody rgbdy;
         private bool move = false;
 
-		//Death Variables
-		private float respawnTimerReset = 0;
-		public float respawnTimer = 3f;
-		public ragdollBody ragdoll;
-		public ragdollBody tempRag;
-		private bool ragdollIsActive = false;
-		private Vector3 originalScale;
+        //Death Variables
+        private float respawnTimerReset = 0;
+        public float respawnTimer = 3f;
+        public ragdollBody ragdoll;
+        public ragdollBody tempRag;
+        private bool ragdollIsActive = false;
+        private Vector3 originalScale;
 
         void Awake()
         {
-			respawnTimerReset = respawnTimer;
-			originalScale = this.transform.localScale;
+            magnitude = 0f;
+            curMat = BlockMaterial.Wood;
+            respawnTimerReset = respawnTimer;
+            originalScale = this.transform.localScale;
             rgbdy = this.gameObject.GetComponent<Rigidbody>();
             //state machine init
             machine = new PlayerStateMachine();
@@ -65,39 +81,39 @@ namespace Assets.Scripts.Player
 
         void Update()
         {
-			if(Input.GetKeyUp (KeyCode.U)){
-				die();
-			}
-
-            float up = CustomInput.Bool(CustomInput.UserInput.Up) ? CustomInput.Raw(CustomInput.UserInput.Up) : CustomInput.Raw(CustomInput.UserInput.Down);
-            float right = CustomInput.Bool(CustomInput.UserInput.Right) ? CustomInput.Raw(CustomInput.UserInput.Right) : CustomInput.Raw(CustomInput.UserInput.Left);
-			float magnitude = new Vector2(up, right).magnitude;
+            if (Input.GetKeyUp(KeyCode.U))
+            {
+                die();
+            }
             anim.SetFloat("speed", magnitude);
             if (health <= 0 || this.transform.position.y < -20)
             {
-				//Create a ragdoll until we respawn
-				if(respawnTimer >0){
-					if(!ragdollIsActive){
-						die();
-						//this.GetComponent<Rigidbody>().useGravity = false;
-					}
-					//this.gameObject.transform.position = new Vector3(tempRag.HipN.position.x+1,tempRag.HipN.position.y, tempRag.HipN.position.z + 1);
-					respawnTimer-=Time.deltaTime;
-				}
-				else{
-					//respawn
-					gameObject.transform.localScale = originalScale;
-					ragdollIsActive=false;
-					respawnTimer = respawnTimerReset;
-	                health = 5;
-	                transform.position = new Vector3(0, 0, 0);
-	                FindObjectOfType<GameState>().playerDeaths++;
-					//this.GetComponent<Rigidbody>().useGravity = true;
-				}
+                //Create a ragdoll until we respawn
+                if (respawnTimer > 0)
+                {
+                    if (!ragdollIsActive)
+                    {
+                        die();
+                        //this.GetComponent<Rigidbody>().useGravity = false;
+                    }
+                    //this.gameObject.transform.position = new Vector3(tempRag.HipN.position.x+1,tempRag.HipN.position.y, tempRag.HipN.position.z + 1);
+                    respawnTimer -= Time.deltaTime;
+                }
+                else
+                {
+                    //respawn
+                    gameObject.transform.localScale = originalScale;
+                    ragdollIsActive = false;
+                    respawnTimer = respawnTimerReset;
+                    health = 5;
+                    transform.position = new Vector3(0, 0, 0);
+                    FindObjectOfType<GameState>().playerDeaths++;
+                    //this.GetComponent<Rigidbody>().useGravity = true;
+                }
             }
             move = false;
 
-            if (magnitude !=0)
+            if (CustomInput.Bool(CustomInput.UserInput.Up) || CustomInput.Bool(CustomInput.UserInput.Down) || CustomInput.Bool(CustomInput.UserInput.Left) || CustomInput.Bool(CustomInput.UserInput.Right))
                 move = true;
             TouchingSomething();
             if ((int)currState == 3 && !inAir)
@@ -130,20 +146,20 @@ namespace Assets.Scripts.Player
 
             }
             prevState = currState;
-		}
+        }
 
         void OnCollisionEnter(Collision col)
         {
             if (col.gameObject.tag == "enemy" && !invun)
             {
-                if(!invun)
+                if (!invun)
                     hit = true;
             }
         }
 
         void OnTriggerEnter(Collider col)
         {
-            if(col.gameObject.tag == "Level end")
+            if (col.gameObject.tag == "Level end")
             {
                 this.transform.parent = null;
                 ProceduralGen.LevelGenerator level = FindObjectOfType<ProceduralGen.LevelGenerator>();
@@ -157,6 +173,18 @@ namespace Assets.Scripts.Player
             animDone = true;
         }
 
+        public void Step1()
+        {
+            emitter.emitStep();
+            soundPlayer.PlayOneShot(step1[(int)curMat], magnitude);
+        }
+
+        public void Step2()
+        {
+            emitter.emitStep();
+            soundPlayer.PlayOneShot(step2[(int)curMat], magnitude);
+        }
+
         //detects if you are in the air
         private void TouchingSomething()
         {
@@ -166,9 +194,16 @@ namespace Assets.Scripts.Player
             RaycastHit temp;
             if (Physics.Raycast(new Vector3(foot.position.x, foot.position.y + 0.2f, foot.position.z), new Vector3(0, -1, 0), out temp, .2f, playerLayerMask))
             {
-                inAir = false;
                 Debug.DrawRay(new Vector3(foot.position.x, foot.position.y + 0.2f, foot.position.z), new Vector3(0, .2f, 0), Color.red);
                 this.transform.parent = temp.collider.transform.parent;
+                BlockMaterial mat = (BlockMaterial)Enum.Parse(typeof(BlockMaterial), temp.collider.gameObject.tag);
+                if (Enum.IsDefined(typeof(BlockMaterial), mat) | mat.ToString().Contains(","))
+                    curMat = mat;
+                else
+                    curMat = BlockMaterial.Wood;
+                if (inAir)
+                    soundPlayer.PlayOneShot(landing[(int)curMat]);
+                inAir = false;
             }
             else
             {
@@ -179,72 +214,73 @@ namespace Assets.Scripts.Player
 
         //fixed update runs on a timed cycle (for physics stuff)
         void FixedUpdate()
-		{
-			if(!ragdollIsActive){
-            rgbdy.AddForce(2 * Physics.gravity * rgbdy.mass);
-            if (currState == Enums.PlayerState.Moving ||
-                currState == Enums.PlayerState.InAir || currState == Enums.PlayerState.Jump)
+        {
+            if (!ragdollIsActive)
             {
-                //the following logic will accuratly rotate the player to the direction they want to go
-                float up = CustomInput.Bool(CustomInput.UserInput.Up) ? CustomInput.Raw(CustomInput.UserInput.Up) : CustomInput.Raw(CustomInput.UserInput.Down);
-                float right = CustomInput.Bool(CustomInput.UserInput.Right) ? CustomInput.Raw(CustomInput.UserInput.Right) : CustomInput.Raw(CustomInput.UserInput.Left);
-                float magnitude = new Vector2(up, right).magnitude;
-                if (magnitude > 1)
-                    magnitude = 1;
-                if (up == 0 && right == 0)
+                rgbdy.AddForce(2 * Physics.gravity * rgbdy.mass);
+                if (currState == Enums.PlayerState.Moving ||
+                    currState == Enums.PlayerState.InAir || currState == Enums.PlayerState.Jump)
                 {
+                    //the following logic will accuratly rotate the player to the direction they want to go
+                    float up = CustomInput.Bool(CustomInput.UserInput.Up) ? CustomInput.Raw(CustomInput.UserInput.Up) : CustomInput.Raw(CustomInput.UserInput.Down);
+                    float right = CustomInput.Bool(CustomInput.UserInput.Right) ? CustomInput.Raw(CustomInput.UserInput.Right) : CustomInput.Raw(CustomInput.UserInput.Left);
+                    magnitude = new Vector2(up, right).magnitude;
+                    if (magnitude > 1)
+                        magnitude = 1;
+                    if (up == 0 && right == 0)
+                    {
 
-                }
-                else if (up == 0)
-                {
-                    if (CustomInput.Bool(CustomInput.UserInput.Left))
-                        transform.rotation = Quaternion.Euler(0, 270, 0);
+                    }
+                    else if (up == 0)
+                    {
+                        if (CustomInput.Bool(CustomInput.UserInput.Left))
+                            transform.rotation = Quaternion.Euler(0, 270, 0);
+                        else
+                            transform.rotation = Quaternion.Euler(0, 90, 0);
+                    }
+                    else if (right == 0)
+                    {
+                        if (CustomInput.Bool(CustomInput.UserInput.Down))
+                            transform.rotation = Quaternion.Euler(0, 180, 0);
+                        else
+                            transform.rotation = Quaternion.Euler(0, 0, 0);
+                    }
                     else
-                        transform.rotation = Quaternion.Euler(0, 90, 0);
-                }
-                else if (right == 0)
-                {
-                    if (CustomInput.Bool(CustomInput.UserInput.Down))
-                        transform.rotation = Quaternion.Euler(0, 180, 0);
-                    else
-                        transform.rotation = Quaternion.Euler(0, 0, 0);
-                }
-                else
-                {
-                    if (CustomInput.Bool(CustomInput.UserInput.Down))
-                        transform.rotation = Quaternion.Euler(0, 180 + Mathf.Rad2Deg * Mathf.Atan(right / up), 0);
-                    else
-                        transform.rotation = Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan(right / up), 0);
-                }
+                    {
+                        if (CustomInput.Bool(CustomInput.UserInput.Down))
+                            transform.rotation = Quaternion.Euler(0, 180 + Mathf.Rad2Deg * Mathf.Atan(right / up), 0);
+                        else
+                            transform.rotation = Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan(right / up), 0);
+                    }
 
-                if(currState == Enums.PlayerState.Moving)
-                {
-                   rgbdy.AddForce(-this.transform.right * moveForce * magnitude);
-                    if (rgbdy.velocity.x > maxSpeed)
-                        rgbdy.velocity = new Vector3(maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
-                    if (rgbdy.velocity.z > maxSpeed)
-                        rgbdy.velocity = new Vector3(rgbdy.velocity.x, rgbdy.velocity.y, maxSpeed);
+                    if (currState == Enums.PlayerState.Moving)
+                    {
+                        rgbdy.AddForce(-this.transform.right * moveForce * magnitude);
+                        if (rgbdy.velocity.x > maxSpeed)
+                            rgbdy.velocity = new Vector3(maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
+                        if (rgbdy.velocity.z > maxSpeed)
+                            rgbdy.velocity = new Vector3(rgbdy.velocity.x, rgbdy.velocity.y, maxSpeed);
+                    }
+                    if ((currState == Enums.PlayerState.InAir || currState == Enums.PlayerState.Jump) && move)
+                    {
+                        rgbdy.AddForce(-this.transform.right * moveForce * airControl * magnitude, ForceMode.Acceleration);
+                        if (rgbdy.velocity.x > maxSpeed)
+                            rgbdy.velocity = new Vector3(maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
+                    }
                 }
-                if((currState == Enums.PlayerState.InAir || currState == Enums.PlayerState.Jump) && move)
+                //if (!inAir)
+                //    rgbdy.velocity = new Vector3(rgbdy.velocity.x, 0, rgbdy.velocity.z);
+                if (jump)
                 {
-                    rgbdy.AddForce(-this.transform.right * moveForce * airControl * magnitude, ForceMode.Acceleration);
-                    if (rgbdy.velocity.x > maxSpeed)
-                        rgbdy.velocity = new Vector3(maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
+                    rgbdy.AddForce(this.transform.up * jumpForce, ForceMode.Impulse);
+                    jump = false;
+                }
+                if (knockBack)
+                {
+                    rgbdy.AddForce(this.transform.right * maxKnockbackSpeed, ForceMode.Impulse);
+                    knockBack = false;
                 }
             }
-            //if (!inAir)
-            //    rgbdy.velocity = new Vector3(rgbdy.velocity.x, 0, rgbdy.velocity.z);
-            if (jump)
-            {
-                rgbdy.AddForce(this.transform.up * jumpForce, ForceMode.Impulse);
-                jump = false;
-            }
-            if (knockBack)
-            {
-                rgbdy.AddForce(this.transform.right * maxKnockbackSpeed, ForceMode.Impulse);
-                knockBack = false;
-            }
-			}
         }
 
         private static void Idle()
@@ -272,7 +308,7 @@ namespace Assets.Scripts.Player
             }
         }
         private static void InAir()
-        { 
+        {
         }
 
         private static void Hit()
@@ -292,13 +328,14 @@ namespace Assets.Scripts.Player
 
         }
 
-		public void die(){
-			health = 0;
-			gameObject.transform.localScale = new Vector3(.001f, .001f, .001f);
-			ragdollIsActive=true;
-			tempRag = GameObject.Instantiate<ragdollBody>(ragdoll);
-			tempRag.transform.position = this.transform.position;
-			tempRag.destructionTimer = respawnTimer; //We set this so the ragdoll only exists as long as we're dead
-		}
+        public void die()
+        {
+            health = 0;
+            gameObject.transform.localScale = new Vector3(.001f, .001f, .001f);
+            ragdollIsActive = true;
+            tempRag = GameObject.Instantiate<ragdollBody>(ragdoll);
+            tempRag.transform.position = this.transform.position;
+            tempRag.destructionTimer = respawnTimer; //We set this so the ragdoll only exists as long as we're dead
+        }
     }
 }
