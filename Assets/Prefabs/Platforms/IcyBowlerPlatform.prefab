@@ -116,7 +116,7 @@ GameObject:
   - 4: {fileID: 485448}
   - 114: {fileID: 11486726}
   m_Layer: 0
-  m_Name: BowlerPlatform
+  m_Name: IcyBowlerPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

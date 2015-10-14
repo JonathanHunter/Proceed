@@ -1279,7 +1279,7 @@ GameObject:
   - 114: {fileID: 11448190}
   m_Layer: 8
   m_Name: MarcoThePainter
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3407,6 +3407,9 @@ MonoBehaviour:
   maxSpeed: 50
   maxKnockbackSpeed: 25
   airControl: .699999988
+  respawnTimer: 3
+  ragdoll: {fileID: 11408342, guid: d6f0a98f39947e1409ffb4a70fe0abb2, type: 2}
+  tempRag: {fileID: 0}
 --- !u!136 &13662158
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -4834,7 +4837,16 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: ragdoll
+      value: 
+      objectReference: {fileID: 11408342, guid: d6f0a98f39947e1409ffb4a70fe0abb2,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 167824}

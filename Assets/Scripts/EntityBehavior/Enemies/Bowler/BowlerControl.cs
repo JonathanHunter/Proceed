@@ -28,4 +28,13 @@ public class BowlerControl : MonoBehaviour {
     {
         rb.AddForce(platform.right * speed);
     }
+
+    void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.tag.Equals("Player"))
+        {
+            Assets.Scripts.Player.PlayerController pc = other.rigidbody.GetComponentInParent<Assets.Scripts.Player.PlayerController>();
+            pc.die();
+        }
+    }
 }
