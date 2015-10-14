@@ -13,6 +13,7 @@ public class BowlerControl : MonoBehaviour {
 	void Start ()
     {
         rb = GetComponent<Rigidbody>();
+        rb.velocity = platform.right * speed;
 	}
 	
 	// Update is called once per frame
@@ -26,7 +27,7 @@ public class BowlerControl : MonoBehaviour {
 
     void FixedUpdate()
     {
-        rb.AddForce(platform.right * speed);
+        //rb.AddForce(platform.right * speed);
     }
 
     void OnCollisionEnter(Collision other)
