@@ -91,6 +91,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 20
   platform: {fileID: 442356, guid: d2e1c5048e870bc4ba2e97e93f078e83, type: 2}
+  timer: 3
+  timerIsActive: 0
 --- !u!135 &13587454
 SphereCollider:
   m_ObjectHideFlags: 1
