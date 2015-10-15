@@ -66,6 +66,9 @@ namespace Assets.Scripts.Player
         private bool ragdollIsActive = false;
         private Vector3 originalScale;
 
+		//Attack Variables
+		public hitbox hitboxPrefab;
+
         void Awake()
         {
             magnitude = 0f;
@@ -296,6 +299,13 @@ namespace Assets.Scripts.Player
             }
         }
 
+		public void generateHitbox(float knockback){
+			hitbox temp = GameObject.Instantiate<hitbox>(hitboxPrefab);
+			temp.transform.position = transform.position;
+			temp.knockback = knockback;
+
+		}
+
         private static void Moving()
         {
         }
@@ -330,12 +340,15 @@ namespace Assets.Scripts.Player
 
         public void die()
         {
+
             health = 0;
             gameObject.transform.localScale = new Vector3(.001f, .001f, .001f);
-            ragdollIsActive = true;
-            tempRag = GameObject.Instantiate<ragdollBody>(ragdoll);
-            tempRag.transform.position = this.transform.position;
-            tempRag.destructionTimer = respawnTimer; //We set this so the ragdoll only exists as long as we're dead
+            if(!ragdollIsActive){
+				ragdollIsActive = true;
+	            tempRag = GameObject.Instantiate<ragdollBody>(ragdoll);
+	            tempRag.transform.position = this.transform.position;
+	            tempRag.destructionTimer = respawnTimer; //We set this so the ragdoll only exists as long as we're dead
+			}
         }
     }
 }

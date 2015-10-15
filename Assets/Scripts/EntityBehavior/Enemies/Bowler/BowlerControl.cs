@@ -9,6 +9,9 @@ public class BowlerControl : MonoBehaviour {
 
     private Rigidbody rb;
 
+	public float timer = 3f;
+	public bool timerIsActive = false;
+
 	// Use this for initialization
 	void Start ()
     {
@@ -23,6 +26,12 @@ public class BowlerControl : MonoBehaviour {
             Destroy(gameObject);
         }
 
+		if(timerIsActive){
+			timer-=Time.deltaTime;
+			if(timer<=0){
+				Destroy(gameObject);
+			}
+		}
     }
 
     void FixedUpdate()
