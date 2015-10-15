@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Level end
+  - Wood
+  - Ice
+  - Sand
+  - Hitbox
   layers:
   - Default
   - TransparentFX

@@ -1277,6 +1277,7 @@ GameObject:
   - 136: {fileID: 13662158}
   - 114: {fileID: 11494098}
   - 114: {fileID: 11448190}
+  - 82: {fileID: 8236852}
   m_Layer: 8
   m_Name: MarcoThePainter
   m_TagString: Player
@@ -3360,6 +3361,75 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!82 &8236852
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 167824}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
 --- !u!95 &9519350
 Animator:
   serializedVersion: 3
@@ -3402,14 +3472,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 9519350}
   foot: {fileID: 445448}
+  soundPlayer: {fileID: 8236852}
+  emitter: {fileID: 11448190}
   jumpForce: 20
   moveForce: 50
   maxSpeed: 50
   maxKnockbackSpeed: 25
   airControl: .699999988
+  step1:
+  - {fileID: 8300000, guid: bb6778abc902ab44a855ba76b2777c49, type: 3}
+  - {fileID: 8300000, guid: 1aac90fcbc09bf74383af2801e982d87, type: 3}
+  - {fileID: 8300000, guid: 048ad7540d2a53942a00197f094e634a, type: 3}
+  step2:
+  - {fileID: 8300000, guid: 8683a04e61e946d49b5b5acb01fb9d2b, type: 3}
+  - {fileID: 8300000, guid: b5a895d55d84e8d46ad676a1306c5d1d, type: 3}
+  - {fileID: 8300000, guid: 1971073156d2320489fc6e0d13e1948b, type: 3}
+  landing:
+  - {fileID: 8300000, guid: 571b1389ed0974a42be0955c7190f312, type: 3}
+  - {fileID: 8300000, guid: 7b0485f1dec8f3d49bb02791d0a0a1c1, type: 3}
+  - {fileID: 8300000, guid: 1652e0b9ee9925347a7087a6d47c70d4, type: 3}
   respawnTimer: 3
   ragdoll: {fileID: 11408342, guid: d6f0a98f39947e1409ffb4a70fe0abb2, type: 2}
   tempRag: {fileID: 0}
+  hitboxPrefab: {fileID: 0}
 --- !u!136 &13662158
 CapsuleCollider:
   m_ObjectHideFlags: 1
