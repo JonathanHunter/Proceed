@@ -1280,7 +1280,7 @@ GameObject:
   - 82: {fileID: 8236852}
   m_Layer: 8
   m_Name: MarcoThePainter
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3475,10 +3475,10 @@ MonoBehaviour:
   foot: {fileID: 445448}
   soundPlayer: {fileID: 8236852}
   emitter: {fileID: 11448190}
-  jumpForce: 20
-  moveForce: 50
-  maxSpeed: 50
-  maxKnockbackSpeed: 25
+  jumpForce: 13.5
+  moveForce: 20
+  maxSpeed: 4
+  maxKnockbackSpeed: 4
   airControl: .699999988
   step1:
   - {fileID: 8300000, guid: bb6778abc902ab44a855ba76b2777c49, type: 3}
@@ -4922,7 +4922,16 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: ragdoll
+      value: 
+      objectReference: {fileID: 11408342, guid: d6f0a98f39947e1409ffb4a70fe0abb2,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 167824}

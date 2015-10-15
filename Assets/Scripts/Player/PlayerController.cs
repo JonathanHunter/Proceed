@@ -146,7 +146,7 @@ namespace Assets.Scripts.Player
 
             }
             prevState = currState;
-        }
+		}
 
         void OnCollisionEnter(Collision col)
         {
@@ -327,7 +327,7 @@ namespace Assets.Scripts.Player
         {
 
         }
-
+        
         public void die()
         {
             health = 0;

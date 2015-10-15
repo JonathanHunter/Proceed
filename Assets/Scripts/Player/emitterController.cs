@@ -16,7 +16,6 @@ public class emitterController : MonoBehaviour {
 	}
 
 	public void emitStep(){
-        Debug.Log("A");
 		stepEmitter.Emit (1);
 	}
 }
