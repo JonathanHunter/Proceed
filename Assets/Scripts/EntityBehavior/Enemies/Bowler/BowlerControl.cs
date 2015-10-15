@@ -41,10 +41,11 @@ public class BowlerControl : MonoBehaviour {
 
     void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag.Equals("Player"))
+        // disabled for now - bowlers are tagged as enemies so death can be handled by PlayerController
+       /*  if (other.gameObject.tag.Equals("Player"))
         {
             Assets.Scripts.Player.PlayerController pc = other.rigidbody.GetComponentInParent<Assets.Scripts.Player.PlayerController>();
             pc.die();
-        }
+        } */
     }
 }
