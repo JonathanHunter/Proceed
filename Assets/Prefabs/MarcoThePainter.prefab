@@ -3376,6 +3376,7 @@ AudioSource:
   m_Pitch: 1
   Loop: 0
   Mute: 0
+  Spatialize: 0
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
@@ -3494,7 +3495,7 @@ MonoBehaviour:
   respawnTimer: 3
   ragdoll: {fileID: 11408342, guid: d6f0a98f39947e1409ffb4a70fe0abb2, type: 2}
   tempRag: {fileID: 0}
-  hitboxPrefab: {fileID: 0}
+  hitboxPrefab: {fileID: 11436542, guid: 9fbdede449c80f54c918c0c0a83aa74f, type: 2}
 --- !u!136 &13662158
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -4932,6 +4933,11 @@ Prefab:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: hitboxPrefab
+      value: 
+      objectReference: {fileID: 11436542, guid: 9fbdede449c80f54c918c0c0a83aa74f,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 167824}
