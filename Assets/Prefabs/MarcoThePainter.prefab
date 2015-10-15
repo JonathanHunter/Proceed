@@ -3475,10 +3475,10 @@ MonoBehaviour:
   foot: {fileID: 445448}
   soundPlayer: {fileID: 8236852}
   emitter: {fileID: 11448190}
-  jumpForce: 13.5
-  moveForce: 20
-  maxSpeed: 4
-  maxKnockbackSpeed: 4
+  jumpForce: 20
+  moveForce: 50
+  maxSpeed: 50
+  maxKnockbackSpeed: 25
   airControl: .699999988
   step1:
   - {fileID: 8300000, guid: bb6778abc902ab44a855ba76b2777c49, type: 3}
