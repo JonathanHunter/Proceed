@@ -98,6 +98,8 @@ namespace Assets.Scripts.Player
             {
                 anim.speed = 0.6f;
             }
+            else
+                anim.speed = 1;
             #endregion
             anim.SetFloat("speed", magnitude);
             if (health <= 0 || this.transform.position.y < -20)
@@ -156,8 +158,6 @@ namespace Assets.Scripts.Player
                 jump = false;
                 hit = false;
                 anim.SetInteger("state", (int)currState);
-
-
             }
             prevState = currState;
         }
@@ -195,6 +195,14 @@ namespace Assets.Scripts.Player
             if (col.gameObject.CompareTag("Sand"))
             {
                 sluggish = true;
+            }
+        }
+
+        void OnTriggerExit(Collider col)
+        {
+            if (col.gameObject.CompareTag("Sand"))
+            {
+                sluggish = false;
             }
         }
 

@@ -20,6 +20,9 @@ namespace Assets.Scripts.EntityBehavior.Enemies.Cannon
         public Transform firingPoint;
         public float firingPower = 2f;
 
+        public AudioClip bang;
+        public AudioSource soundPlayer;
+
 
 
         // Use this for initialization
@@ -52,7 +55,7 @@ namespace Assets.Scripts.EntityBehavior.Enemies.Cannon
                     tempBall.GetComponent<Rigidbody>().AddForce(axis.transform.forward * firingPower);
                     tempBall.timerIsActive = true;
                     tempBall.timer = ammoLifespan;
-
+                    soundPlayer.PlayOneShot(bang);
                 }
             }
 

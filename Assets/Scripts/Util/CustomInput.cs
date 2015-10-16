@@ -1,5 +1,6 @@
 ﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
 using UnityEngine;
+using System.Xml;
 
 namespace Assets.Scripts.Util
 {
@@ -7,6 +8,9 @@ namespace Assets.Scripts.Util
     {
         /// <summary> This is used to define user inputs, changed to add or remove buttons. </summary>
         public enum UserInput { Up, Down, Left, Right, Attack, Jump, Pause, Accept, Cancel, TurnCameraLeft, TurnCameraRight }
+
+        /// <summary> The file to save the bindings to. </summary>
+        private const string filename = "config.xml";
 
         /// <summary> This is used to define whether to return a positive or negative value for a specfic raw input. </summary>
         public static void RawSign()
@@ -301,7 +305,13 @@ namespace Assets.Scripts.Util
 
             RawSign();
 
-            Default();
+            if (FileExists())
+                Load();
+            else
+            {
+                Default();
+                Store();
+            }
         }
 
         /// <summary> Resets all the bindings to default. </summary>
@@ -309,6 +319,65 @@ namespace Assets.Scripts.Util
         {
             DefaultKey();
             DefaultPad();
+        }
+
+        public static bool FileExists()
+        {
+            return System.IO.File.Exists(filename);
+        }
+
+        public static void Load()
+        {
+            using (XmlReader reader = XmlReader.Create(filename))
+            {
+                for (int p = 0; p < 7; p++)
+                {
+                    reader.ReadToFollowing("Player" + p);
+                    for (int i = 0; i < System.Enum.GetNames(typeof(UserInput)).Length; i++)
+                    {
+                        reader.ReadToFollowing("Keyboard_" + System.Enum.GetNames(typeof(UserInput))[i]);
+                        keyBoard[i, p] = (KeyCode)System.Enum.Parse(typeof(KeyCode), reader.ReadElementContentAsString());
+                    }
+                    for (int i = 0; i < System.Enum.GetNames(typeof(UserInput)).Length; i++)
+                    {
+                        reader.ReadToFollowing("Gamepad_" + System.Enum.GetNames(typeof(UserInput))[i]);
+                        gamePad[i, p] = reader.ReadElementContentAsString();
+                    }
+                }
+                reader.Close();
+            }
+        }
+
+        public static void Store()
+        {
+            XmlDocument bindings = new XmlDocument();
+            XmlNode node;
+            XmlElement element, child;
+            XmlElement root = bindings.CreateElement("Controls");
+            bindings.InsertAfter(root, bindings.DocumentElement);
+            for (int p = 0; p < 7; p++)
+            {
+                element = bindings.CreateElement("Player" + p);
+                for (int i = 0; i < System.Enum.GetNames(typeof(UserInput)).Length; i++)
+                {
+                    child = bindings.CreateElement("Keyboard_" + System.Enum.GetNames(typeof(UserInput))[i]);
+                    node = bindings.CreateTextNode("Keyboard_" + System.Enum.GetNames(typeof(UserInput))[i]);
+                    node.Value = keyBoard[i, p].ToString();
+                    child.AppendChild(node);
+                    element.AppendChild(child);
+                }
+                for (int i = 0; i < System.Enum.GetNames(typeof(UserInput)).Length; i++)
+                {
+                    child = bindings.CreateElement("Gamepad_" + System.Enum.GetNames(typeof(UserInput))[i]);
+                    node = bindings.CreateTextNode("Gamepad_" + System.Enum.GetNames(typeof(UserInput))[i]);
+                    node.Value = gamePad[i, p];
+                    element.AppendChild(node);
+                    child.AppendChild(node);
+                    element.AppendChild(child);
+                }
+                root.AppendChild(element);
+            }
+            bindings.Save(filename);
         }
 
         void Update()
@@ -324,7 +393,9 @@ namespace Assets.Scripts.Util
                     for (int p = 0; p < 7; p++)
                     {
                         if (keyBoard[i, p] != KeyCode.None)
+                        {
                             updateKey(i, p);
+                        }
                     }
                 }
             }
@@ -406,12 +477,12 @@ namespace Assets.Scripts.Util
         private void updateKey(int input, int playerNumber)
         {
             bool key = false, keyUp = false;
-            if (Input.GetKeyDown(keyBoard[input, playerNumber]))
+            if (Input.GetKey(keyBoard[input, playerNumber]))
                 key = true;
             else if (Input.GetKeyUp(keyBoard[input, playerNumber]))
                 keyUp = true;
 
-            UpdateBools(key, keyUp, input, 1f);
+            UpdateBools(key, keyUp, input, 1f, playerNumber);
         }
 
         /// <summary> Updates all the values for a specific input based on a controller. </summary>
@@ -445,8 +516,8 @@ namespace Assets.Scripts.Util
         {
             bool key = false, keyUp = false;
 
-            if (gamePad[input, playerNumber] == LEFT_STICK_LEFT || gamePad[(int)input, playerNumber] == LEFT_STICK_DOWN || gamePad[(int)input, playerNumber] == RIGHT_STICK_LEFT ||
-                gamePad[(int)input, playerNumber] == RIGHT_STICK_DOWN || gamePad[input, playerNumber] == DPAD_LEFT || gamePad[input, playerNumber] == DPAD_LEFT)
+            if (gamePad[input, playerNumber] == LEFT_STICK_LEFT || gamePad[(int)input, playerNumber] == LEFT_STICK_UP || gamePad[(int)input, playerNumber] == RIGHT_STICK_LEFT ||
+                gamePad[(int)input, playerNumber] == RIGHT_STICK_UP || gamePad[input, playerNumber] == DPAD_LEFT || gamePad[input, playerNumber] == DPAD_DOWN)
             {
                 if (data < 0)
                     key = true;
@@ -461,7 +532,7 @@ namespace Assets.Scripts.Util
                     keyUp = true;
             }
 
-            UpdateBools(key, keyUp, input, data);
+            UpdateBools(key, keyUp, input, data, playerNumber);
         }
 
         /// <summary> Update the buttons corresponding to buttons. </summary>
@@ -470,51 +541,51 @@ namespace Assets.Scripts.Util
         {
             bool key = false, keyUp = false;
 
-            if (GetButton(gamePad[input, playerNumber]))
+            if (GetButton(gamePad[input, playerNumber], playerNumber))
                 key = true;
-            else if (GetButtonUp(gamePad[input, playerNumber]))
+            else if (GetButtonUp(gamePad[input, playerNumber], playerNumber))
                 keyUp = true;
 
-            UpdateBools(key, keyUp, input, 1f);
+            UpdateBools(key, keyUp, input, 1f, playerNumber);
         }
 
         /// <summary> Input.GetKey for the specific controller button. </summary>
         /// <param name="button"> The specific controller button. </param>
         /// <returns> True if that button has been pressed. </returns>
-        private bool GetButton(string button)
+        private bool GetButton(string button, int playerNumber)
         {
             switch (button)
             {
-                case A: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.A);
-                case B: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.B);
-                case X: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.X);
-                case Y: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Y);
-                case RB: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightBumper);
-                case LB: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftBumper);
-                case START: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Start);
-                case BACK: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Back);
-                case LEFT_STICK: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftStickClick);
-                default: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightStickClick);
+                case A: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.A, playerNumber);
+                case B: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.B, playerNumber);
+                case X: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.X, playerNumber);
+                case Y: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Y, playerNumber);
+                case RB: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightBumper, playerNumber);
+                case LB: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftBumper, playerNumber);
+                case START: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Start, playerNumber);
+                case BACK: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Back, playerNumber);
+                case LEFT_STICK: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftStickClick, playerNumber);
+                default: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightStickClick, playerNumber);
             }
         }
 
         /// <summary> Input.GetKeyUp for the specific controller button. </summary>
         /// <param name="button"> The specific controller button. </param>
         /// <returns> True if that button has been released. </returns>
-        private bool GetButtonUp(string button)
+        private bool GetButtonUp(string button, int playerNumber)
         {
             switch (button)
             {
-                case A: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.A);
-                case B: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.B);
-                case X: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.X);
-                case Y: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Y);
-                case RB: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.RightBumper);
-                case LB: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.LeftBumper);
-                case START: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Start);
-                case BACK: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Back);
-                case LEFT_STICK: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.LeftStickClick);
-                default: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.RightStickClick);
+                case A: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.A, playerNumber);
+                case B: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.B, playerNumber);
+                case X: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.X, playerNumber);
+                case Y: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Y, playerNumber);
+                case RB: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.RightBumper, playerNumber);
+                case LB: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.LeftBumper, playerNumber);
+                case START: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Start, playerNumber);
+                case BACK: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Back, playerNumber);
+                case LEFT_STICK: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.LeftStickClick, playerNumber);
+                default: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.RightStickClick, playerNumber);
             }
         }
 
@@ -523,7 +594,7 @@ namespace Assets.Scripts.Util
         /// <param name="keyUp"> Whether this input has just been released. </param>
         /// <param name="input"> The input to update. </param>
         /// <param name="data"> The value for the raw data. </param>
-        private void UpdateBools(bool key, bool keyUp, int input, float data, int playerNumber = 0)
+        private void UpdateBools(bool key, bool keyUp, int input, float data, int playerNumber)
         {
             if (boolsFreshPressAccessed[input, playerNumber])
             {
