@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
+using UnityEngine;
 using Assets.Scripts.Util;
 
 namespace Assets.Scripts.ProceduralGen
@@ -39,7 +40,7 @@ namespace Assets.Scripts.ProceduralGen
             if (levelInProgress)
                 EndLevel();
             DetermineDifficulty();
-            int[] level = GenerateLevel(gameState.difficulty, 0, gameState.difficulty > blockSet.blocks.Length ? blockSet.blocks.Length : gameState.difficulty, Random.Range(0,50000));
+            int[] level = GenerateLevel(gameState.difficulty, 0, gameState.difficulty > blockSet.blocks.Length ? blockSet.blocks.Length : gameState.difficulty, Random.Range(0, 50000));
             InstantiateGameObjects(level);
             levelInProgress = true;
             player.transform.position = new Vector3(0, 0, 0);
@@ -54,7 +55,7 @@ namespace Assets.Scripts.ProceduralGen
             //TODO: Clean up any spawned objects, bullets, enemies, etc.
             levelInProgress = false;
         }
-        
+
         /// <summary> Sets the difficulty for the next level based on  player performance. </summary>
         private void DetermineDifficulty()
         {

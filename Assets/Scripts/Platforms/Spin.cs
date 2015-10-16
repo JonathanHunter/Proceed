@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
+using UnityEngine;
 
 namespace Assets.Scripts.Platforms
 {
@@ -7,12 +8,12 @@ namespace Assets.Scripts.Platforms
         public float spinSpeed = 1f;
         public bool spinDirection = true;
         private int polarity = 1;
-        
+
         void Start()
         {
 
         }
-        
+
         void Update()
         {
             if (spinDirection)

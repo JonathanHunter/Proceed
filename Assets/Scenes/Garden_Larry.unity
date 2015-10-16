@@ -20,12 +20,12 @@ RenderSettings:
   m_FogDensity: .00999999978
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: .211999997, g: .226999998, b: .259000003, a: 1}
+  m_AmbientSkyColor: {r: .352941185, g: .352941185, b: .352941185, a: 1}
   m_AmbientEquatorColor: {r: .114, g: .125, b: .133000001, a: 1}
   m_AmbientGroundColor: {r: .0469999984, g: .0430000015, b: .0350000001, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_AmbientMode: 3
+  m_SkyboxMaterial: {fileID: 2100000, guid: 30257966b5c06d9469bde9fc2b4b92ab, type: 2}
   m_HaloStrength: .5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -37,14 +37,11 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
---- !u!127 &3
-LevelGameManager:
-  m_ObjectHideFlags: 0
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 5
-  m_GIWorkflowMode: 0
+  m_GIWorkflowMode: 1
   m_LightmapsMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -68,7 +65,9 @@ LightmapSettings:
     m_TextureCompression: 1
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
-  m_LightmapSnapshot: {fileID: 0}
+    m_ReflectionCompression: 2
+  m_LightmapSnapshot: {fileID: 112000001, guid: ee6d3a7f3361f494ca187d4b490cb6b4,
+    type: 2}
   m_RuntimeCPUUsage: 25
 --- !u!196 &5
 NavMeshSettings:
@@ -449,6 +448,7 @@ GameObject:
   - 124: {fileID: 172562590}
   - 81: {fileID: 172562589}
   - 114: {fileID: 172562594}
+  - 45: {fileID: 172562595}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -505,6 +505,7 @@ Camera:
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
+  m_TargetEye: 3
   m_HDR: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -535,6 +536,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 624481874}
   speed: 2
+--- !u!45 &172562595
+Skybox:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 172562588}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 2100000, guid: 30257966b5c06d9469bde9fc2b4b92ab, type: 2}
 --- !u!1001 &201054854
 Prefab:
   m_ObjectHideFlags: 0
@@ -1698,6 +1707,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1438614454}
   - 114: {fileID: 1438614453}
+  - 114: {fileID: 1438614455}
   m_Layer: 0
   m_Name: GameState
   m_TagString: Untagged
@@ -1730,6 +1740,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8
+--- !u!114 &1438614455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1438614452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b398c538d43258d4db28a33b693cf085, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1440636803 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 108972, guid: 062848a6f29d2114eb355e03dd401217, type: 2}
