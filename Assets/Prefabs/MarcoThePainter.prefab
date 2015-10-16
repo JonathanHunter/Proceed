@@ -3478,7 +3478,7 @@ MonoBehaviour:
   jumpForce: 20
   moveForce: 50
   maxSpeed: 50
-  maxKnockbackSpeed: 25
+  maxKnockbackSpeed: 3
   airControl: .699999988
   step1:
   - {fileID: 8300000, guid: bb6778abc902ab44a855ba76b2777c49, type: 3}
