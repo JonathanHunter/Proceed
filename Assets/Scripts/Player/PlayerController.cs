@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
+using UnityEngine;
 using System;
 using Assets.Scripts.Util;
 
@@ -66,8 +67,8 @@ namespace Assets.Scripts.Player
         private bool ragdollIsActive = false;
         private Vector3 originalScale;
 
-		//Attack Variables
-		public hitbox hitboxPrefab;
+        //Attack Variables
+        public EntityBehavior.hitbox hitboxPrefab;
 
         // Status Effects
         private bool sluggish;
@@ -182,7 +183,8 @@ namespace Assets.Scripts.Player
                 ProceduralGen.LevelGenerator level = FindObjectOfType<ProceduralGen.LevelGenerator>();
                 level.EndLevel();
                 level.StartLevel();
-            }else if(col.gameObject.tag == "Sand")
+            }
+            else if (col.gameObject.tag == "Sand")
             {
                 sluggish = true;
             }
@@ -334,12 +336,13 @@ namespace Assets.Scripts.Player
             }
         }
 
-		public void generateHitbox(float knockback){
-			hitbox temp = GameObject.Instantiate<hitbox>(hitboxPrefab);
-			temp.transform.position = transform.position;
-			temp.knockback = knockback;
+        public void generateHitbox(float knockback)
+        {
+            EntityBehavior.hitbox temp = GameObject.Instantiate<EntityBehavior.hitbox>(hitboxPrefab);
+            temp.transform.position = transform.position;
+            temp.knockback = knockback;
 
-		}
+        }
 
         private static void Moving()
         {
@@ -377,12 +380,13 @@ namespace Assets.Scripts.Player
         {
             health = 0;
             gameObject.transform.localScale = new Vector3(.001f, .001f, .001f);
-            if(!ragdollIsActive){
-				ragdollIsActive = true;
-	            tempRag = GameObject.Instantiate<ragdollBody>(ragdoll);
-	            tempRag.transform.position = this.transform.position;
-	            tempRag.destructionTimer = respawnTimer; //We set this so the ragdoll only exists as long as we're dead
-			}
+            if (!ragdollIsActive)
+            {
+                ragdollIsActive = true;
+                tempRag = GameObject.Instantiate<ragdollBody>(ragdoll);
+                tempRag.transform.position = this.transform.position;
+                tempRag.destructionTimer = respawnTimer; //We set this so the ragdoll only exists as long as we're dead
+            }
         }
     }
 }

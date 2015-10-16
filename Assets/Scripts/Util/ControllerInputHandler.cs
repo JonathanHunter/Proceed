@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
+//Modified from https://github.com/virtuahost/CS6457/blob/master/CS6457InputWrapper/Assets/ControlInputWrapper.cs
+using UnityEngine;
 
 namespace Assets.Scripts.Util
 {

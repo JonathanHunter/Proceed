@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
+using UnityEngine;
 
 namespace Assets.Scripts.ProceduralGen
 {
-    class Block : MonoBehaviour 
+    class Block : MonoBehaviour
     {
         /// <summary> The length of this block. </summary>
         public float length;

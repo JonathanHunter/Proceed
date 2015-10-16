@@ -13,3 +13,5 @@ EditorBuildSettings:
     path: Assets/Scenes/Garden_Larry.unity
   - enabled: 1
     path: Assets/Scenes/JCoatesGarden.unity
+  - enabled: 1
+    path: Assets/Scenes/CTanseyGarden.unity

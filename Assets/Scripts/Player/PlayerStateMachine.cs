@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Util;
+﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
+using Assets.Scripts.Util;
 
 namespace Assets.Scripts.Player
 {

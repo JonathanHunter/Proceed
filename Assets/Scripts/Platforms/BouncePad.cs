@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
+using UnityEngine;
+
 namespace Assets.Scripts.Platforms
 {
     public class BouncePad : MonoBehaviour
@@ -26,7 +28,7 @@ namespace Assets.Scripts.Platforms
             //    }
             //}
 
-            if(rgbdy != null)
+            if (rgbdy != null)
             {
                 rgbdy.AddForce(this.transform.up * bounceForce, ForceMode.Impulse);
                 soundPlayer.PlayOneShot(boing);
