@@ -5,22 +5,24 @@ namespace Assets.Scripts.Util
     class CustomInput : MonoBehaviour
     {
         /// <summary> This is used to define user inputs, changed to add or remove buttons. </summary>
-        public enum UserInput { Up, Down, Left, Right, Attack, Jump, Pause, Accept, Cancel }
+        public enum UserInput { Up, Down, Left, Right, Attack, Jump, Pause, Accept, Cancel, TurnCameraLeft, TurnCameraRight }
 
         /// <summary> This is used to define whether to return a positive or negative value for a specfic raw input. </summary>
         public static void RawSign()
         {
             if (rawSign == null)
                 throw new System.AccessViolationException(UnitializedMessage);
-            rawSign[(int)UserInput.Up] =        1;
-            rawSign[(int)UserInput.Down] =      -1;
-            rawSign[(int)UserInput.Left] =      -1;
-            rawSign[(int)UserInput.Right] =     1;
-            rawSign[(int)UserInput.Attack] =    1;
-            rawSign[(int)UserInput.Jump] =      1;
-            rawSign[(int)UserInput.Pause] =     1;
-            rawSign[(int)UserInput.Accept] =    1;
-            rawSign[(int)UserInput.Cancel] =    1;
+            rawSign[(int)UserInput.Up] = 1;
+            rawSign[(int)UserInput.Down] = -1;
+            rawSign[(int)UserInput.Left] = -1;
+            rawSign[(int)UserInput.Right] = 1;
+            rawSign[(int)UserInput.Attack] = 1;
+            rawSign[(int)UserInput.Jump] = 1;
+            rawSign[(int)UserInput.Pause] = 1;
+            rawSign[(int)UserInput.Accept] = 1;
+            rawSign[(int)UserInput.Cancel] = 1;
+            rawSign[(int)UserInput.TurnCameraLeft] = -1;
+            rawSign[(int)UserInput.TurnCameraRight] = 1;
         }
 
         /// <summary> 
@@ -32,15 +34,17 @@ namespace Assets.Scripts.Util
         {
             if (keyBoard == null)
                 throw new System.AccessViolationException(UnitializedMessage);
-            keyBoard[(int)UserInput.Up, 0] =       KeyCode.W;
-            keyBoard[(int)UserInput.Down, 0] =     KeyCode.S;
-            keyBoard[(int)UserInput.Left, 0] =     KeyCode.A;
-            keyBoard[(int)UserInput.Right, 0] =    KeyCode.D;
-            keyBoard[(int)UserInput.Attack, 0] =   KeyCode.K;
-            keyBoard[(int)UserInput.Jump, 0] =     KeyCode.J;
-            keyBoard[(int)UserInput.Pause, 0] =    KeyCode.Escape;
-            keyBoard[(int)UserInput.Accept, 0] =   KeyCode.K;
-            keyBoard[(int)UserInput.Cancel, 0] =   KeyCode.J;
+            keyBoard[(int)UserInput.Up, 0] = KeyCode.W;
+            keyBoard[(int)UserInput.Down, 0] = KeyCode.S;
+            keyBoard[(int)UserInput.Left, 0] = KeyCode.A;
+            keyBoard[(int)UserInput.Right, 0] = KeyCode.D;
+            keyBoard[(int)UserInput.Attack, 0] = KeyCode.K;
+            keyBoard[(int)UserInput.Jump, 0] = KeyCode.J;
+            keyBoard[(int)UserInput.Pause, 0] = KeyCode.Escape;
+            keyBoard[(int)UserInput.Accept, 0] = KeyCode.K;
+            keyBoard[(int)UserInput.Cancel, 0] = KeyCode.J;
+            keyBoard[(int)UserInput.TurnCameraLeft, 0] = KeyCode.Q;
+            keyBoard[(int)UserInput.TurnCameraRight, 0] = KeyCode.E;
         }
 
         /// <summary> 
@@ -52,15 +56,17 @@ namespace Assets.Scripts.Util
         {
             if (gamePad == null)
                 throw new System.AccessViolationException(UnitializedMessage);
-            gamePad[(int)UserInput.Up, 0] =        LEFT_STICK_UP;
-            gamePad[(int)UserInput.Down, 0] =      LEFT_STICK_DOWN;
-            gamePad[(int)UserInput.Left, 0] =      LEFT_STICK_LEFT;
-            gamePad[(int)UserInput.Right, 0] =     LEFT_STICK_RIGHT;
-            gamePad[(int)UserInput.Attack, 0] =    A;
-            gamePad[(int)UserInput.Jump, 0] =      B;
-            gamePad[(int)UserInput.Pause, 0] =     START;
-            gamePad[(int)UserInput.Accept, 0] =    A;
-            gamePad[(int)UserInput.Cancel, 0] =    B;
+            gamePad[(int)UserInput.Up, 0] = LEFT_STICK_UP;
+            gamePad[(int)UserInput.Down, 0] = LEFT_STICK_DOWN;
+            gamePad[(int)UserInput.Left, 0] = LEFT_STICK_LEFT;
+            gamePad[(int)UserInput.Right, 0] = LEFT_STICK_RIGHT;
+            gamePad[(int)UserInput.Attack, 0] = A;
+            gamePad[(int)UserInput.Jump, 0] = B;
+            gamePad[(int)UserInput.Pause, 0] = START;
+            gamePad[(int)UserInput.Accept, 0] = A;
+            gamePad[(int)UserInput.Cancel, 0] = B;
+            gamePad[(int)UserInput.TurnCameraLeft, 0] = RIGHT_STICK_LEFT;
+            gamePad[(int)UserInput.TurnCameraRight, 0] = RIGHT_STICK_RIGHT;
         }
 
         // Modification of the code below this should be unecessary.
@@ -316,8 +322,8 @@ namespace Assets.Scripts.Util
                 {
                     for (int p = 0; p < 7; p++)
                     {
-                        if(keyBoard[i,p] != KeyCode.None)
-                            updateKey(i,p);
+                        if (keyBoard[i, p] != KeyCode.None)
+                            updateKey(i, p);
                     }
                 }
             }
@@ -327,8 +333,8 @@ namespace Assets.Scripts.Util
                 {
                     for (int p = 0; p < 7; p++)
                     {
-                        if(gamePad[i,p] != null)
-                            updatePad(i,p);
+                        if (gamePad[i, p] != null)
+                            updatePad(i, p);
                     }
                 }
             }
@@ -413,21 +419,21 @@ namespace Assets.Scripts.Util
         {
             switch (gamePad[input, playerNumber])
             {
-                case LEFT_STICK_RIGHT:  UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickX, playerNumber), playerNumber); break;
-                case LEFT_STICK_LEFT:   UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickX, playerNumber), playerNumber); break;
-                case LEFT_STICK_UP:     UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickY, playerNumber), playerNumber); break;
-                case LEFT_STICK_DOWN:   UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickY, playerNumber), playerNumber); break;
+                case LEFT_STICK_RIGHT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickX, playerNumber), playerNumber); break;
+                case LEFT_STICK_LEFT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickX, playerNumber), playerNumber); break;
+                case LEFT_STICK_UP: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickY, playerNumber), playerNumber); break;
+                case LEFT_STICK_DOWN: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickY, playerNumber), playerNumber); break;
                 case RIGHT_STICK_RIGHT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickX, playerNumber), playerNumber); break;
-                case RIGHT_STICK_LEFT:  UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickX, playerNumber), playerNumber); break;
-                case RIGHT_STICK_UP:    UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickY, playerNumber), playerNumber); break;
-                case RIGHT_STICK_DOWN:  UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickY, playerNumber), playerNumber); break;
-                case DPAD_RIGHT:        UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadX, playerNumber), playerNumber); break;
-                case DPAD_LEFT:         UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadX, playerNumber), playerNumber); break;
-                case DPAD_UP:           UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadY, playerNumber), playerNumber); break;
-                case DPAD_DOWN:         UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadY, playerNumber), playerNumber); break;
-                case LEFT_TRIGGER:      UpdateAxis(input, ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.LeftTrigger, playerNumber), playerNumber); break;
-                case RIGHT_TRIGGER:     UpdateAxis(input, ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.RightTrigger, playerNumber), playerNumber); break;
-                default:                UpdateButton(input, playerNumber); break;
+                case RIGHT_STICK_LEFT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickX, playerNumber), playerNumber); break;
+                case RIGHT_STICK_UP: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickY, playerNumber), playerNumber); break;
+                case RIGHT_STICK_DOWN: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickY, playerNumber), playerNumber); break;
+                case DPAD_RIGHT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadX, playerNumber), playerNumber); break;
+                case DPAD_LEFT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadX, playerNumber), playerNumber); break;
+                case DPAD_UP: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadY, playerNumber), playerNumber); break;
+                case DPAD_DOWN: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadY, playerNumber), playerNumber); break;
+                case LEFT_TRIGGER: UpdateAxis(input, ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.LeftTrigger, playerNumber), playerNumber); break;
+                case RIGHT_TRIGGER: UpdateAxis(input, ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.RightTrigger, playerNumber), playerNumber); break;
+                default: UpdateButton(input, playerNumber); break;
             }
         }
 
@@ -438,7 +444,7 @@ namespace Assets.Scripts.Util
         {
             bool key = false, keyUp = false;
 
-            if(gamePad[input, playerNumber] == LEFT_STICK_LEFT || gamePad[(int)input, playerNumber] == LEFT_STICK_DOWN || gamePad[(int)input, playerNumber] == RIGHT_STICK_LEFT || 
+            if (gamePad[input, playerNumber] == LEFT_STICK_LEFT || gamePad[(int)input, playerNumber] == LEFT_STICK_DOWN || gamePad[(int)input, playerNumber] == RIGHT_STICK_LEFT ||
                 gamePad[(int)input, playerNumber] == RIGHT_STICK_DOWN || gamePad[input, playerNumber] == DPAD_LEFT || gamePad[input, playerNumber] == DPAD_LEFT)
             {
                 if (data < 0)

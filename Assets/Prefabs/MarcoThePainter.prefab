@@ -1273,11 +1273,11 @@ GameObject:
   m_Component:
   - 4: {fileID: 447282}
   - 95: {fileID: 9519350}
-  - 54: {fileID: 5421966}
   - 136: {fileID: 13662158}
   - 114: {fileID: 11494098}
   - 114: {fileID: 11448190}
   - 82: {fileID: 8236852}
+  - 54: {fileID: 5485552}
   m_Layer: 8
   m_Name: MarcoThePainter
   m_TagString: Player
@@ -2171,7 +2171,7 @@ Transform:
   m_LocalScale: {x: 2.53999996, y: 2.53999996, z: 2.53999996}
   m_Children: []
   m_Father: {fileID: 447282}
-  m_RootOrder: 5
+  m_RootOrder: 4
 --- !u!4 &424750
 Transform:
   m_ObjectHideFlags: 1
@@ -2235,7 +2235,7 @@ Transform:
   m_LocalScale: {x: .100000001, y: .100000001, z: .100000001}
   m_Children: []
   m_Father: {fileID: 447282}
-  m_RootOrder: 9
+  m_RootOrder: 7
 --- !u!4 &429384
 Transform:
   m_ObjectHideFlags: 1
@@ -2676,12 +2676,12 @@ Transform:
   - {fileID: 445448}
   - {fileID: 438270}
   - {fileID: 422604}
-  - {fileID: 477342}
   - {fileID: 424688}
+  - {fileID: 477342}
   - {fileID: 444690}
+  - {fileID: 428040}
   - {fileID: 475436}
   - {fileID: 475026}
-  - {fileID: 428040}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &447322
@@ -3029,7 +3029,7 @@ Transform:
   m_Children:
   - {fileID: 462828}
   m_Father: {fileID: 447282}
-  m_RootOrder: 8
+  m_RootOrder: 9
 --- !u!4 &475126
 Transform:
   m_ObjectHideFlags: 1
@@ -3054,7 +3054,7 @@ Transform:
   m_LocalScale: {x: .202945232, y: .202945232, z: .202945232}
   m_Children: []
   m_Father: {fileID: 447282}
-  m_RootOrder: 7
+  m_RootOrder: 8
 --- !u!4 &476354
 Transform:
   m_ObjectHideFlags: 1
@@ -3078,7 +3078,7 @@ Transform:
   m_LocalScale: {x: 2.53999996, y: 2.53999996, z: 2.53999996}
   m_Children: []
   m_Father: {fileID: 447282}
-  m_RootOrder: 4
+  m_RootOrder: 5
 --- !u!4 &478968
 Transform:
   m_ObjectHideFlags: 1
@@ -3346,7 +3346,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 445448}
   m_RootOrder: 9
---- !u!54 &5421966
+--- !u!54 &5485552
 Rigidbody:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}

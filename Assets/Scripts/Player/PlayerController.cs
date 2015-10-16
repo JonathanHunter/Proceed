@@ -153,7 +153,7 @@ namespace Assets.Scripts.Player
 
         void OnCollisionEnter(Collision col)
         {
-            if (col.gameObject.tag == "enemy" && !invun)
+            if (col.gameObject.tag == "enemy")
             {
                 if (!invun)
                     hit = true;
@@ -199,9 +199,8 @@ namespace Assets.Scripts.Player
             {
                 Debug.DrawRay(new Vector3(foot.position.x, foot.position.y + 0.2f, foot.position.z), new Vector3(0, .2f, 0), Color.red);
                 this.transform.parent = temp.collider.transform.parent;
-                BlockMaterial mat = (BlockMaterial)Enum.Parse(typeof(BlockMaterial), temp.collider.gameObject.tag);
-                if (Enum.IsDefined(typeof(BlockMaterial), mat) | mat.ToString().Contains(","))
-                    curMat = mat;
+                if (temp.collider.gameObject.tag == "Wood" || temp.collider.gameObject.tag == "Ice" || temp.collider.gameObject.tag == "Sand")
+                    curMat = (BlockMaterial)Enum.Parse(typeof(BlockMaterial), temp.collider.gameObject.tag);
                 else
                     curMat = BlockMaterial.Wood;
                 if (inAir)
@@ -340,7 +339,6 @@ namespace Assets.Scripts.Player
 
         public void die()
         {
-
             health = 0;
             gameObject.transform.localScale = new Vector3(.001f, .001f, .001f);
             if(!ragdollIsActive){
