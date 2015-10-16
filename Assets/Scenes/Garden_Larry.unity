@@ -449,6 +449,7 @@ GameObject:
   - 124: {fileID: 172562590}
   - 81: {fileID: 172562589}
   - 114: {fileID: 172562594}
+  - 45: {fileID: 172562595}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -535,6 +536,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 624481874}
   speed: 2
+--- !u!45 &172562595
+Skybox:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 172562588}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 2100000, guid: 30257966b5c06d9469bde9fc2b4b92ab, type: 2}
 --- !u!1001 &201054854
 Prefab:
   m_ObjectHideFlags: 0
