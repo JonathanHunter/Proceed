@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
+using UnityEngine;
 using System;
 using Assets.Scripts.Util;
 
@@ -66,8 +67,8 @@ namespace Assets.Scripts.Player
         private bool ragdollIsActive = false;
         private Vector3 originalScale;
 
-		//Attack Variables
-		public hitbox hitboxPrefab;
+        //Attack Variables
+        public EntityBehavior.hitbox hitboxPrefab;
 
         // Status Effects
         private bool sluggish;
@@ -97,6 +98,8 @@ namespace Assets.Scripts.Player
             {
                 anim.speed = 0.6f;
             }
+            else
+                anim.speed = 1;
             #endregion
             anim.SetFloat("speed", magnitude);
             if (health <= 0 || this.transform.position.y < -20)
@@ -155,15 +158,13 @@ namespace Assets.Scripts.Player
                 jump = false;
                 hit = false;
                 anim.SetInteger("state", (int)currState);
-
-
             }
             prevState = currState;
         }
 
         void OnCollisionEnter(Collision col)
         {
-            if (col.gameObject.tag == "enemy" && !invun)
+            if (col.gameObject.tag == "enemy")
             {
                 if (!invun)
                     hit = true;
@@ -182,7 +183,8 @@ namespace Assets.Scripts.Player
                 ProceduralGen.LevelGenerator level = FindObjectOfType<ProceduralGen.LevelGenerator>();
                 level.EndLevel();
                 level.StartLevel();
-            }else if(col.gameObject.tag == "Sand")
+            }
+            else if (col.gameObject.tag == "Sand")
             {
                 sluggish = true;
             }
@@ -193,6 +195,14 @@ namespace Assets.Scripts.Player
             if (col.gameObject.CompareTag("Sand"))
             {
                 sluggish = true;
+            }
+        }
+
+        void OnTriggerExit(Collider col)
+        {
+            if (col.gameObject.CompareTag("Sand"))
+            {
+                sluggish = false;
             }
         }
 
@@ -224,9 +234,8 @@ namespace Assets.Scripts.Player
             {
                 Debug.DrawRay(new Vector3(foot.position.x, foot.position.y + 0.2f, foot.position.z), new Vector3(0, .2f, 0), Color.red);
                 this.transform.parent = temp.collider.transform.parent;
-                BlockMaterial mat = (BlockMaterial)Enum.Parse(typeof(BlockMaterial), temp.collider.gameObject.tag);
-                if (Enum.IsDefined(typeof(BlockMaterial), mat) | mat.ToString().Contains(","))
-                    curMat = mat;
+                if (temp.collider.gameObject.tag == "Wood" || temp.collider.gameObject.tag == "Ice" || temp.collider.gameObject.tag == "Sand")
+                    curMat = (BlockMaterial)Enum.Parse(typeof(BlockMaterial), temp.collider.gameObject.tag);
                 else
                     curMat = BlockMaterial.Wood;
                 if (inAir)
@@ -335,12 +344,13 @@ namespace Assets.Scripts.Player
             }
         }
 
-		public void generateHitbox(float knockback){
-			hitbox temp = GameObject.Instantiate<hitbox>(hitboxPrefab);
-			temp.transform.position = transform.position;
-			temp.knockback = knockback;
+        public void generateHitbox(float knockback)
+        {
+            EntityBehavior.hitbox temp = GameObject.Instantiate<EntityBehavior.hitbox>(hitboxPrefab);
+            temp.transform.position = transform.position;
+            temp.knockback = knockback;
 
-		}
+        }
 
         private static void Moving()
         {
@@ -376,15 +386,15 @@ namespace Assets.Scripts.Player
 
         public void die()
         {
-
             health = 0;
             gameObject.transform.localScale = new Vector3(.001f, .001f, .001f);
-            if(!ragdollIsActive){
-				ragdollIsActive = true;
-	            tempRag = GameObject.Instantiate<ragdollBody>(ragdoll);
-	            tempRag.transform.position = this.transform.position;
-	            tempRag.destructionTimer = respawnTimer; //We set this so the ragdoll only exists as long as we're dead
-			}
+            if (!ragdollIsActive)
+            {
+                ragdollIsActive = true;
+                tempRag = GameObject.Instantiate<ragdollBody>(ragdoll);
+                tempRag.transform.position = this.transform.position;
+                tempRag.destructionTimer = respawnTimer; //We set this so the ragdoll only exists as long as we're dead
+            }
         }
     }
 }

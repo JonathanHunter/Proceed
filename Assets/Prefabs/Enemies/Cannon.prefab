@@ -76,6 +76,7 @@ GameObject:
   - 4: {fileID: 472484}
   - 54: {fileID: 5476928}
   - 114: {fileID: 11403446}
+  - 82: {fileID: 8201358}
   m_Layer: 0
   m_Name: Cannon
   m_TagString: Untagged
@@ -384,6 +385,76 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.01793873, y: 1.74231029, z: .253218591}
   m_Center: {x: -.50896126, y: -.871154904, z: .126609311}
+--- !u!82 &8201358
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 162262}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: .153999999
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
 --- !u!114 &11403446
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -403,6 +474,8 @@ MonoBehaviour:
   ammoLifespan: 3
   firingPoint: {fileID: 408264}
   firingPower: 100000
+  bang: {fileID: 8300000, guid: a0bffd1a8be492d4a96a177a9c41a3f7, type: 3}
+  soundPlayer: {fileID: 8201358}
 --- !u!136 &13645024
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -422,7 +495,23 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: bang
+      value: 
+      objectReference: {fileID: 8300000, guid: a0bffd1a8be492d4a96a177a9c41a3f7, type: 3}
+    - target: {fileID: 0}
+      propertyPath: soundPlayer
+      value: 
+      objectReference: {fileID: 8201358}
+    - target: {fileID: 0}
+      propertyPath: m_Volume
+      value: .153999999
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 162262}

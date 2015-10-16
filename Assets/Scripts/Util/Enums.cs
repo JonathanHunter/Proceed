@@ -1,4 +1,6 @@
-﻿namespace Assets.Scripts.Util
+﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
+
+namespace Assets.Scripts.Util
 {
     public class Enums
     {
