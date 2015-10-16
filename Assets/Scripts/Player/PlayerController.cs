@@ -69,6 +69,9 @@ namespace Assets.Scripts.Player
 		//Attack Variables
 		public hitbox hitboxPrefab;
 
+        // Status Effects
+        private bool sluggish;
+
         void Awake()
         {
             magnitude = 0f;
@@ -88,6 +91,13 @@ namespace Assets.Scripts.Player
             {
                 die();
             }
+
+            #region StatusEffects
+            if (sluggish)
+            {
+                anim.speed = 0.6f;
+            }
+            #endregion
             anim.SetFloat("speed", magnitude);
             if (health <= 0 || this.transform.position.y < -20)
             {
@@ -164,10 +174,25 @@ namespace Assets.Scripts.Player
         {
             if (col.gameObject.tag == "Level end")
             {
+                if (sluggish)
+                {
+                    sluggish = false;
+                }
                 this.transform.parent = null;
                 ProceduralGen.LevelGenerator level = FindObjectOfType<ProceduralGen.LevelGenerator>();
                 level.EndLevel();
                 level.StartLevel();
+            }else if(col.gameObject.tag == "Sand")
+            {
+                sluggish = true;
+            }
+        }
+
+        void OnTriggerStay(Collider col)
+        {
+            if (col.gameObject.CompareTag("Sand"))
+            {
+                sluggish = true;
             }
         }
 
@@ -258,11 +283,22 @@ namespace Assets.Scripts.Player
 
                     if (currState == Enums.PlayerState.Moving)
                     {
-                        rgbdy.AddForce(-this.transform.right * moveForce * magnitude);
-                        if (rgbdy.velocity.x > maxSpeed)
-                            rgbdy.velocity = new Vector3(maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
-                        if (rgbdy.velocity.z > maxSpeed)
-                            rgbdy.velocity = new Vector3(rgbdy.velocity.x, rgbdy.velocity.y, maxSpeed);
+                        if (sluggish)
+                        {
+                            rgbdy.AddForce(-this.transform.right * 0.6f * moveForce * magnitude);
+                            if (rgbdy.velocity.x > 0.6f * maxSpeed)
+                                rgbdy.velocity = new Vector3(0.6f * maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
+                            if (rgbdy.velocity.z > 0.6f * maxSpeed)
+                                rgbdy.velocity = new Vector3(rgbdy.velocity.x, rgbdy.velocity.y, 0.6f * maxSpeed);
+                        }
+                        else
+                        {
+                            rgbdy.AddForce(-this.transform.right * moveForce * magnitude);
+                            if (rgbdy.velocity.x > maxSpeed)
+                                rgbdy.velocity = new Vector3(maxSpeed, rgbdy.velocity.y, rgbdy.velocity.z);
+                            if (rgbdy.velocity.z > maxSpeed)
+                                rgbdy.velocity = new Vector3(rgbdy.velocity.x, rgbdy.velocity.y, maxSpeed);
+                        }
                     }
                     if ((currState == Enums.PlayerState.InAir || currState == Enums.PlayerState.Jump) && move)
                     {
