@@ -11,12 +11,14 @@ namespace Assets.Scripts.ProceduralGen
         private static int[][] invalidFollowUp = new int[][] {
             new int[] { -1 },            // room 0
             new int[] { -1 },            // room 1
-            new int[] { 2 },            // room 2
+            new int[] { 2 },             // room 2
             new int[] { -1 },            // room 3
             new int[] { -1 },            // room 4
-            new int[] { -1 } };          // room 5
+            new int[] { -1 },            // room 5
+            new int[] { -1 },            // room 6
+            new int[] { -1 } };          // room 7
 
-        private static int TotalAttempts = 10000;
+    private static int TotalAttempts = 10000;
 
         /// <summary> Error checks a sequence of rooms and fixes any invalid series. </summary>
         /// <param name="input"> The sequence of rooms. </param>
