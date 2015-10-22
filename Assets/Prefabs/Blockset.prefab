@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &163452
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 465644}
+  - 114: {fileID: 11437442}
+  m_Layer: 0
+  m_Name: Blockset
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &465644
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 163452}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &11437442
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 163452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 936041d39b23739448b14450fde83644, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ErrorBlock: {fileID: 11422672, guid: f0089bee6e28a3544932b9678dff751b, type: 2}
+  startBlock: {fileID: 11480792, guid: 7d4a790e6bc4e064489523cdd49b57ef, type: 2}
+  endBlock: {fileID: 11464584, guid: a7b3ca41cc4c99f4ab744e5ea5a70992, type: 2}
+  blocks:
+  - {fileID: 11408952, guid: af5cbc1e83a3df340b75e95f3bfb5730, type: 2}
+  - {fileID: 11469344, guid: b1b986835c3112c4c81df1f2f7a5a353, type: 2}
+  - {fileID: 11480048, guid: 1500ab2ff5e0115499ff0564d3c95c18, type: 2}
+  - {fileID: 11411816, guid: ceb0d4c2a02cd9e47b6234d588309e30, type: 2}
+  - {fileID: 11409164, guid: 65ba8aba7a63cd94da0a5875510564f6, type: 2}
+  - {fileID: 11422432, guid: 74b137ed6e0a4c24c835a3ea00af7015, type: 2}
+  - {fileID: 11421860, guid: 8492f90a709501143bdd1694cc274570, type: 2}
+  - {fileID: 11496572, guid: 73776c93d20f1c744bc25ad226370686, type: 2}
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: blocks.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: blocks.Array.data[0]
+      value: 
+      objectReference: {fileID: 11408952, guid: af5cbc1e83a3df340b75e95f3bfb5730,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: blocks.Array.data[1]
+      value: 
+      objectReference: {fileID: 11469344, guid: b1b986835c3112c4c81df1f2f7a5a353,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: blocks.Array.data[2]
+      value: 
+      objectReference: {fileID: 11480048, guid: 1500ab2ff5e0115499ff0564d3c95c18,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: blocks.Array.data[3]
+      value: 
+      objectReference: {fileID: 11411816, guid: ceb0d4c2a02cd9e47b6234d588309e30,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: blocks.Array.data[4]
+      value: 
+      objectReference: {fileID: 11409164, guid: 65ba8aba7a63cd94da0a5875510564f6,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: blocks.Array.data[5]
+      value: 
+      objectReference: {fileID: 11422432, guid: 74b137ed6e0a4c24c835a3ea00af7015,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: endBlock
+      value: 
+      objectReference: {fileID: 11464584, guid: a7b3ca41cc4c99f4ab744e5ea5a70992,
+        type: 2}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 163452}
+  m_IsPrefabParent: 1

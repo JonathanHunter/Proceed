@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,11 +9,16 @@ namespace Assets.Scripts.ProceduralGen
     {
         /// <summary> One index per room with each element pointing to an array of illegal follow up rooms denoted by their number, -1 means any room can follow. </summary>
         private static int[][] invalidFollowUp = new int[][] {
-            new int[] { 3 },            // room 1
-            new int[] { -1 },           // room 2
-            new int[] { 2 } };          // room 3
+            new int[] { -1 },            // room 0
+            new int[] { -1 },            // room 1
+            new int[] { 2 },             // room 2
+            new int[] { -1 },            // room 3
+            new int[] { -1 },            // room 4
+            new int[] { -1 },            // room 5
+            new int[] { -1 },            // room 6
+            new int[] { -1 } };          // room 7
 
-        private static int TotalAttempts = 10000;
+    private static int TotalAttempts = 10000;
 
         /// <summary> Error checks a sequence of rooms and fixes any invalid series. </summary>
         /// <param name="input"> The sequence of rooms. </param>
