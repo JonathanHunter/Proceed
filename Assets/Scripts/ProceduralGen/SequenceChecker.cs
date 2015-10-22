@@ -5,8 +5,7 @@ using System.Linq;
 
 namespace Assets.Scripts.ProceduralGen
 {
-    class SequenceChecker
-    {
+    class SequenceChecker {
         /// <summary> One index per room with each element pointing to an array of illegal follow up rooms denoted by their number, -1 means any room can follow. </summary>
         private static int[][] invalidFollowUp = new int[][] {
             new int[] { -1 },            // room 0
