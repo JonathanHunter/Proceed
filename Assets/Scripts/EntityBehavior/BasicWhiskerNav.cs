@@ -14,6 +14,9 @@ public class BasicWhiskerNav : MonoBehaviour {
     int backUpDuration = 30;
     int backUpTimer = 31;
 
+    public GameObject Target;
+    public float targetDistance;
+
 	// Use this for initialization
 	void Awake () 
     {
@@ -33,6 +36,7 @@ public class BasicWhiskerNav : MonoBehaviour {
         }
 
         Whisker(whiskerLength);
+        TargetTracking();
 	}
 
     void Whisker(float whiskerLength)
@@ -80,5 +84,58 @@ public class BasicWhiskerNav : MonoBehaviour {
         Debug.DrawRay(transform.position, whiskerLength * leftWhiskerVector, Color.red);
         Debug.DrawRay(transform.position, emergencyWhiskerLength * rightWhiskerVector, Color.blue);
 
+    }
+
+    void TargetTracking()
+    {
+        Vector3 targetDirVec = Target.transform.position - transform.position;
+        float targetDistance = Vector3.Distance(Target.transform.position, transform.position);
+
+        int NavObjectMask = 1 << 10;
+        RaycastHit[] obstacles = Physics.RaycastAll(transform.position, targetDirVec, targetDistance, NavObjectMask);
+
+        if(obstacles.Length == 0)
+        {
+            Transform transformCopyLeft = this.transform;
+            Transform transformCopyRight = this.transform;
+
+            transformCopyLeft.Rotate(0, -MaxTurnSpeed, 0);
+            Vector3 targetDirVecLeft = new Vector3(transformCopyLeft.forward.x, transformCopyLeft.forward.y, transformCopyLeft.forward.z);
+
+
+            transformCopyRight.Rotate(0, 2*MaxTurnSpeed, 0);
+
+            Vector3 targetDirVecRight = new Vector3(transformCopyRight.forward.x,transformCopyRight.forward.y,transformCopyRight.forward.z);
+
+            transformCopyRight.Rotate(0, -MaxTurnSpeed, 0);
+
+
+            Debug.DrawRay(transform.position, targetDirVec, Color.black);
+            //Debug.DrawRay(transform.position, targetDirVecLeft*5f, Color.yellow,1f);
+            //Debug.DrawRay(transform.position, targetDirVecRight *5f, Color.green,1f);
+
+            float angleLeft = Vector3.Angle(targetDirVecLeft, targetDirVec);
+            float angleRight = Vector3.Angle(targetDirVecRight, targetDirVec);
+
+
+            if(angleLeft < angleRight)
+            {
+                
+                if (angleLeft > 5)
+                {
+                    transform.Rotate(0, -MaxTurnSpeed, 0);
+                }
+                //print("turn left!!: " + angleLeft + "vecs: "+targetDirVec + " - "+targetDirVecLeft);
+                 
+            }else
+            {
+                if (angleRight > 5)
+                {
+                    transform.Rotate(0, MaxTurnSpeed, 0);
+                }
+                //print("turn right!!: " + angleRight + " vecs: "+ targetDirVec+ " - "+targetDirVecRight);
+
+            }
+        }
     }
 }
