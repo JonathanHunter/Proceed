@@ -19,7 +19,7 @@ public class PlayerMarkerParent : MonoBehaviour {
             i++;
         }
 
-        FindObjectOfType<BasicWhiskerNav>().Target = DebugPoints[i].gameObject;
+        FindObjectOfType<BasicWhiskerNav>().Target = DebugPoints[activeMarkerIndex].gameObject;
 	}
 
     public void SwapMarkers(PlayerMarkerDebug indexValue)
@@ -43,6 +43,6 @@ public class PlayerMarkerParent : MonoBehaviour {
 
         DebugPoints[i].gameObject.SetActive(false);
         DebugPoints[activeMarkerIndex].gameObject.SetActive(true);
-        FindObjectOfType<BasicWhiskerNav>().Target = DebugPoints[i].gameObject;
+        FindObjectOfType<BasicWhiskerNav>().Target = DebugPoints[activeMarkerIndex].gameObject;
     }
 }
