@@ -14,6 +14,9 @@ public class BasicWhiskerNav : MonoBehaviour {
     int backUpDuration = 30;
     int backUpTimer = 31;
 
+    public GameObject Target;
+    public float targetDistance;
+
 	// Use this for initialization
 	void Awake () 
     {
@@ -80,5 +83,9 @@ public class BasicWhiskerNav : MonoBehaviour {
         Debug.DrawRay(transform.position, whiskerLength * leftWhiskerVector, Color.red);
         Debug.DrawRay(transform.position, emergencyWhiskerLength * rightWhiskerVector, Color.blue);
 
+    }
+
+    void TargetTracking()
+    {
     }
 }
