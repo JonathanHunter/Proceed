@@ -231,7 +231,7 @@ namespace Assets.Scripts.Player
         //detects if you are in the air
         private void TouchingSomething()
         {
-            int playerLayerMask = 1 << 8;
+            int playerLayerMask = LayerMask.GetMask("Ignore Raycast", "Player");
             //Invert the layer mask to check all but the player's layer:
             playerLayerMask = ~playerLayerMask;
             RaycastHit temp;

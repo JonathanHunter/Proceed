@@ -1,0 +1,81 @@
+Upper Level Implentation:
+
+#region firing off the missile
+	Vector3 fireVector = Util.GenerateRandomVector3(BallisticVel(Util.player.transform.position + Util.player.rigidbody.velocity - transform.position, firingAngle), firingRandomness);
+								Util.FireVel (currentBullet,bulletEmitter.position, Quaternion.LookRotation(fireVector), fireVector * currentBullet.initialSpeed);
+#endregion
+
+
+Helper Methods:
+
+#region Assigning Ballistic Vector
+
+	//handles ballistic motion of the projectile 
+	
+	private Vector3 BallisticVel(Vector3 targetPoint,float angle) 
+	{
+		
+		float h = targetPoint.y;  // get height difference
+		
+		targetPoint.y = 0;  // retain only the horizontal direction
+		
+		float dist = targetPoint.magnitude ;  // get horizontal distance
+		
+		float a = angle * Mathf.Deg2Rad;  // convert angle to radians
+		
+		targetPoint.y = dist * Mathf.Tan(a);  // set dir to the elevation angle
+		
+		dist += h / Mathf.Tan(a);  // correct for small height differences
+		
+		
+		// Calculate the velocity magnitude
+		
+		float vel = Mathf.Sqrt(dist * Physics.gravity.magnitude / Mathf.Sin(2 * a));
+		
+		return vel * targetPoint.normalized;
+	
+	}
+
+
+//This is for firing several missiles one right after the other to make them have varying arcs
+#endregion Calculate Firing Vector from random firing angle
+	public static Vector3 GenerateRandomVector3(Vector3 inVec, float maxTheta)
+	
+	{
+		
+		Vector3 ranVec = Random.onUnitSphere;
+		
+		float ranFloat = Random.Range(0, maxTheta);
+		
+		ranVec = (Vector3.Cross(inVec, ranVec).normalized);
+		
+		if(ranFloat > Mathf.PI/2)
+		
+		{
+			
+			return Vector3.RotateTowards(-inVec, ranVec, Mathf.PI-ranFloat, 0);
+		
+		}else
+		
+		{
+			
+			return Vector3.RotateTowards(inVec, ranVec, ranFloat, 0);
+	
+		}
+	
+	}
+#region 
+
+
+// This needs to be fixed to not Instantiate bullets, Instantiating causes memory leaks
+#region Firing Bullet
+	public static void FireVel<T>(T t, Vector3 inPosition, Quaternion inRotation, Vector3 inSpeed) where T: BasicBullet
+	
+	{
+			
+		T bb = (T)Instantiate (t, inPosition, inRotation);
+			
+		bb.rigidbody.velocity = inSpeed;
+	
+	}
+#endregion
