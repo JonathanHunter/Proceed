@@ -70,6 +70,8 @@ namespace Assets.Scripts.Player
         //Attack Variables
         public EntityBehavior.hitbox hitboxPrefab;
 
+        public bool dead = false;
+
         // Status Effects
         private bool sluggish;
 
@@ -148,13 +150,17 @@ namespace Assets.Scripts.Player
             {
                 invun = false;
             }
+            if (dead)
+                dead = false;
             //run state
             doState[(int)currState]();
+            if (health <= 0)
+                die();
             //state clean up
             if (prevState != currState)
             {
                 doOnce = false;
-                animDone = false; ;
+                animDone = false;
                 jump = false;
                 hit = false;
                 anim.SetInteger("state", (int)currState);
@@ -192,6 +198,10 @@ namespace Assets.Scripts.Player
             else if (col.gameObject.tag == "Sand")
             {
                 sluggish = true;
+            }
+            else if (col.gameObject.CompareTag("enemy"))
+            {
+                hit = true;
             }
         }
 
@@ -391,6 +401,7 @@ namespace Assets.Scripts.Player
 
         public void die()
         {
+            dead = true;
             health = 0;
             gameObject.transform.localScale = new Vector3(.001f, .001f, .001f);
             if (!ragdollIsActive)
