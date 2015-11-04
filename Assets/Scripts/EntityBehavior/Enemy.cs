@@ -37,17 +37,17 @@ namespace Assets.Scripts.EntityBehavior
         [SerializeField]
         private float emergencyWhiskerLength = 4f;
         [SerializeField]
-        private float RunSpeed = 0.1f;
+        private float runSpeed = 0.1f;
         [SerializeField]
-        private float BackPedalSpeed = 0.03f;
+        private float backPedalSpeed = 0.03f;
         [SerializeField]
-        private float MaxTurnSpeed = 1f;
+        private float maxTurnSpeed = 1f;
 
         private Player.PlayerController player;
         private bool doOnce, animDone, hit, backOff;
         private int state, prevState, health, navObjectMask, currentNode, backUpDuration, backUpTimer;
         private EnemyStateMachine machine;
-        private Vector3 moveDirection, targetDirVecLeft, targetDirVecRight;
+        private Vector3 moveDirection;
         private GameObject attackInstance;
 
         void Start()
@@ -64,14 +64,6 @@ namespace Assets.Scripts.EntityBehavior
             currentNode = 0;
             navObjectMask = 1 << 10;
             machine = new EnemyStateMachine(aggresionRadius, fleeDistance, timeCanChase, waitTime, restTime, coward, fearless);
-
-            Transform transformCopyLeft = this.transform;
-            Transform transformCopyRight = this.transform;
-            transformCopyLeft.Rotate(0, -MaxTurnSpeed, 0);
-            targetDirVecLeft = transformCopyLeft.forward;
-            transformCopyRight.Rotate(0, 2 * MaxTurnSpeed, 0);
-            targetDirVecRight = transformCopyRight.forward;
-            transformCopyRight.Rotate(0, -MaxTurnSpeed, 0);
         }
 
         void Update()
@@ -128,19 +120,19 @@ namespace Assets.Scripts.EntityBehavior
         }
         private void Patrol()
         {
-            if (Vector3.Distance(wayPoints[currentNode].transform.position, transform.position) < 1)
+            if (Vector3.Distance(wayPoints[currentNode].transform.position, transform.position) < 2)
                 currentNode++;
-            if (currentNode > wayPoints.Length)
+            if (currentNode >= wayPoints.Length)
                 currentNode = 0;
-            RunWhiskerNav(wayPoints[currentNode].position);
+            RunWhiskerNav(wayPoints[currentNode].position, runSpeed/2, backPedalSpeed/2);
         }
         private void Flee()
         {
-            RunWhiskerNav(Vector3.LerpUnclamped(player.transform.position, transform.position, 2f));
+            RunWhiskerNav(Vector3.LerpUnclamped(player.transform.position, transform.position, 2f), runSpeed, backPedalSpeed);
         }
         private void Chase()
         {
-            RunWhiskerNav(player.transform.position);
+            RunWhiskerNav(player.transform.position, runSpeed, backPedalSpeed);
         }
         private void Tired()
         {
@@ -158,12 +150,12 @@ namespace Assets.Scripts.EntityBehavior
         {
         }
 
-        private void RunWhiskerNav(Vector3 target)
+        private void RunWhiskerNav(Vector3 target, float runSpeed, float backPedalSpeed)
         {
             if (!backOff && backUpTimer > backUpDuration)
-                transform.position += transform.forward * RunSpeed;
+                transform.position += transform.forward * runSpeed;
             else
-                transform.position += -transform.forward * BackPedalSpeed;
+                transform.position += -transform.forward * backPedalSpeed;
 
             if (backUpTimer <= backUpDuration)
                 backUpTimer++;
@@ -177,12 +169,10 @@ namespace Assets.Scripts.EntityBehavior
             Vector3 leftWhiskerVector = -transform.right + transform.forward;
             Vector3 rightWhiskerVector = transform.right + transform.forward;
 
-            int NavObjectMask = 1 << 10;
-
-            RaycastHit[] emergencyWhiskerRight = Physics.RaycastAll(transform.position, rightWhiskerVector, emergencyWhiskerLength, NavObjectMask);
-            RaycastHit[] emergencyWhiskerLeft = Physics.RaycastAll(transform.position, leftWhiskerVector, emergencyWhiskerLength, NavObjectMask);
-            RaycastHit[] whiskerLeft = Physics.RaycastAll(transform.position, leftWhiskerVector, whiskerLength, NavObjectMask);
-            RaycastHit[] whiskerRight = Physics.RaycastAll(transform.position, rightWhiskerVector, whiskerLength, NavObjectMask);
+            RaycastHit[] emergencyWhiskerRight = Physics.RaycastAll(transform.position, rightWhiskerVector, emergencyWhiskerLength, navObjectMask);
+            RaycastHit[] emergencyWhiskerLeft = Physics.RaycastAll(transform.position, leftWhiskerVector, emergencyWhiskerLength, navObjectMask);
+            RaycastHit[] whiskerLeft = Physics.RaycastAll(transform.position, leftWhiskerVector, whiskerLength, navObjectMask);
+            RaycastHit[] whiskerRight = Physics.RaycastAll(transform.position, rightWhiskerVector, whiskerLength, navObjectMask);
 
             if (emergencyWhiskerLeft.Length > 0 && emergencyWhiskerRight.Length > 0)
             {
@@ -193,9 +183,9 @@ namespace Assets.Scripts.EntityBehavior
                 backOff = false;
 
             if (whiskerLeft.Length > 0)
-                transform.Rotate(0, MaxTurnSpeed, 0);
+                transform.Rotate(0, maxTurnSpeed, 0);
             else if (whiskerRight.Length > 0)
-                transform.Rotate(0, -MaxTurnSpeed, 0);
+                transform.Rotate(0, -maxTurnSpeed, 0);
 
             Debug.DrawRay(transform.position, whiskerLength * leftWhiskerVector, Color.red);
             Debug.DrawRay(transform.position, emergencyWhiskerLength * rightWhiskerVector, Color.blue);
@@ -208,19 +198,36 @@ namespace Assets.Scripts.EntityBehavior
             RaycastHit[] obstacles = Physics.RaycastAll(transform.position, targetDirVec, targetDistance, navObjectMask);
             if (obstacles.Length == 0)
             {
+
+                Transform transformCopyLeft = this.transform;
+                Transform transformCopyRight = this.transform;
+
+                transformCopyLeft.Rotate(0, -maxTurnSpeed, 0);
+                Vector3 targetDirVecLeft = new Vector3(transformCopyLeft.forward.x, transformCopyLeft.forward.y, transformCopyLeft.forward.z);
+
+
+                transformCopyRight.Rotate(0, 2 * maxTurnSpeed, 0);
+
+                Vector3 targetDirVecRight = new Vector3(transformCopyRight.forward.x, transformCopyRight.forward.y, transformCopyRight.forward.z);
+
+                transformCopyRight.Rotate(0, -maxTurnSpeed, 0);
                 Debug.DrawRay(transform.position, targetDirVec, Color.black);
-                //Debug.DrawRay(transform.position, targetDirVecLeft*5f, Color.yellow,1f);
-                //Debug.DrawRay(transform.position, targetDirVecRight *5f, Color.green,1f);
+                //Debug.DrawRay(transform.position, targetDirVecLeft, Color.yellow,1f);
+                //Debug.DrawRay(transform.position, targetDirVecRight, Color.green,1f);
 
                 float angleLeft = Vector3.Angle(targetDirVecLeft, targetDirVec);
                 float angleRight = Vector3.Angle(targetDirVecRight, targetDirVec);
 
-                if (angleRight > 5)
+
+                if (angleLeft < angleRight)
                 {
-                    if (angleLeft < angleRight)
-                            transform.Rotate(0, -MaxTurnSpeed, 0);
-                    else
-                            transform.Rotate(0, MaxTurnSpeed, 0);
+                    if (angleLeft > 5)
+                        transform.Rotate(0, -maxTurnSpeed, 0);
+                }
+                else
+                {
+                    if (angleRight > 5)
+                        transform.Rotate(0, maxTurnSpeed, 0);
                 }
             }
         }

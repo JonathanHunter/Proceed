@@ -194,6 +194,10 @@ namespace Assets.Scripts.Player
             {
                 sluggish = true;
             }
+            else if (col.gameObject.CompareTag("enemy"))
+            {
+                hit = true;
+            }
         }
 
         void OnTriggerStay(Collider col)

@@ -32,6 +32,7 @@ namespace Assets.Scripts.EntityBehavior
 
         public int Run(bool animDone, bool playerSpotted, bool playerDead, bool hpLow, bool infrontOfPlayer, float distance, bool hit)
         {
+            Debug.Log(currState);
             switch (currState)
             {
                 case State.Wait: currState = Wait(hit); break;
@@ -72,7 +73,7 @@ namespace Assets.Scripts.EntityBehavior
                 return State.Chase;
             }
             float r = Random.Range(0f, 1f);
-            if (r < .1f)
+            if (r < .01f)
                 return State.Wait;
             return State.Patrol;
         }

@@ -515,7 +515,7 @@ GameObject:
   - 65: {fileID: 6501446}
   m_Layer: 0
   m_Name: WoodDollStandard
-  m_TagString: Untagged
+  m_TagString: enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2275,6 +2275,10 @@ Prefab:
       propertyPath: attack
       value: 
       objectReference: {fileID: 112702, guid: 21b699204dc0e3a4abeeb61f78e5ce67, type: 2}
+    - target: {fileID: 0}
+      propertyPath: m_TagString
+      value: enemy
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 145390}
