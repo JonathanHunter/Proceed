@@ -7,6 +7,12 @@ namespace Assets.Scripts.EntityBehavior
         [SerializeField]
         private Animator anim;
         [SerializeField]
+        private GameObject attack;
+        [SerializeField]
+        private Transform attackPos;
+        [SerializeField]
+        private Transform[] wayPoints;
+        [SerializeField]
         private int startHealth;
         [SerializeField]
         private float aggresionRadius;
@@ -21,14 +27,28 @@ namespace Assets.Scripts.EntityBehavior
         [SerializeField]
         private float fov;
         [SerializeField]
+        private float sightDistance;
+        [SerializeField]
         private bool coward;
         [SerializeField]
         private bool fearless;
+        [SerializeField]
+        private float whiskerLength = 4.5f;
+        [SerializeField]
+        private float emergencyWhiskerLength = 4f;
+        [SerializeField]
+        private float RunSpeed = 0.1f;
+        [SerializeField]
+        private float BackPedalSpeed = 0.03f;
+        [SerializeField]
+        private float MaxTurnSpeed = 1f;
 
         private Player.PlayerController player;
-        private bool doOnce, animDone, hit;
-        private int state, prevState, health;
+        private bool doOnce, animDone, hit, backOff;
+        private int state, prevState, health, navObjectMask, currentNode, backUpDuration, backUpTimer;
         private EnemyStateMachine machine;
+        private Vector3 moveDirection, targetDirVecLeft, targetDirVecRight;
+        private GameObject attackInstance;
 
         void Start()
         {
@@ -36,9 +56,22 @@ namespace Assets.Scripts.EntityBehavior
             state = 0;
             prevState = 0;
             health = startHealth;
+            backUpDuration = 30;
+            backUpTimer = 31;
             doOnce = false;
             animDone = false;
+            backOff = false;
+            currentNode = 0;
+            navObjectMask = 1 << 10;
             machine = new EnemyStateMachine(aggresionRadius, fleeDistance, timeCanChase, waitTime, restTime, coward, fearless);
+
+            Transform transformCopyLeft = this.transform;
+            Transform transformCopyRight = this.transform;
+            transformCopyLeft.Rotate(0, -MaxTurnSpeed, 0);
+            targetDirVecLeft = transformCopyLeft.forward;
+            transformCopyRight.Rotate(0, 2 * MaxTurnSpeed, 0);
+            targetDirVecRight = transformCopyRight.forward;
+            transformCopyRight.Rotate(0, -MaxTurnSpeed, 0);
         }
 
         void Update()
@@ -48,9 +81,18 @@ namespace Assets.Scripts.EntityBehavior
                 doOnce = false;
                 prevState = state;
                 anim.SetInteger("state", state);
+                if (attackInstance != null)
+                    Destroy(attackInstance.gameObject);
             }
+            Vector3 dirTowardsPlayer = player.transform.position - transform.position;
+            float angle = Vector3.Angle(dirTowardsPlayer, transform.forward);
+            angle = angle > 180f ? angle - 360f : angle;
+            float distance = Vector3.Distance(player.transform.position, transform.position);
+            RaycastHit[] obstacles = Physics.RaycastAll(transform.position, dirTowardsPlayer, distance, navObjectMask);
+            bool canSeePlayer = (obstacles.Length == 0) && (distance < sightDistance) && (angle > -(fov / 2)) && (angle < fov / 2);
+            bool infrontOfPlayer = (obstacles.Length == 0) && (distance < Vector3.Distance(attackPos.position, transform.position)) && (angle > -(fov / 4)) && (angle < fov / 4);
 
-            state = machine.Run(animDone, playerSpotted, player.dead, health < 2, infrontOfPlayer, Vector3.Distance(player.transform.position, transform.position), hit);
+            state = machine.Run(animDone, canSeePlayer, player.dead, health < 2, infrontOfPlayer, distance, hit);
 
             switch (state)
             {
@@ -83,31 +125,104 @@ namespace Assets.Scripts.EntityBehavior
 
         private void Wait()
         {
-
         }
         private void Patrol()
         {
-
+            if (Vector3.Distance(wayPoints[currentNode].transform.position, transform.position) < 1)
+                currentNode++;
+            if (currentNode > wayPoints.Length)
+                currentNode = 0;
+            RunWhiskerNav(wayPoints[currentNode].position);
         }
         private void Flee()
         {
-
+            RunWhiskerNav(Vector3.LerpUnclamped(player.transform.position, transform.position, 2f));
         }
         private void Chase()
         {
-
+            RunWhiskerNav(player.transform.position);
         }
         private void Tired()
         {
-
         }
         private void Attack()
         {
-
+            if(!doOnce)
+            {
+                doOnce = true;
+                attackInstance = Instantiate(attack);
+                attackInstance.transform.position = attackPos.position;
+            }
         }
         private void Hit()
         {
+        }
 
+        private void RunWhiskerNav(Vector3 target)
+        {
+            if (!backOff && backUpTimer > backUpDuration)
+                transform.position += transform.forward * RunSpeed;
+            else
+                transform.position += -transform.forward * BackPedalSpeed;
+
+            if (backUpTimer <= backUpDuration)
+                backUpTimer++;
+
+            Whisker();
+            TargetTracking(target);
+        }
+
+        private void Whisker()
+        {
+            Vector3 leftWhiskerVector = -transform.right + transform.forward;
+            Vector3 rightWhiskerVector = transform.right + transform.forward;
+
+            int NavObjectMask = 1 << 10;
+
+            RaycastHit[] emergencyWhiskerRight = Physics.RaycastAll(transform.position, rightWhiskerVector, emergencyWhiskerLength, NavObjectMask);
+            RaycastHit[] emergencyWhiskerLeft = Physics.RaycastAll(transform.position, leftWhiskerVector, emergencyWhiskerLength, NavObjectMask);
+            RaycastHit[] whiskerLeft = Physics.RaycastAll(transform.position, leftWhiskerVector, whiskerLength, NavObjectMask);
+            RaycastHit[] whiskerRight = Physics.RaycastAll(transform.position, rightWhiskerVector, whiskerLength, NavObjectMask);
+
+            if (emergencyWhiskerLeft.Length > 0 && emergencyWhiskerRight.Length > 0)
+            {
+                backOff = true;
+                backUpTimer = 0;
+            }
+            else
+                backOff = false;
+
+            if (whiskerLeft.Length > 0)
+                transform.Rotate(0, MaxTurnSpeed, 0);
+            else if (whiskerRight.Length > 0)
+                transform.Rotate(0, -MaxTurnSpeed, 0);
+
+            Debug.DrawRay(transform.position, whiskerLength * leftWhiskerVector, Color.red);
+            Debug.DrawRay(transform.position, emergencyWhiskerLength * rightWhiskerVector, Color.blue);
+        }
+
+        private void TargetTracking(Vector3 target)
+        {
+            Vector3 targetDirVec = target - transform.position;
+            float targetDistance = Vector3.Distance(target, transform.position);
+            RaycastHit[] obstacles = Physics.RaycastAll(transform.position, targetDirVec, targetDistance, navObjectMask);
+            if (obstacles.Length == 0)
+            {
+                Debug.DrawRay(transform.position, targetDirVec, Color.black);
+                //Debug.DrawRay(transform.position, targetDirVecLeft*5f, Color.yellow,1f);
+                //Debug.DrawRay(transform.position, targetDirVecRight *5f, Color.green,1f);
+
+                float angleLeft = Vector3.Angle(targetDirVecLeft, targetDirVec);
+                float angleRight = Vector3.Angle(targetDirVecRight, targetDirVec);
+
+                if (angleRight > 5)
+                {
+                    if (angleLeft < angleRight)
+                            transform.Rotate(0, -MaxTurnSpeed, 0);
+                    else
+                            transform.Rotate(0, MaxTurnSpeed, 0);
+                }
+            }
         }
     }
 }
