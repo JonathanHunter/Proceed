@@ -175,6 +175,11 @@ namespace Assets.Scripts.Player
                 if (!invun)
                     hit = true;
             }
+            else if (col.gameObject.tag == "Bowler")
+            {
+                if (!invun)
+                    die();
+            }
         }
 
         void OnTriggerEnter(Collider col)

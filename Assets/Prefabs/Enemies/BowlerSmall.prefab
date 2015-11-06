@@ -15,7 +15,7 @@ GameObject:
   - 114: {fileID: 11447802}
   m_Layer: 0
   m_Name: BowlerSmall
-  m_TagString: enemy
+  m_TagString: Bowler
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -114,7 +114,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 0}
       propertyPath: m_TagString
-      value: enemy
+      value: Bowler
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

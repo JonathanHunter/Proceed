@@ -10,6 +10,7 @@ TagManager:
   - Sand
   - Hitbox
   - enemy
+  - Bowler
   layers:
   - Default
   - TransparentFX
