@@ -134,7 +134,7 @@ namespace Assets.Scripts.EntityBehavior
         }
         private void Chase()
         {
-            RunWhiskerNav(player.transform.position, chaseSpeed, backPedalSpeed);
+            RunWhiskerNav(player.transform.position + player.GetComponent<Rigidbody>().velocity, chaseSpeed, backPedalSpeed);
         }
         private void Tired()
         {
