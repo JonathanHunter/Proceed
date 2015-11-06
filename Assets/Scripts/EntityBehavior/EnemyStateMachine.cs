@@ -32,7 +32,6 @@ namespace Assets.Scripts.EntityBehavior
 
         public int Run(bool animDone, bool playerSpotted, bool playerDead, bool hpLow, bool infrontOfPlayer, float distance, bool hit)
         {
-            Debug.Log(currState);
             switch (currState)
             {
                 case State.Wait: currState = Wait(hit); break;

@@ -126,7 +126,7 @@ namespace Assets.Scripts.EntityBehavior
                 currentNode++;
             if (currentNode >= wayPoints.Length)
                 currentNode = 0;
-            RunWhiskerNav(wayPoints[currentNode].position, runSpeed/2, backPedalSpeed/2);
+            RunWhiskerNav(wayPoints[currentNode].position, runSpeed, backPedalSpeed/2);
         }
         private void Flee()
         {
@@ -134,7 +134,7 @@ namespace Assets.Scripts.EntityBehavior
         }
         private void Chase()
         {
-            RunWhiskerNav(player.transform.position + player.GetComponent<Rigidbody>().velocity, chaseSpeed, backPedalSpeed);
+            RunWhiskerNav(player.transform.position + player.GetComponent<Rigidbody>().velocity * chaseSpeed / 2, chaseSpeed, backPedalSpeed);
         }
         private void Tired()
         {
