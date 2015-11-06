@@ -39,6 +39,8 @@ namespace Assets.Scripts.EntityBehavior
         [SerializeField]
         private float runSpeed = 0.1f;
         [SerializeField]
+        private float chaseSpeed = 0.2f;
+        [SerializeField]
         private float backPedalSpeed = 0.03f;
         [SerializeField]
         private float maxTurnSpeed = 1f;
@@ -132,7 +134,7 @@ namespace Assets.Scripts.EntityBehavior
         }
         private void Chase()
         {
-            RunWhiskerNav(player.transform.position, runSpeed, backPedalSpeed);
+            RunWhiskerNav(player.transform.position, chaseSpeed, backPedalSpeed);
         }
         private void Tired()
         {
