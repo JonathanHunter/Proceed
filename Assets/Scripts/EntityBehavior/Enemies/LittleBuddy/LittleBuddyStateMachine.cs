@@ -32,9 +32,9 @@ namespace Assets.Scripts.EntityBehavior
             Random.seed = System.DateTime.Today.Millisecond;
         }
 
-        public int Run(bool animDone, bool playerSpotted, bool playerDead, bool hpLow, bool infrontOfPlayer, float distance, bool hit)
+        public int Run(bool animDone, bool playerSpotted, bool playerDead, bool hpLow, bool infrontOfPlayer, float distance, bool hit, AnimatorClipInfo[] state)
         {
-            Debug.Log(currState);
+            //Debug.Log(currState);
             switch (currState)
             {
                 case State.Wait: currState = Wait(hit, distance); break;
@@ -43,7 +43,7 @@ namespace Assets.Scripts.EntityBehavior
                 case State.Chase: currState = Chase(playerDead, infrontOfPlayer, distance, hpLow, hit, followDistance); break;
                 case State.Tired: currState = Tired(hit, distance); break;
                 case State.Attack: currState = Attack(animDone, playerDead, infrontOfPlayer, hpLow, hit); break;
-                case State.Hit: currState = Hit(animDone, hpLow); break;
+                case State.Hit: currState = Hit(animDone, hpLow, state); break;
             }
             return (int)currState;
         }
@@ -107,12 +107,15 @@ namespace Assets.Scripts.EntityBehavior
                 return State.Flee;
             }
             */
+            /*
             if (distance > fleeDistance || playerDead)
             {
                 hold = 0;
                 return State.Patrol;
             }
-            if(distance < followDistance)
+            */
+            if(distance < followDistance
+                )
             {
                 return State.Tired;
             }
@@ -136,7 +139,9 @@ namespace Assets.Scripts.EntityBehavior
             if (hold > waitTime)
             {
                 hold = 0;
-                return State.Hit;
+                if (distance <= followDistance)
+                    return State.Hit;
+                return State.Patrol;
             }
             return State.Tired;
         }
@@ -156,9 +161,9 @@ namespace Assets.Scripts.EntityBehavior
             return State.Attack;
         }
 
-        private State Hit(bool animDone, bool hpLow)
+        private State Hit(bool animDone, bool hpLow, AnimatorClipInfo[] state)
         {
-            if (animDone)
+            if (animDone && state.Length > 0 && state[0].clip.name.Equals("Hurt"))
             {
                 if (coward || (hpLow && !fearless))
                     return State.Flee;

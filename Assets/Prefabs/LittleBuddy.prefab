@@ -510,7 +510,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 476182}
   - 95: {fileID: 9585484}
-  - 114: {fileID: 11498560}
+  - 114: {fileID: 11440760}
   - 54: {fileID: 5447510}
   - 65: {fileID: 6594712}
   m_Layer: 0
@@ -1598,7 +1598,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 157084}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -34.9242821, y: 2.8499999, z: -8.52000046}
+  m_LocalPosition: {x: -34.3970947, y: .5, z: -8.20524406}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 496368}
@@ -1818,7 +1818,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!65 &6594712
 BoxCollider:
@@ -1849,7 +1849,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &11498560
+--- !u!114 &11440760
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -1857,18 +1857,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 157084}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 499537b39cdb11e4fafded1db8fefe12, type: 3}
+  m_Script: {fileID: 11500000, guid: e666577cacaf3754d8fcb1d6cbca8b48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 9585484}
   attack: {fileID: 112702, guid: 21b699204dc0e3a4abeeb61f78e5ce67, type: 2}
   attackPos: {fileID: 428104}
-  wayPoints: []
+  wayPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   startHealth: 3
-  aggresionRadius: 2
   fleeDistance: 5
-  timeCanChase: 1
-  waitTime: .5
+  timeCanChase: 6
   restTime: .5
   fov: 60
   sightDistance: 6
@@ -1878,7 +1884,7 @@ MonoBehaviour:
   emergencyWhiskerLength: 4
   runSpeed: .100000001
   backPedalSpeed: .0299999993
-  maxTurnSpeed: 1
+  maxTurnSpeed: 5
 --- !u!137 &13713654
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

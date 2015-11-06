@@ -15,14 +15,12 @@ namespace Assets.Scripts.EntityBehavior
         private Transform[] wayPoints;
         [SerializeField]
         private int startHealth;
-        [SerializeField]
-        private float aggresionRadius;
+        private float aggresionRadius = 500;
         [SerializeField]
         private float fleeDistance;
         [SerializeField]
         private float timeCanChase;
-        [SerializeField]
-        private float waitTime;
+        private float waitTime = 2;
         [SerializeField]
         private float restTime;
         [SerializeField]
@@ -44,7 +42,7 @@ namespace Assets.Scripts.EntityBehavior
         [SerializeField]
         private float maxTurnSpeed = 5f;
 
-        private float followDistance = 5f;
+        private float followDistance = 1f;
 
         private Player.PlayerController player;
         private bool doOnce, animDone, hit, backOff;
@@ -87,7 +85,7 @@ namespace Assets.Scripts.EntityBehavior
             bool canSeePlayer = (obstacles.Length == 0) && (distance < sightDistance) && (angle > -(fov / 2)) && (angle < fov / 2);
             bool infrontOfPlayer = (obstacles.Length == 0) && (distance < Vector3.Distance(attackPos.position, transform.position)) && (angle > -(fov / 4)) && (angle < fov / 4);
 
-            state = machine.Run(animDone, canSeePlayer, player.dead, health < 2, infrontOfPlayer, distance, hit);
+            state = machine.Run(animDone, canSeePlayer, player.dead, health < 2, infrontOfPlayer, distance, hit, anim.GetCurrentAnimatorClipInfo(0));
 
             switch (state)
             {
@@ -123,13 +121,13 @@ namespace Assets.Scripts.EntityBehavior
         }
         private void Patrol()
         {
-            /*
+            
             if (Vector3.Distance(wayPoints[currentNode].transform.position, transform.position) < 2)
                 currentNode++;
             if (currentNode >= wayPoints.Length)
                 currentNode = 0;
             RunWhiskerNav(wayPoints[currentNode].position, runSpeed / 2, backPedalSpeed / 2);
-            */
+            
         }
         private void Flee()
         {
