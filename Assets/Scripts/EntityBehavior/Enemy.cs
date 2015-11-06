@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
+using UnityEngine;
 
 namespace Assets.Scripts.EntityBehavior
 {
@@ -130,11 +131,11 @@ namespace Assets.Scripts.EntityBehavior
         }
         private void Flee()
         {
-            RunWhiskerNav(Vector3.LerpUnclamped(player.transform.position, transform.position, 2f), runSpeed, backPedalSpeed);
+            RunWhiskerNav(Vector3.LerpUnclamped(player.transform.position, transform.position, 2f), chaseSpeed, backPedalSpeed);
         }
         private void Chase()
         {
-            RunWhiskerNav(player.transform.position + player.GetComponent<Rigidbody>().velocity * chaseSpeed / 2, chaseSpeed, backPedalSpeed);
+            RunWhiskerNav(player.transform.position + player.GetComponent<Rigidbody>().velocity, chaseSpeed, backPedalSpeed);
         }
         private void Tired()
         {

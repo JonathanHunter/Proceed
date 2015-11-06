@@ -10,6 +10,10 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private Animator anim;
         [SerializeField]
+        private GameObject attack;
+        [SerializeField]
+        private Transform attackPos;
+        [SerializeField]
         private Transform foot;
         [SerializeField]
         private AudioSource soundPlayer;
@@ -35,12 +39,15 @@ namespace Assets.Scripts.Player
         private static bool doOnce = false;
         private static bool jump = false;
         private static bool knockBack = false;
+        private static bool doAttack = false;
 
         private static int health = 5;
 
         private enum BlockMaterial { Wood, Ice, Sand };
         private BlockMaterial curMat;
         private float magnitude;
+        private CameraTracking cameraTracking;
+        private GameObject attackInstance;
 
         //state machine vars
         private static bool invun = false;
@@ -77,6 +84,7 @@ namespace Assets.Scripts.Player
 
         void Awake()
         {
+            cameraTracking = FindObjectOfType<CameraTracking>();
             magnitude = 0f;
             curMat = BlockMaterial.Wood;
             respawnTimerReset = respawnTimer;
@@ -156,6 +164,12 @@ namespace Assets.Scripts.Player
             doState[(int)currState]();
             if (health <= 0)
                 die();
+            if(doAttack)
+            {
+                doAttack = false;
+                attackInstance = Instantiate(attack);
+                attackInstance.transform.position = attackPos.position;
+            }
             //state clean up
             if (prevState != currState)
             {
@@ -164,6 +178,8 @@ namespace Assets.Scripts.Player
                 jump = false;
                 hit = false;
                 anim.SetInteger("state", (int)currState);
+                if (attackInstance != null)
+                    Destroy(attackInstance.gameObject);
             }
             prevState = currState;
         }
@@ -286,23 +302,23 @@ namespace Assets.Scripts.Player
                     else if (up == 0)
                     {
                         if (CustomInput.Bool(CustomInput.UserInput.Left))
-                            transform.rotation = Quaternion.Euler(0, 270, 0);
+                            transform.rotation = Quaternion.Euler(0, 270 - cameraTracking.Theta, 0);
                         else
-                            transform.rotation = Quaternion.Euler(0, 90, 0);
+                            transform.rotation = Quaternion.Euler(0, 90 - cameraTracking.Theta, 0);
                     }
                     else if (right == 0)
                     {
                         if (CustomInput.Bool(CustomInput.UserInput.Down))
-                            transform.rotation = Quaternion.Euler(0, 180, 0);
+                            transform.rotation = Quaternion.Euler(0, 180 - cameraTracking.Theta, 0);
                         else
-                            transform.rotation = Quaternion.Euler(0, 0, 0);
+                            transform.rotation = Quaternion.Euler(0, 0 - cameraTracking.Theta, 0);
                     }
                     else
                     {
                         if (CustomInput.Bool(CustomInput.UserInput.Down))
-                            transform.rotation = Quaternion.Euler(0, 180 + Mathf.Rad2Deg * Mathf.Atan(right / up), 0);
+                            transform.rotation = Quaternion.Euler(0, 180 + Mathf.Rad2Deg * Mathf.Atan(right / up) - cameraTracking.Theta, 0);
                         else
-                            transform.rotation = Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan(right / up), 0);
+                            transform.rotation = Quaternion.Euler(0, Mathf.Rad2Deg * Mathf.Atan(right / up) - cameraTracking.Theta, 0);
                     }
 
                     if (currState == Enums.PlayerState.Moving)
@@ -355,7 +371,7 @@ namespace Assets.Scripts.Player
             if (!doOnce)
             {
                 doOnce = true;
-                //TODO: attack logic
+                doAttack = true;
             }
         }
 

@@ -1273,6 +1273,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 11494098, guid: d09cd3f884b7f1a46817d1aeb14acf40, type: 2}
+      propertyPath: attack
+      value: 
+      objectReference: {fileID: 112702, guid: 517322d7159f4e64f8e0554b168ed69f, type: 2}
+    - target: {fileID: 11494098, guid: d09cd3f884b7f1a46817d1aeb14acf40, type: 2}
+      propertyPath: attackPos
+      value: 
+      objectReference: {fileID: 1930452550}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d09cd3f884b7f1a46817d1aeb14acf40, type: 2}
   m_IsPrefabParent: 0
@@ -2273,6 +2281,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 147504, guid: 46f1234d7c023414895b79263698bc9b, type: 2}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 46f1234d7c023414895b79263698bc9b, type: 2}
   m_IsPrefabParent: 0
@@ -3186,7 +3198,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 716484715}
   - 114: {fileID: 716484714}
-  - 114: {fileID: 716484713}
   m_Layer: 0
   m_Name: GameState
   m_TagString: Untagged
@@ -3194,17 +3205,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &716484713
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 716484712}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b398c538d43258d4db28a33b693cf085, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &716484714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3464,7 +3464,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
       propertyPath: runSpeed
-      value: .400000006
+      value: .100000001
       objectReference: {fileID: 0}
     - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
       propertyPath: whiskerLength
@@ -3472,11 +3472,27 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
       propertyPath: emergencyWhiskerLength
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
       propertyPath: maxTurnSpeed
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
+      propertyPath: coward
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
+      propertyPath: startHealth
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
+      propertyPath: fearless
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
+      propertyPath: aggresionRadius
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
@@ -4250,6 +4266,10 @@ Prefab:
     - target: {fileID: 11403162, guid: 73c7666dc22efdb4fad931e3189766fc, type: 2}
       propertyPath: runSpeed
       value: .100000001
+      objectReference: {fileID: 0}
+    - target: {fileID: 145100, guid: 73c7666dc22efdb4fad931e3189766fc, type: 2}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 73c7666dc22efdb4fad931e3189766fc, type: 2}
@@ -6915,6 +6935,33 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1928179144}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1930452549
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1930452550}
+  m_Layer: 8
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1930452550
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1930452549}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.0777999982, y: .0381999984, z: -.0206000004}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1468425044}
+  m_RootOrder: 10
 --- !u!1 &1932381696
 GameObject:
   m_ObjectHideFlags: 0
@@ -7163,7 +7210,7 @@ Prefab:
       objectReference: {fileID: 426859289}
     - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
       propertyPath: runSpeed
-      value: .400000006
+      value: .100000001
       objectReference: {fileID: 0}
     - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
       propertyPath: chaseSpeed
@@ -7175,11 +7222,27 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
       propertyPath: emergencyWhiskerLength
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
       propertyPath: maxTurnSpeed
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
+      propertyPath: coward
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
+      propertyPath: fearless
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
+      propertyPath: startHealth
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11471560, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
+      propertyPath: aggresionRadius
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a8ee8a9cd3f98b441b47c3e6dc1c0707, type: 2}
