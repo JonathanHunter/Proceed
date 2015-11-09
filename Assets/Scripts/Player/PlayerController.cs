@@ -74,6 +74,10 @@ namespace Assets.Scripts.Player
         private bool ragdollIsActive = false;
         private Vector3 originalScale;
 
+        private bool paused = false;
+        private float animSpeed = 0;
+        private Vector3 vel = new Vector3();
+
         //Attack Variables
         public EntityBehavior.hitbox hitboxPrefab;
 
@@ -98,92 +102,112 @@ namespace Assets.Scripts.Player
 
         void Update()
         {
-            if (Util.GameState.paused)
-                return;
-            if (Input.GetKeyUp(KeyCode.U))
+            if (!Util.GameState.paused)
             {
-                die();
-            }
-
-            #region StatusEffects
-            if (sluggish)
-            {
-                anim.speed = 0.6f;
-            }
-            else
-                anim.speed = 1;
-            #endregion
-            anim.SetFloat("speed", magnitude);
-            if (health <= 0 || this.transform.position.y < -20)
-            {
-                //Create a ragdoll until we respawn
-                if (respawnTimer > 0)
+                if (paused)
                 {
-                    if (!ragdollIsActive)
+                    paused = false;
+                    anim.speed = animSpeed;
+                    rgbdy.useGravity = true;
+                    rgbdy.velocity = vel;
+                }
+                if (Input.GetKeyUp(KeyCode.U))
+                {
+                    die();
+                }
+
+                #region StatusEffects
+                if (sluggish)
+                {
+                    anim.speed = 0.6f;
+                }
+                else
+                    anim.speed = 1;
+                #endregion
+                anim.SetFloat("speed", magnitude);
+                if (health <= 0 || this.transform.position.y < -20)
+                {
+                    //Create a ragdoll until we respawn
+                    if (respawnTimer > 0)
                     {
-                        die();
-                        //this.GetComponent<Rigidbody>().useGravity = false;
+                        if (!ragdollIsActive)
+                        {
+                            die();
+                            //this.GetComponent<Rigidbody>().useGravity = false;
+                        }
+                        //this.gameObject.transform.position = new Vector3(tempRag.HipN.position.x+1,tempRag.HipN.position.y, tempRag.HipN.position.z + 1);
+                        respawnTimer -= Time.deltaTime;
                     }
-                    //this.gameObject.transform.position = new Vector3(tempRag.HipN.position.x+1,tempRag.HipN.position.y, tempRag.HipN.position.z + 1);
-                    respawnTimer -= Time.deltaTime;
+                    else
+                    {
+                        //respawn
+                        gameObject.transform.localScale = originalScale;
+                        ragdollIsActive = false;
+                        respawnTimer = respawnTimerReset;
+                        health = 5;
+                        transform.position = new Vector3(0, 0, 0);
+                        FindObjectOfType<GameState>().playerDeaths++;
+                        //this.GetComponent<Rigidbody>().useGravity = true;
+                    }
+                }
+                move = false;
+
+                if (CustomInput.Bool(CustomInput.UserInput.Up) || CustomInput.Bool(CustomInput.UserInput.Down) || CustomInput.Bool(CustomInput.UserInput.Left) || CustomInput.Bool(CustomInput.UserInput.Right))
+                    move = true;
+                TouchingSomething();
+                if ((int)currState == 3 && !inAir)
+                {
+                    jump = true;
+                }
+                //get next state
+                currState = machine.update(inAir, move, hit, animDone);
+                if (invunTimer > 0)
+                {
+                    hit = false;
+                    invunTimer -= Time.deltaTime;
+                    invun = true;
                 }
                 else
                 {
-                    //respawn
-                    gameObject.transform.localScale = originalScale;
-                    ragdollIsActive = false;
-                    respawnTimer = respawnTimerReset;
-                    health = 5;
-                    transform.position = new Vector3(0, 0, 0);
-                    FindObjectOfType<GameState>().playerDeaths++;
-                    //this.GetComponent<Rigidbody>().useGravity = true;
+                    invun = false;
                 }
-            }
-            move = false;
-
-            if (CustomInput.Bool(CustomInput.UserInput.Up) || CustomInput.Bool(CustomInput.UserInput.Down) || CustomInput.Bool(CustomInput.UserInput.Left) || CustomInput.Bool(CustomInput.UserInput.Right))
-                move = true;
-            TouchingSomething();
-            if ((int)currState == 3 && !inAir)
-            {
-                jump = true;
-            }
-            //get next state
-            currState = machine.update(inAir, move, hit, animDone);
-            if (invunTimer > 0)
-            {
-                hit = false;
-                invunTimer -= Time.deltaTime;
-                invun = true;
+                if (dead)
+                    dead = false;
+                //run state
+                doState[(int)currState]();
+                if (health <= 0)
+                    die();
+                if (doAttack)
+                {
+                    doAttack = false;
+                    attackInstance = Instantiate(attack);
+                    attackInstance.transform.position = attackPos.position;
+                }
+                //state clean up
+                if (prevState != currState)
+                {
+                    doOnce = false;
+                    animDone = false;
+                    jump = false;
+                    hit = false;
+                    anim.SetInteger("state", (int)currState);
+                    if (attackInstance != null)
+                        Destroy(attackInstance.gameObject);
+                }
+                prevState = currState;
             }
             else
             {
-                invun = false;
+                if (!paused)
+                {
+                    animSpeed = anim.speed;
+                    anim.speed = 0;
+                    rgbdy.useGravity = false;
+                    vel = rgbdy.velocity;
+                    rgbdy.velocity = new Vector3();
+                    paused = true;
+                }
             }
-            if (dead)
-                dead = false;
-            //run state
-            doState[(int)currState]();
-            if (health <= 0)
-                die();
-            if(doAttack)
-            {
-                doAttack = false;
-                attackInstance = Instantiate(attack);
-                attackInstance.transform.position = attackPos.position;
-            }
-            //state clean up
-            if (prevState != currState)
-            {
-                doOnce = false;
-                animDone = false;
-                jump = false;
-                hit = false;
-                anim.SetInteger("state", (int)currState);
-                if (attackInstance != null)
-                    Destroy(attackInstance.gameObject);
-            }
-            prevState = currState;
         }
 
         void OnCollisionEnter(Collision col)

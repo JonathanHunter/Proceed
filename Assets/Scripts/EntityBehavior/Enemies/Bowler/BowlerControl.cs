@@ -15,6 +15,10 @@ namespace Assets.Scripts.EntityBehavior.Enemies.Bowler
         public float timer = 3f;
         public bool timerIsActive = false;
 
+        private bool paused = false;
+        private float animSpeed = 0;
+        private Vector3 vel = new Vector3();
+
         // Use this for initialization
         void Start()
         {
@@ -24,19 +28,36 @@ namespace Assets.Scripts.EntityBehavior.Enemies.Bowler
         // Update is called once per frame
         void Update()
         {
-            if (Util.GameState.paused)
-                return;
-            if (this.transform.position.y <= -20)
+            if (!Util.GameState.paused)
             {
-                Destroy(gameObject);
-            }
-
-            if (timerIsActive)
-            {
-                timer -= Time.deltaTime;
-                if (timer <= 0)
+                if (paused)
+                {
+                    paused = false;
+                    GetComponent<Rigidbody>().useGravity = true;
+                    GetComponent<Rigidbody>().velocity = vel;
+                }
+                if (this.transform.position.y <= -20)
                 {
                     Destroy(gameObject);
+                }
+
+                if (timerIsActive)
+                {
+                    timer -= Time.deltaTime;
+                    if (timer <= 0)
+                    {
+                        Destroy(gameObject);
+                    }
+                }
+            }
+            else
+            {
+                if (!paused)
+                {
+                    GetComponent<Rigidbody>().useGravity = false;
+                    vel = GetComponent<Rigidbody>().velocity;
+                    GetComponent<Rigidbody>().velocity = new Vector3();
+                    paused = true;
                 }
             }
         }

@@ -53,6 +53,10 @@ namespace Assets.Scripts.EntityBehavior
         private Vector3 moveDirection;
         private GameObject attackInstance;
 
+        private bool paused = false;
+        private float animSpeed = 0;
+        private Vector3 vel = new Vector3();
+
         void Start()
         {
             player = FindObjectOfType<Player.PlayerController>();
@@ -71,42 +75,62 @@ namespace Assets.Scripts.EntityBehavior
 
         void Update()
         {
-            if (Util.GameState.paused)
-                return;
-            if (state != prevState)
+            if (!Util.GameState.paused)
             {
-                doOnce = false;
-                prevState = state;
-                anim.SetInteger("state", state);
-                if (attackInstance != null)
-                    Destroy(attackInstance.gameObject);
-            }
-            Vector3 dirTowardsPlayer = player.transform.position - transform.position;
-            float angle = Vector3.Angle(dirTowardsPlayer, transform.forward);
-            angle = angle > 180f ? angle - 360f : angle;
-            float distance = Vector3.Distance(player.transform.position, transform.position);
-            RaycastHit[] obstacles = Physics.RaycastAll(transform.position, dirTowardsPlayer, distance, navObjectMask);
-            bool canSeePlayer = (obstacles.Length == 0) && (distance < sightDistance) && (angle > -(fov / 2)) && (angle < fov / 2);
-            bool infrontOfPlayer = (obstacles.Length == 0) && (distance < Vector3.Distance(attackPos.position, transform.position)) && (angle > -(fov / 4)) && (angle < fov / 4);
+                if (paused)
+                {
+                    paused = false;
+                    anim.speed = animSpeed;
+                    GetComponent<Rigidbody>().useGravity = true;
+                    GetComponent<Rigidbody>().velocity = vel;
+                }
+                if (state != prevState)
+                {
+                    doOnce = false;
+                    prevState = state;
+                    anim.SetInteger("state", state);
+                    if (attackInstance != null)
+                        Destroy(attackInstance.gameObject);
+                }
+                Vector3 dirTowardsPlayer = player.transform.position - transform.position;
+                float angle = Vector3.Angle(dirTowardsPlayer, transform.forward);
+                angle = angle > 180f ? angle - 360f : angle;
+                float distance = Vector3.Distance(player.transform.position, transform.position);
+                RaycastHit[] obstacles = Physics.RaycastAll(transform.position, dirTowardsPlayer, distance, navObjectMask);
+                bool canSeePlayer = (obstacles.Length == 0) && (distance < sightDistance) && (angle > -(fov / 2)) && (angle < fov / 2);
+                bool infrontOfPlayer = (obstacles.Length == 0) && (distance < Vector3.Distance(attackPos.position, transform.position)) && (angle > -(fov / 4)) && (angle < fov / 4);
 
-            state = machine.Run(animDone, canSeePlayer, player.dead, health < 2, infrontOfPlayer, distance, hit);
+                state = machine.Run(animDone, canSeePlayer, player.dead, health < 2, infrontOfPlayer, distance, hit);
 
-            switch (state)
-            {
-                case (int)EnemyStateMachine.State.Wait: Wait(); break;
-                case (int)EnemyStateMachine.State.Patrol: Patrol(); break;
-                case (int)EnemyStateMachine.State.Flee: Flee(); break;
-                case (int)EnemyStateMachine.State.Chase: Chase(); break;
-                case (int)EnemyStateMachine.State.Tired: Tired(); break;
-                case (int)EnemyStateMachine.State.Attack: Attack(); break;
-                case (int)EnemyStateMachine.State.Hit: Hit(); break;
+                switch (state)
+                {
+                    case (int)EnemyStateMachine.State.Wait: Wait(); break;
+                    case (int)EnemyStateMachine.State.Patrol: Patrol(); break;
+                    case (int)EnemyStateMachine.State.Flee: Flee(); break;
+                    case (int)EnemyStateMachine.State.Chase: Chase(); break;
+                    case (int)EnemyStateMachine.State.Tired: Tired(); break;
+                    case (int)EnemyStateMachine.State.Attack: Attack(); break;
+                    case (int)EnemyStateMachine.State.Hit: Hit(); break;
+                }
+                if (hit)
+                {
+                    hit = false;
+                    health--;
+                    if (health <= 0)
+                        Destroy(this.gameObject);
+                }
             }
-            if (hit)
+            else
             {
-                hit = false;
-                health--;
-                if (health <= 0)
-                    Destroy(this.gameObject);
+                if (!paused)
+                {
+                    animSpeed = anim.speed;
+                    anim.speed = 0;
+                    GetComponent<Rigidbody>().useGravity = false;
+                    vel = GetComponent<Rigidbody>().velocity;
+                    GetComponent<Rigidbody>().velocity = new Vector3();
+                    paused = true;
+                }
             }
         }
 
