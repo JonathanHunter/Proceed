@@ -71,6 +71,8 @@ namespace Assets.Scripts.EntityBehavior
 
         void Update()
         {
+            if (Util.GameState.paused)
+                return;
             if (state != prevState)
             {
                 doOnce = false;
@@ -115,6 +117,8 @@ namespace Assets.Scripts.EntityBehavior
 
         void OnTriggerEnter(Collider col)
         {
+            if (Util.GameState.paused)
+                return;
             hit = true;
         }
 

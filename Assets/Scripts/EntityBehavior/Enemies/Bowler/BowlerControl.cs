@@ -24,6 +24,8 @@ namespace Assets.Scripts.EntityBehavior.Enemies.Bowler
         // Update is called once per frame
         void Update()
         {
+            if (Util.GameState.paused)
+                return;
             if (this.transform.position.y <= -20)
             {
                 Destroy(gameObject);

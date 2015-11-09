@@ -98,6 +98,8 @@ namespace Assets.Scripts.Player
 
         void Update()
         {
+            if (Util.GameState.paused)
+                return;
             if (Input.GetKeyUp(KeyCode.U))
             {
                 die();
@@ -200,6 +202,8 @@ namespace Assets.Scripts.Player
 
         void OnTriggerEnter(Collider col)
         {
+            if (Util.GameState.paused)
+                return;
             if (col.gameObject.tag == "Level end")
             {
                 if (sluggish)
@@ -223,6 +227,8 @@ namespace Assets.Scripts.Player
 
         void OnTriggerStay(Collider col)
         {
+            if (Util.GameState.paused)
+                return;
             if (col.gameObject.CompareTag("Sand"))
             {
                 sluggish = true;
@@ -231,6 +237,8 @@ namespace Assets.Scripts.Player
 
         void OnTriggerExit(Collider col)
         {
+            if (Util.GameState.paused)
+                return;
             if (col.gameObject.CompareTag("Sand"))
             {
                 sluggish = false;
@@ -283,6 +291,8 @@ namespace Assets.Scripts.Player
         //fixed update runs on a timed cycle (for physics stuff)
         void FixedUpdate()
         {
+            if (Util.GameState.paused)
+                return;
             if (!ragdollIsActive)
             {
                 rgbdy.AddForce(2 * Physics.gravity * rgbdy.mass);

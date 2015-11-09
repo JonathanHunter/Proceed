@@ -36,6 +36,8 @@ namespace Assets.Scripts.EntityBehavior.Enemies.Cannon
         // Update is called once per frame
         void Update()
         {
+            if (Util.GameState.paused)
+                return;
             //DIE IF WE FALL
             if (this.transform.position.y <= -20)
             {
@@ -65,7 +67,8 @@ namespace Assets.Scripts.EntityBehavior.Enemies.Cannon
 
         void OnTriggerEnter(Collider other)
         {
-
+            if (Util.GameState.paused)
+                return;
             //WE GET HIT
             if (other.tag == "Hitbox")
             {
