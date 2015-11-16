@@ -11,5 +11,8 @@ namespace Assets.Scripts.Util
 
         /// <summary> The number of player deaths so far on this level. </summary>
         public int playerDeaths = 0;
+
+        /// <summary> Used to stop all objects when the pause menu comes up </summary>
+        public static bool paused = false;
     }
 }

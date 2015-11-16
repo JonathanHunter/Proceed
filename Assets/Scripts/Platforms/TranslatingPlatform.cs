@@ -28,6 +28,8 @@ namespace Assets.Scripts.Platforms
 
         void Update()
         {
+            if (Util.GameState.paused)
+                return;
             if (direction)
                 currentPoint += Time.deltaTime * speed;
             else
