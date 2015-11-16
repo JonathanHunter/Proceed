@@ -16,10 +16,11 @@ namespace Assets.Scripts.ProceduralGen
             new int[] { -1 },            // room 4
             new int[] { -1 },            // room 5
             new int[] { -1 },            // room 6
-            new int[] { -1 } };          // room 7
+            new int[] { -1 },            // room 7
+            new int[] { -1 } };          // room 8
 
     private static int TotalAttempts = 10000;
-
+          
         /// <summary> Error checks a sequence of rooms and fixes any invalid series. </summary>
         /// <param name="input"> The sequence of rooms. </param>
         /// <exception cref="UnableToCorrectSequenceException"> Thrown if the sequence can't be repaired. </exception>

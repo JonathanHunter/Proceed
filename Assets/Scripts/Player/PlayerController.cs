@@ -39,6 +39,8 @@ namespace Assets.Scripts.Player
         private float groundDetectionRadius = 1f;
         [SerializeField]
         private LayerMask excludeLayersAsGround;
+        [SerializeField]
+        private bool disable;
 
         private static bool doOnce = false;
         private static bool jump = false;
@@ -106,7 +108,7 @@ namespace Assets.Scripts.Player
 
         void Update()
         {
-            if (!Util.GameState.paused)
+            if (!Util.GameState.paused && !disable)
             {
                 if (paused)
                 {
