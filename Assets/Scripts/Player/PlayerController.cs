@@ -35,6 +35,10 @@ namespace Assets.Scripts.Player
         private AudioClip[] step2;
         [SerializeField]
         private AudioClip[] landing;
+        [SerializeField]
+        private float groundDetectionRadius = 1f;
+        [SerializeField]
+        private LayerMask excludeLayersAsGround;
 
         private static bool doOnce = false;
         private static bool jump = false;
@@ -286,19 +290,30 @@ namespace Assets.Scripts.Player
             soundPlayer.PlayOneShot(step2[(int)curMat], magnitude);
         }
 
+        public void OnDrawGizmos()
+        {
+            Gizmos.DrawWireSphere(new Vector3(foot.position.x, foot.position.y - 0.2f, foot.position.z), groundDetectionRadius);
+
+        }
+
         //detects if you are in the air
         private void TouchingSomething()
         {
-            int playerLayerMask = LayerMask.GetMask("Ignore Raycast", "Player");
+            //int playerLayerMask = LayerMask.GetMask("Ignore Raycast", "Player");
             //Invert the layer mask to check all but the player's layer:
-            playerLayerMask = ~playerLayerMask;
-            RaycastHit temp;
-            if (Physics.Raycast(new Vector3(foot.position.x, foot.position.y + 0.2f, foot.position.z), new Vector3(0, -1, 0), out temp, .2f, playerLayerMask))
+            int playerLayerMask = ~excludeLayersAsGround;
+
+            // Raycast Implementation:
+            //RaycastHit temp; Physics.Raycast(new Vector3(foot.position.x, foot.position.y + 0.2f, foot.position.z), new Vector3(0, -1, 0), out temp, .2f, playerLayerMask); Debug.DrawRay(new Vector3(foot.position.x, foot.position.y + 0.2f, foot.position.z), new Vector3(0, .2f, 0), Color.red);
+
+            Collider[] touching = Physics.OverlapSphere(new Vector3(foot.position.x, foot.position.y - 0.2f, foot.position.z), groundDetectionRadius, playerLayerMask);
+            //Takes first touching object
+            if (touching.Length > 0)
             {
-                Debug.DrawRay(new Vector3(foot.position.x, foot.position.y + 0.2f, foot.position.z), new Vector3(0, .2f, 0), Color.red);
-                this.transform.parent = temp.collider.transform.parent;
-                if (temp.collider.gameObject.tag == "Wood" || temp.collider.gameObject.tag == "Ice" || temp.collider.gameObject.tag == "Sand")
-                    curMat = (BlockMaterial)Enum.Parse(typeof(BlockMaterial), temp.collider.gameObject.tag);
+                //print(touching[0]);
+                this.transform.parent = touching[0].transform.parent;
+                if (touching[0].gameObject.tag == "Wood" || touching[0].gameObject.tag == "Ice" || touching[0].gameObject.tag == "Sand")
+                    curMat = (BlockMaterial)Enum.Parse(typeof(BlockMaterial), touching[0].gameObject.tag);
                 else
                     curMat = BlockMaterial.Wood;
                 if (inAir)
