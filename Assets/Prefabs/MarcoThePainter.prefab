@@ -1633,6 +1633,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &188580
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 468060}
+  m_Layer: 8
+  m_Name: attack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &188586
 GameObject:
   m_ObjectHideFlags: 1
@@ -2669,7 +2684,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 167824}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.58999991, z: 0}
+  m_LocalPosition: {x: -.00999999978, y: 2.58999991, z: 0}
   m_LocalScale: {x: 15, y: 15, z: 15}
   m_Children:
   - {fileID: 458586}
@@ -2682,6 +2697,7 @@ Transform:
   - {fileID: 428040}
   - {fileID: 475436}
   - {fileID: 475026}
+  - {fileID: 468060}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &447322
@@ -2949,6 +2965,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 403436}
   m_RootOrder: 0
+--- !u!4 &468060
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 188580}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.0403999984, y: .0362999998, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 447282}
+  m_RootOrder: 10
 --- !u!4 &468270
 Transform:
   m_ObjectHideFlags: 1
@@ -3472,6 +3500,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 9519350}
+  attack: {fileID: 112702, guid: 517322d7159f4e64f8e0554b168ed69f, type: 2}
+  attackPos: {fileID: 468060}
   foot: {fileID: 445448}
   soundPlayer: {fileID: 8236852}
   emitter: {fileID: 11448190}
@@ -3496,6 +3526,7 @@ MonoBehaviour:
   ragdoll: {fileID: 11408342, guid: d6f0a98f39947e1409ffb4a70fe0abb2, type: 2}
   tempRag: {fileID: 0}
   hitboxPrefab: {fileID: 11436542, guid: 9fbdede449c80f54c918c0c0a83aa74f, type: 2}
+  dead: 0
 --- !u!136 &13662158
 CapsuleCollider:
   m_ObjectHideFlags: 1
