@@ -3,7 +3,7 @@ using System.Xml;
 
 namespace Assets.Scripts.Util
 {
-    class CustomInput : MonoBehaviour
+    public class CustomInput : MonoBehaviour
     {
         /// <summary> This is used to define user inputs, changed to add or remove buttons. </summary>
         public enum UserInput { Up, Down, Left, Right, Attack, Jump, Pause, Accept, Cancel, TurnCameraLeft, TurnCameraRight }
