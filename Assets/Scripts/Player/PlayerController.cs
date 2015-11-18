@@ -161,10 +161,6 @@ namespace Assets.Scripts.Player
                 if (CustomInput.Bool(CustomInput.UserInput.Up) || CustomInput.Bool(CustomInput.UserInput.Down) || CustomInput.Bool(CustomInput.UserInput.Left) || CustomInput.Bool(CustomInput.UserInput.Right))
                     move = true;
                 TouchingSomething();
-                if ((int)currState == 3 && !inAir)
-                {
-                    jump = true;
-                }
                 //get next state
                 currState = machine.update(inAir, move, hit, animDone);
                 if (invunTimer > 0)
