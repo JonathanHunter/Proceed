@@ -10,7 +10,9 @@ namespace Assets.Scripts.Platforms
 
         void Update()
         {
-            if(die)
+            if (Util.GameState.paused)
+                return;
+            if (die)
             {
                 transform.Translate(-transform.up * Time.deltaTime * 2);
                 deathTime -= Time.deltaTime;
@@ -31,6 +33,8 @@ namespace Assets.Scripts.Platforms
 
         void OnTriggerEnter(Collider collider)
         {
+            if (Util.GameState.paused)
+                return;
             die = true;
         }
     }

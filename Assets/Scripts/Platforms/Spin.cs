@@ -16,6 +16,8 @@ namespace Assets.Scripts.Platforms
 
         void Update()
         {
+            if (Util.GameState.paused)
+                return;
             if (spinDirection)
             {
                 polarity = 1;

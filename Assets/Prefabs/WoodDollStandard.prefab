@@ -515,7 +515,7 @@ GameObject:
   - 65: {fileID: 6501446}
   m_Layer: 0
   m_Name: WoodDollStandard
-  m_TagString: enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1876,9 +1876,10 @@ MonoBehaviour:
   fearless: 0
   whiskerLength: 4.5
   emergencyWhiskerLength: 4
-  RunSpeed: .100000001
-  BackPedalSpeed: .0299999993
-  MaxTurnSpeed: 1
+  runSpeed: .100000001
+  chaseSpeed: .200000003
+  backPedalSpeed: .0299999993
+  maxTurnSpeed: 1
 --- !u!137 &13719622
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
@@ -2277,7 +2278,7 @@ Prefab:
       objectReference: {fileID: 112702, guid: 21b699204dc0e3a4abeeb61f78e5ce67, type: 2}
     - target: {fileID: 0}
       propertyPath: m_TagString
-      value: enemy
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

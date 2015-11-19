@@ -6,12 +6,16 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+  - enabled: 1
     path: Assets/Scenes/ProcedualLevel.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/JonathanGarden.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Garden_Larry.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/JCoatesGarden.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/CTanseyGarden.unity
+  - enabled: 0
+    path: Assets/Scenes/AITest.unity

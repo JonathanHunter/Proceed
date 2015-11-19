@@ -8,6 +8,8 @@ namespace Assets.Scripts.Platforms
         public float bounceForce;
         public AudioClip boing;
         public AudioSource soundPlayer;
+		public Animator bouncePadAnimator;
+        public bool shouldAnim = false;
 
         void Start()
         {
@@ -17,6 +19,8 @@ namespace Assets.Scripts.Platforms
 
         void OnTriggerEnter(Collider col)
         {
+            if (Util.GameState.paused)
+                return;
             Rigidbody rgbdy = col.gameObject.GetComponent<Rigidbody>();
             //if (rgbdy == null)
             //{
@@ -31,7 +35,13 @@ namespace Assets.Scripts.Platforms
             if (rgbdy != null)
             {
                 rgbdy.AddForce(this.transform.up * bounceForce, ForceMode.Impulse);
-                soundPlayer.PlayOneShot(boing);
+                //soundPlayer.PlayOneShot(boing);
+				bouncePadAnimator.SetTrigger("BounceTrigger");
+				print("bounce!");
+				if (shouldAnim == true)
+				{
+					bouncePadAnimator.SetTrigger("BounceTrigger");
+				}
             }
         }
     }

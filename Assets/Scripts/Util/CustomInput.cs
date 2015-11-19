@@ -1,10 +1,9 @@
-﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
-using UnityEngine;
+﻿using UnityEngine;
 using System.Xml;
 
 namespace Assets.Scripts.Util
 {
-    class CustomInput : MonoBehaviour
+    public class CustomInput : MonoBehaviour
     {
         /// <summary> This is used to define user inputs, changed to add or remove buttons. </summary>
         public enum UserInput { Up, Down, Left, Right, Attack, Jump, Pause, Accept, Cancel, TurnCameraLeft, TurnCameraRight }
@@ -34,7 +33,7 @@ namespace Assets.Scripts.Util
         /// This is used to define the default keybindings. 
         /// Syntax: keyBoard[INPUT, PLAYER_NUM] = KEYCODE;
         /// PLAYER_NUM is any number from 0 - 6, where 0 represents all controllers and 1-6 represents their respective player.
-        ///  </summary>
+        /// </summary>
         public static void DefaultKey()
         {
             if (keyBoard == null)
@@ -72,6 +71,14 @@ namespace Assets.Scripts.Util
             gamePad[(int)UserInput.Cancel, 0] = B;
             gamePad[(int)UserInput.TurnCameraLeft, 0] = RIGHT_STICK_LEFT;
             gamePad[(int)UserInput.TurnCameraRight, 0] = RIGHT_STICK_RIGHT;
+        }
+
+        private bool keyboardDisabled = false;
+
+        public bool KeyboardDisabled
+        {
+            get { return keyboardDisabled; }
+            set { keyboardDisabled = value; }
         }
 
         // Modification of the code below this should be unecessary.
@@ -283,6 +290,9 @@ namespace Assets.Scripts.Util
             get { return usingPad; }
         }
 
+        //Array for holding which controller name to reference
+        private static ControllerInputHandler.Controller[] gamePadMapping;
+
         void Awake()
         {
             bools = new bool[System.Enum.GetNames(typeof(UserInput)).Length, 7];
@@ -303,15 +313,19 @@ namespace Assets.Scripts.Util
             gamePad = new string[System.Enum.GetNames(typeof(UserInput)).Length, 7];
             rawSign = new int[System.Enum.GetNames(typeof(UserInput)).Length];
 
+            gamePadMapping = new ControllerInputHandler.Controller[7];
+            gamePadMapping[0].type = ControllerInputHandler.ControlType.Xbox;
+            gamePadMapping[0].joysticNum = 0;
+
             RawSign();
 
-            //if (FileExists())
-              //  Load();
-            //else
-            //{
+            if (FileExists())
+                Load();
+            else
+            {
                 Default();
-               // Store();
-            //}
+                Store();
+            }
         }
 
         /// <summary> Resets all the bindings to default. </summary>
@@ -386,7 +400,7 @@ namespace Assets.Scripts.Util
                 usingPad = false;
             if (AnyPadInput())
                 usingPad = true;
-            if (!usingPad)
+            if (!usingPad && !keyboardDisabled)
             {
                 for (int i = 0; i < System.Enum.GetNames(typeof(UserInput)).Length; i++)
                 {
@@ -401,6 +415,7 @@ namespace Assets.Scripts.Util
             }
             else
             {
+                UpdateGamePadArray();
                 for (int i = 0; i < System.Enum.GetNames(typeof(UserInput)).Length; i++)
                 {
                     for (int p = 0; p < 7; p++)
@@ -410,6 +425,49 @@ namespace Assets.Scripts.Util
                     }
                 }
             }
+        }
+
+        /// <summary> Update the GamePad Array to reference the indices and type of active controllers. </summary>
+        private void UpdateGamePadArray()
+        {
+            int controller = 1;
+            int ps3 = 0, ps4 = 0, xbox = 0;
+            string[] arr = Input.GetJoystickNames();
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (arr[i] != null && arr[i] != "")
+                {
+                    if (arr[i].ToLower().Contains("playstation") || arr[i].ToLower().Contains("ps3"))
+                    {
+                        gamePadMapping[controller].type = ControllerInputHandler.ControlType.PS3;
+                        ps3++;
+                    }
+                    else if (arr[i].ToLower().Contains("ps4") || arr[i].ToLower().Contains("wireless controller"))
+                    {
+                        gamePadMapping[controller].type = ControllerInputHandler.ControlType.PS4;
+                        ps4++;
+                    }
+                    else
+                    {
+                        gamePadMapping[controller].type = ControllerInputHandler.ControlType.Xbox;
+                        xbox++;
+                    }
+                    gamePadMapping[controller].joysticNum = i + 1;
+                    controller++;
+                }
+            }
+            for (; controller < 7; controller++)
+            {
+                gamePadMapping[controller].type = ControllerInputHandler.ControlType.Xbox;
+                gamePadMapping[controller].joysticNum = -1;
+            }
+            int max = Mathf.Max(ps3, ps4, xbox);
+            if(max == ps3)
+                gamePadMapping[0].type = ControllerInputHandler.ControlType.PS3;
+            else if(max == ps4)
+                gamePadMapping[0].type = ControllerInputHandler.ControlType.PS4;
+            else
+                gamePadMapping[0].type = ControllerInputHandler.ControlType.Xbox;
         }
 
         /// <summary> Used to see if the user has pressed any monitored input. </summary>
@@ -433,41 +491,41 @@ namespace Assets.Scripts.Util
         /// <returns> True if the user hit any input on the controller. </returns>
         public static bool AnyPadInput()
         {
-            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickX) != 0)
+            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickX, gamePadMapping[0]) != 0)
                 return true;
-            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickY) != 0)
+            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickY, gamePadMapping[0]) != 0)
                 return true;
-            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickX) != 0)
+            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickX, gamePadMapping[0]) != 0)
                 return true;
-            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickY) != 0)
+            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickY, gamePadMapping[0]) != 0)
                 return true;
-            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadX) != 0)
+            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadX, gamePadMapping[0]) != 0)
                 return true;
-            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadY) != 0)
+            if (ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadY, gamePadMapping[0]) != 0)
                 return true;
-            if (ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.LeftTrigger) != 0)
+            if (ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.LeftTrigger, gamePadMapping[0]) != 0)
                 return true;
-            if (ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.RightTrigger) != 0)
+            if (ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.RightTrigger, gamePadMapping[0]) != 0)
                 return true;
-            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.A))
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.A, gamePadMapping[0]))
                 return true;
-            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.B))
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.B, gamePadMapping[0]))
                 return true;
-            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.X))
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.X, gamePadMapping[0]))
                 return true;
-            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Y))
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Y, gamePadMapping[0]))
                 return true;
-            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftBumper))
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftBumper, gamePadMapping[0]))
                 return true;
-            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightBumper))
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightBumper, gamePadMapping[0]))
                 return true;
-            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Back))
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Back, gamePadMapping[0]))
                 return true;
-            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Start))
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Start, gamePadMapping[0]))
                 return true;
-            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftStickClick))
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftStickClick, gamePadMapping[0]))
                 return true;
-            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightStickClick))
+            if (ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightStickClick, gamePadMapping[0]))
                 return true;
             return false;
         }
@@ -491,20 +549,20 @@ namespace Assets.Scripts.Util
         {
             switch (gamePad[input, playerNumber])
             {
-                case LEFT_STICK_RIGHT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickX, playerNumber), playerNumber); break;
-                case LEFT_STICK_LEFT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickX, playerNumber), playerNumber); break;
-                case LEFT_STICK_UP: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickY, playerNumber), playerNumber); break;
-                case LEFT_STICK_DOWN: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickY, playerNumber), playerNumber); break;
-                case RIGHT_STICK_RIGHT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickX, playerNumber), playerNumber); break;
-                case RIGHT_STICK_LEFT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickX, playerNumber), playerNumber); break;
-                case RIGHT_STICK_UP: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickY, playerNumber), playerNumber); break;
-                case RIGHT_STICK_DOWN: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickY, playerNumber), playerNumber); break;
-                case DPAD_RIGHT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadX, playerNumber), playerNumber); break;
-                case DPAD_LEFT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadX, playerNumber), playerNumber); break;
-                case DPAD_UP: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadY, playerNumber), playerNumber); break;
-                case DPAD_DOWN: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadY, playerNumber), playerNumber); break;
-                case LEFT_TRIGGER: UpdateAxis(input, ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.LeftTrigger, playerNumber), playerNumber); break;
-                case RIGHT_TRIGGER: UpdateAxis(input, ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.RightTrigger, playerNumber), playerNumber); break;
+                case LEFT_STICK_RIGHT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickX, gamePadMapping[playerNumber]), playerNumber); break;
+                case LEFT_STICK_LEFT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickX, gamePadMapping[playerNumber]), playerNumber); break;
+                case LEFT_STICK_UP: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickY, gamePadMapping[playerNumber]), playerNumber); break;
+                case LEFT_STICK_DOWN: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.LeftStickY, gamePadMapping[playerNumber]), playerNumber); break;
+                case RIGHT_STICK_RIGHT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickX, gamePadMapping[playerNumber]), playerNumber); break;
+                case RIGHT_STICK_LEFT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickX, gamePadMapping[playerNumber]), playerNumber); break;
+                case RIGHT_STICK_UP: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickY, gamePadMapping[playerNumber]), playerNumber); break;
+                case RIGHT_STICK_DOWN: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.RightStickY, gamePadMapping[playerNumber]), playerNumber); break;
+                case DPAD_RIGHT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadX, gamePadMapping[playerNumber]), playerNumber); break;
+                case DPAD_LEFT: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadX, gamePadMapping[playerNumber]), playerNumber); break;
+                case DPAD_UP: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadY, gamePadMapping[playerNumber]), playerNumber); break;
+                case DPAD_DOWN: UpdateAxis(input, ControllerInputHandler.GetAxis(ControllerInputHandler.Axis.DPadY, gamePadMapping[playerNumber]), playerNumber); break;
+                case LEFT_TRIGGER: UpdateAxis(input, ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.LeftTrigger, gamePadMapping[playerNumber]), playerNumber); break;
+                case RIGHT_TRIGGER: UpdateAxis(input, ControllerInputHandler.GetTrigger(ControllerInputHandler.Triggers.RightTrigger, gamePadMapping[playerNumber]), playerNumber); break;
                 default: UpdateButton(input, playerNumber); break;
             }
         }
@@ -556,16 +614,16 @@ namespace Assets.Scripts.Util
         {
             switch (button)
             {
-                case A: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.A, playerNumber);
-                case B: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.B, playerNumber);
-                case X: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.X, playerNumber);
-                case Y: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Y, playerNumber);
-                case RB: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightBumper, playerNumber);
-                case LB: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftBumper, playerNumber);
-                case START: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Start, playerNumber);
-                case BACK: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Back, playerNumber);
-                case LEFT_STICK: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftStickClick, playerNumber);
-                default: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightStickClick, playerNumber);
+                case A: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.A, gamePadMapping[playerNumber]);
+                case B: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.B, gamePadMapping[playerNumber]);
+                case X: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.X, gamePadMapping[playerNumber]);
+                case Y: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Y, gamePadMapping[playerNumber]);
+                case RB: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightBumper, gamePadMapping[playerNumber]);
+                case LB: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftBumper, gamePadMapping[playerNumber]);
+                case START: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Start, gamePadMapping[playerNumber]);
+                case BACK: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.Back, gamePadMapping[playerNumber]);
+                case LEFT_STICK: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.LeftStickClick, gamePadMapping[playerNumber]);
+                default: return ControllerInputHandler.GetButton(ControllerInputHandler.Buttons.RightStickClick, gamePadMapping[playerNumber]);
             }
         }
 
@@ -576,16 +634,16 @@ namespace Assets.Scripts.Util
         {
             switch (button)
             {
-                case A: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.A, playerNumber);
-                case B: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.B, playerNumber);
-                case X: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.X, playerNumber);
-                case Y: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Y, playerNumber);
-                case RB: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.RightBumper, playerNumber);
-                case LB: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.LeftBumper, playerNumber);
-                case START: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Start, playerNumber);
-                case BACK: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Back, playerNumber);
-                case LEFT_STICK: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.LeftStickClick, playerNumber);
-                default: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.RightStickClick, playerNumber);
+                case A: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.A, gamePadMapping[playerNumber]);
+                case B: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.B, gamePadMapping[playerNumber]);
+                case X: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.X, gamePadMapping[playerNumber]);
+                case Y: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Y, gamePadMapping[playerNumber]);
+                case RB: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.RightBumper, gamePadMapping[playerNumber]);
+                case LB: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.LeftBumper, gamePadMapping[playerNumber]);
+                case START: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Start, gamePadMapping[playerNumber]);
+                case BACK: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.Back, gamePadMapping[playerNumber]);
+                case LEFT_STICK: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.LeftStickClick, gamePadMapping[playerNumber]);
+                default: return ControllerInputHandler.GetButtonUp(ControllerInputHandler.Buttons.RightStickClick, gamePadMapping[playerNumber]);
             }
         }
 

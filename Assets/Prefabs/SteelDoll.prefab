@@ -453,7 +453,7 @@ GameObject:
   - 65: {fileID: 6569628}
   m_Layer: 0
   m_Name: SteelDoll
-  m_TagString: enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1885,6 +1885,7 @@ MonoBehaviour:
   whiskerLength: 4.5
   emergencyWhiskerLength: 4
   runSpeed: .699999988
+  chaseSpeed: .200000003
   backPedalSpeed: .0299999993
   maxTurnSpeed: 3
 --- !u!137 &13708560
@@ -2278,7 +2279,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 150236}

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
+using UnityEngine;
 
 namespace Assets.Scripts.EntityBehavior
 {
@@ -32,12 +33,11 @@ namespace Assets.Scripts.EntityBehavior
 
         public int Run(bool animDone, bool playerSpotted, bool playerDead, bool hpLow, bool infrontOfPlayer, float distance, bool hit)
         {
-            Debug.Log(currState);
             switch (currState)
             {
-                case State.Wait: currState = Wait(hit); break;
+                case State.Wait: currState = Wait(hit, playerSpotted, distance); break;
                 case State.Patrol: currState = Patrol(playerSpotted, distance, hit); break;
-                case State.Flee: currState = Flee(playerDead, distance, hit); break;
+                case State.Flee: currState = Flee(playerDead, distance, hit, hpLow); break;
                 case State.Chase: currState = Chase(playerDead, infrontOfPlayer, distance, hpLow, hit); break;
                 case State.Tired: currState = Tired(hit); break;
                 case State.Attack: currState = Attack(animDone, playerDead, infrontOfPlayer, hpLow, hit); break;
@@ -46,7 +46,7 @@ namespace Assets.Scripts.EntityBehavior
             return (int)currState;
         }
 
-        private State Wait(bool hit)
+        private State Wait(bool hit, bool playerSpotted, float distance)
         {
             if (hit)
             {
@@ -58,6 +58,12 @@ namespace Assets.Scripts.EntityBehavior
             {
                 hold = 0;
                 return State.Patrol;
+            }
+            if ((playerSpotted && distance < aggresionRadius) || (distance < aggresionRadius / 2f))
+            {
+                if (coward)
+                    return State.Flee;
+                return State.Chase;
             }
             return State.Wait;
         }
@@ -78,12 +84,14 @@ namespace Assets.Scripts.EntityBehavior
             return State.Patrol;
         }
 
-        private State Flee(bool playerDead, float distance, bool hit)
+        private State Flee(bool playerDead, float distance, bool hit, bool hpLow)
         {
             if (hit)
                 return State.Hit;
             if (distance > fleeDistance || playerDead)
                 return State.Patrol;
+            if (hpLow && fearless)
+                return State.Chase;
             return State.Flee;
         }
 
