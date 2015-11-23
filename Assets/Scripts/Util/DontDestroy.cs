@@ -5,9 +5,16 @@ namespace Assets.Scripts.Util
 {
     class DontDestroy : MonoBehaviour
     {
+        private static GameObject instance;
         void Start()
         {
-            DontDestroyOnLoad(this.gameObject);
+            if (instance == null)
+            {
+                instance = this.gameObject;
+                DontDestroyOnLoad(this.gameObject);
+            }
+            else if(this.gameObject != instance)
+                Destroy(this.gameObject);
         }
     }
 }

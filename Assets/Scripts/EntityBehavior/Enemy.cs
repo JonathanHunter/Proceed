@@ -75,7 +75,7 @@ namespace Assets.Scripts.EntityBehavior
 
         void Update()
         {
-            if (!Util.GameState.paused)
+            if (Util.GameState.state == Util.GameState.State.Playing)
             {
                 if (paused)
                 {
@@ -141,7 +141,7 @@ namespace Assets.Scripts.EntityBehavior
 
         void OnTriggerEnter(Collider col)
         {
-            if (Util.GameState.paused)
+            if (Util.GameState.state != Util.GameState.State.Playing)
                 return;
             hit = true;
         }

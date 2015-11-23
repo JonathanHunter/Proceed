@@ -20,10 +20,19 @@ namespace Assets.Scripts.Menu
 
         void Update()
         {
-            if(Util.CustomInput.BoolFreshPress(Util.CustomInput.UserInput.Pause))
+            if (Util.GameState.state == Util.GameState.State.EndLevel || Util.GameState.state == Util.GameState.State.Gameover)
+                return;
+            if (Util.CustomInput.BoolFreshPress(Util.CustomInput.UserInput.Pause))
             {
-                Util.GameState.paused = !Util.GameState.paused;
-                menu.enabled = Util.GameState.paused;
+                if (Util.GameState.state != Util.GameState.State.Paused)
+                {
+                    Util.GameState.state = Util.GameState.State.Paused;
+                    EventSystem.current.SetSelectedGameObject(selected);
+                }
+                else
+                    Util.GameState.state = Util.GameState.State.Playing;
+
+                menu.enabled = Util.GameState.state == Util.GameState.State.Paused;
             }
             if(menu.enabled)
             {
@@ -45,13 +54,13 @@ namespace Assets.Scripts.Menu
 
         public void Resume()
         {
-            Util.GameState.paused = false;
+            Util.GameState.state = Util.GameState.State.Playing;
             menu.enabled = false;
         }
 
         public void Quit()
         {
-            Util.GameState.paused = false;
+            Util.GameState.state = Util.GameState.State.Playing;
             Application.LoadLevel("MainMenu");
         }
     }
