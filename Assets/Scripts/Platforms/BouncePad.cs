@@ -19,7 +19,7 @@ namespace Assets.Scripts.Platforms
 
         void OnTriggerEnter(Collider col)
         {
-            if (Util.GameState.paused)
+            if (Util.GameState.state == Util.GameState.State.Paused)
                 return;
             Rigidbody rgbdy = col.gameObject.GetComponent<Rigidbody>();
             //if (rgbdy == null)

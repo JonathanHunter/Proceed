@@ -108,7 +108,7 @@ namespace Assets.Scripts.Player
 
         void Update()
         {
-            if (!Util.GameState.paused && !disable)
+            if (Util.GameState.state == Util.GameState.State.Playing && !disable)
             {
                 if (paused)
                 {
@@ -228,7 +228,7 @@ namespace Assets.Scripts.Player
 
         void OnTriggerEnter(Collider col)
         {
-            if (Util.GameState.paused)
+            if (Util.GameState.state == Util.GameState.State.Paused)
                 return;
             if (col.gameObject.tag == "Level end")
             {
@@ -253,7 +253,7 @@ namespace Assets.Scripts.Player
 
         void OnTriggerStay(Collider col)
         {
-            if (Util.GameState.paused)
+            if (Util.GameState.state == Util.GameState.State.Paused)
                 return;
             if (col.gameObject.CompareTag("Sand"))
                 sluggish = true;
@@ -261,7 +261,7 @@ namespace Assets.Scripts.Player
 
         void OnTriggerExit(Collider col)
         {
-            if (Util.GameState.paused)
+            if (Util.GameState.state == Util.GameState.State.Paused)
                 return;
             if (col.gameObject.CompareTag("Sand"))
                 sluggish = false;
@@ -324,7 +324,7 @@ namespace Assets.Scripts.Player
         //fixed update runs on a timed cycle (for physics stuff)
         void FixedUpdate()
         {
-            if (Util.GameState.paused)
+            if (Util.GameState.state == Util.GameState.State.Paused)
                 return;
             if (!ragdollIsActive)
             {

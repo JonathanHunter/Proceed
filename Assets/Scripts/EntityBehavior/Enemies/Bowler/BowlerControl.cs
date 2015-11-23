@@ -28,7 +28,7 @@ namespace Assets.Scripts.EntityBehavior.Enemies.Bowler
         // Update is called once per frame
         void Update()
         {
-            if (!Util.GameState.paused)
+            if (Util.GameState.state == Util.GameState.State.Playing)
             {
                 if (paused)
                 {
