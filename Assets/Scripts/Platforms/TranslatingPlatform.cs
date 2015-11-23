@@ -46,5 +46,17 @@ namespace Assets.Scripts.Platforms
             }
             transform.position = Vector3.Lerp(pointA.position, pointB.position, currentPoint);
         }
+
+        public bool Direction
+        {
+            get { return direction; }
+            set { direction = value; }
+        }
+
+        public float CurrentPoint
+        {
+            get { return currentPoint; }
+            set { currentPoint = value; }
+        }
     }
 }
