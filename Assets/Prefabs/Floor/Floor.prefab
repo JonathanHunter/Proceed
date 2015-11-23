@@ -27306,7 +27306,7 @@ MonoBehaviour:
   - {fileID: 189620}
   - {fileID: 198496}
   rowWidth: 50
-  initPosition: {x: -450, y: 0, z: 0}
+  initPosition: {x: 450, y: 0, z: 0}
   player: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:

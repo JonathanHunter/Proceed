@@ -118,9 +118,9 @@ namespace Assets.Scripts.ProceduralGen
                     p = Instantiate(pillar);
                     p.transform.parent = levelRef.transform;
                     if (Random.Range(0f, 1f) < .5f)
-                        p.transform.localPosition = new Vector3(curBlock.transform.position.x, curBlock.transform.position.y, curBlock.transform.position.z + Random.Range(15f, 30f));
+                        p.transform.localPosition = new Vector3(curBlock.transform.position.x, curBlock.transform.position.y, curBlock.transform.position.z + Random.Range(20f, 30f));
                     else
-                        p.transform.localPosition = new Vector3(curBlock.transform.position.x, curBlock.transform.position.y, curBlock.transform.position.z - Random.Range(15f, 30f));
+                        p.transform.localPosition = new Vector3(curBlock.transform.position.x, curBlock.transform.position.y, curBlock.transform.position.z - Random.Range(20f, 30f));
                     Platforms.TranslatingPlatform translate = p.GetComponentInChildren<Platforms.TranslatingPlatform>();
                     translate.Direction = Random.Range(0f, 1f) < .5f;
                     translate.CurrentPoint = Random.Range(0f, 1f);
