@@ -56,6 +56,7 @@ namespace Assets.Scripts.ProceduralGen
                 return;
             Destroy(levelRef);
             levelInProgress = false;
+            gameState.numOfLevels++;
         }
 
         /// <summary> Sets the difficulty for the next level based on  player performance. </summary>

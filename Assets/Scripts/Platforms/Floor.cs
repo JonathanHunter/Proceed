@@ -13,16 +13,17 @@ namespace Assets.Scripts.Platforms
         /// <summary> The initial position of the first row. </summary>
         [SerializeField]
         private Vector3 initPosition;
+
+
         /// <summary> The current player position. </summary>
-        [SerializeField]
         private Transform player;
-
-
         /// <summary> The current center of the tile field. </summary>
         private Vector3 currentPlayerPosRef;
+
         void Start()
         {
             currentPlayerPosRef = Vector3.zero;
+            player = FindObjectOfType<Player.PlayerController>().transform;
         }
 
         void Update()

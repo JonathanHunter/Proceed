@@ -31,7 +31,7 @@ namespace Assets.Scripts.Menu
 
         void Update()
         {
-            if (!inInstructions)
+            if (!inInstructions && ! inCredits)
             {
                 if (EventSystem.current.currentSelectedGameObject == null)
                 {
@@ -56,6 +56,7 @@ namespace Assets.Scripts.Menu
 
         public void Play()
         {
+            Util.GameState.state = Util.GameState.State.Playing;
             Application.LoadLevel("ProcedualLevel");
         }
 

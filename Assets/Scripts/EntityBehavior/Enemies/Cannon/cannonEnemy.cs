@@ -38,7 +38,7 @@ namespace Assets.Scripts.EntityBehavior.Enemies.Cannon
         // Update is called once per frame
         void Update()
         {
-            if (!Util.GameState.paused)
+            if (Util.GameState.state == Util.GameState.State.Playing)
             {
                 if (paused)
                 {
@@ -86,7 +86,7 @@ namespace Assets.Scripts.EntityBehavior.Enemies.Cannon
 
         void OnTriggerEnter(Collider other)
         {
-            if (Util.GameState.paused)
+            if (Util.GameState.state != Util.GameState.State.Playing)
                 return;
             //WE GET HIT
             if (other.tag == "Hitbox")
