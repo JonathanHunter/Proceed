@@ -86,7 +86,7 @@ namespace Assets.Scripts.EntityBehavior.Enemies.Cannon
 
         void OnTriggerEnter(Collider other)
         {
-            if (Util.GameState.state == Util.GameState.State.Paused)
+            if (Util.GameState.state != Util.GameState.State.Playing)
                 return;
             //WE GET HIT
             if (other.tag == "Hitbox")

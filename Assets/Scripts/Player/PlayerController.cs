@@ -146,13 +146,9 @@ namespace Assets.Scripts.Player
                     }
                     else
                     {
-                        //respawn
-                        gameObject.transform.localScale = originalScale;
-                        ragdollIsActive = false;
-                        respawnTimer = respawnTimerReset;
-                        health = 5;
-                        transform.position = new Vector3(0, 0, 0);
+                        Respawn();
                         FindObjectOfType<GameState>().playerDeaths++;
+                        FindObjectOfType<GameState>().Lives--;
                         //this.GetComponent<Rigidbody>().useGravity = true;
                     }
                 }
@@ -212,8 +208,19 @@ namespace Assets.Scripts.Player
             }
         }
 
+        public void Respawn()
+        {
+            gameObject.transform.localScale = originalScale;
+            ragdollIsActive = false;
+            respawnTimer = respawnTimerReset;
+            health = 5;
+            transform.position = new Vector3(0, 0, 0);
+        }
+
         void OnCollisionEnter(Collision col)
         {
+            if (Util.GameState.state != Util.GameState.State.Playing)
+                return;
             if (col.gameObject.tag == "enemy")
             {
                 if (!invun)
@@ -228,17 +235,14 @@ namespace Assets.Scripts.Player
 
         void OnTriggerEnter(Collider col)
         {
-            if (Util.GameState.state == Util.GameState.State.Paused)
+            if (Util.GameState.state != Util.GameState.State.Playing)
                 return;
             if (col.gameObject.tag == "Level end")
             {
                 if (sluggish)
                     sluggish = false;
                 this.transform.parent = null;
-                //Menu Hookin
-                ProceduralGen.LevelGenerator level = FindObjectOfType<ProceduralGen.LevelGenerator>();
-                level.EndLevel();
-                level.StartLevel();
+                FindObjectOfType<Menu.EndLevel>().Activate();
             }
             else if (col.gameObject.tag == "Sand")
                 sluggish = true;
@@ -253,7 +257,7 @@ namespace Assets.Scripts.Player
 
         void OnTriggerStay(Collider col)
         {
-            if (Util.GameState.state == Util.GameState.State.Paused)
+            if (Util.GameState.state != Util.GameState.State.Playing)
                 return;
             if (col.gameObject.CompareTag("Sand"))
                 sluggish = true;
@@ -261,7 +265,7 @@ namespace Assets.Scripts.Player
 
         void OnTriggerExit(Collider col)
         {
-            if (Util.GameState.state == Util.GameState.State.Paused)
+            if (Util.GameState.state != Util.GameState.State.Playing)
                 return;
             if (col.gameObject.CompareTag("Sand"))
                 sluggish = false;
@@ -324,7 +328,7 @@ namespace Assets.Scripts.Player
         //fixed update runs on a timed cycle (for physics stuff)
         void FixedUpdate()
         {
-            if (Util.GameState.state == Util.GameState.State.Paused)
+            if (Util.GameState.state != Util.GameState.State.Playing)
                 return;
             if (!ragdollIsActive)
             {

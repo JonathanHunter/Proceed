@@ -10,7 +10,7 @@ namespace Assets.Scripts.Platforms
 
         void Update()
         {
-            if (Util.GameState.state == Util.GameState.State.Paused)
+            if (Util.GameState.state != Util.GameState.State.Playing)
                 return;
             if (die)
             {
@@ -33,7 +33,7 @@ namespace Assets.Scripts.Platforms
 
         void OnTriggerEnter(Collider collider)
         {
-            if (Util.GameState.state == Util.GameState.State.Paused)
+            if (Util.GameState.state != Util.GameState.State.Playing)
                 return;
             die = true;
         }

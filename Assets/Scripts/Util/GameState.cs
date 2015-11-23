@@ -16,9 +16,18 @@ namespace Assets.Scripts.Util
         public int playerDeaths = 0;
 
         /// <summary> Number of Lives the Player has left. </summary>
-        public int Lives = 0;
+        public int Lives = 10;
 
         /// <summary> The current state of the game. </summary>
         public static State state = State.Playing;
+
+        /// <summary> Current total playtime. </summary>
+        public float time = 0f;
+
+        void Update()
+        {
+            if(state == State.Playing)
+                time += Time.deltaTime;
+        }
     }
 }

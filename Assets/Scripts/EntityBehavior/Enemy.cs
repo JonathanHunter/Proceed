@@ -141,7 +141,7 @@ namespace Assets.Scripts.EntityBehavior
 
         void OnTriggerEnter(Collider col)
         {
-            if (Util.GameState.state == Util.GameState.State.Paused)
+            if (Util.GameState.state != Util.GameState.State.Playing)
                 return;
             hit = true;
         }

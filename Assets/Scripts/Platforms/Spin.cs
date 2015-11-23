@@ -16,7 +16,7 @@ namespace Assets.Scripts.Platforms
 
         void Update()
         {
-            if (Util.GameState.state == Util.GameState.State.Paused)
+            if (Util.GameState.state != Util.GameState.State.Playing)
                 return;
             if (spinDirection)
             {
