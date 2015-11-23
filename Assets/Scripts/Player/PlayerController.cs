@@ -148,7 +148,7 @@ namespace Assets.Scripts.Player
                     {
                         Respawn();
                         FindObjectOfType<GameState>().playerDeaths++;
-                        FindObjectOfType<GameState>().Lives--;
+                        FindObjectOfType<GameState>().lives--;
                         //this.GetComponent<Rigidbody>().useGravity = true;
                     }
                 }

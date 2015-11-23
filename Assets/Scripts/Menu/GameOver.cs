@@ -3,24 +3,32 @@ using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.Menu
 {
-    class EndLevel : MonoBehaviour
+    class GameOver : MonoBehaviour
     {
         [SerializeField]
         private Canvas menu;
         [SerializeField]
         private GameObject selected;
         [SerializeField]
-        private UnityEngine.UI.Text timeThisLevel;
-        [SerializeField]
         private UnityEngine.UI.Text total;
         [SerializeField]
-        private UnityEngine.UI.Text livesLeft;
+        private UnityEngine.UI.Text levelsCleared;
+        [SerializeField]
+        private UnityEngine.UI.Text totalHigh;
+        [SerializeField]
+        private UnityEngine.UI.Text levelsClearedHigh;
+        [SerializeField]
+        private GameObject newHigh;
+        [SerializeField]
+        private GameObject oldHigh;
+
 
         private GameObject currentSelected;
-        private float startTime, time, timeTotal;
+        private float startTime, timeTotal;
         private bool doOnce = false;
         private bool set = false;
-        private int lives;
+        private int numOfLevels;
+        private string hash = "Proceed";
 
         void Start()
         {
@@ -35,19 +43,38 @@ namespace Assets.Scripts.Menu
             {
                 if (set)
                 {
-                    Util.GameState.state = Util.GameState.State.EndLevel;
+                    Util.GameState.state = Util.GameState.State.Gameover;
                     FindObjectOfType<Player.PlayerController>().transform.parent = null;
                     set = false;
                 }
 
                 if (!doOnce)
                 {
+                    int oldLevel = 0;
+                    float oldTime = 999f;
+                    if(PlayerPrefs.HasKey(hash + "Level"))
+                    {
+                        oldLevel = PlayerPrefs.GetInt(hash + "Level");
+                        oldTime = PlayerPrefs.GetFloat(hash + "Time");
+                    }
                     timeTotal = FindObjectOfType<Util.GameState>().time;
-                    time = timeTotal - startTime;
-                    lives = FindObjectOfType<Util.GameState>().lives;
-                    timeThisLevel.text = time.ToString("N2") + " sec";
+                    numOfLevels = FindObjectOfType<Util.GameState>().numOfLevels;
                     total.text = timeTotal.ToString("N2") + " sec";
-                    livesLeft.text = lives + "";
+                    levelsCleared.text = numOfLevels + "";
+                    if(numOfLevels > oldLevel || (numOfLevels == oldLevel && timeTotal < oldTime))
+                    {
+                        newHigh.SetActive(true);
+                        oldHigh.SetActive(false);
+                        PlayerPrefs.SetInt(hash + "Level", numOfLevels);
+                        PlayerPrefs.SetFloat(hash + "Time", timeTotal);
+                    }
+                    else
+                    {
+                        newHigh.SetActive(false);
+                        oldHigh.SetActive(true);
+                        totalHigh.text = oldTime.ToString("N2") + " sec";
+                        levelsClearedHigh.text = oldLevel + "";
+                    }
                     doOnce = true;
                 }
 
@@ -65,18 +92,18 @@ namespace Assets.Scripts.Menu
             }
         }
 
-        public void Next()
+        public void Retry()
         {
             Util.GameState.state = Util.GameState.State.Playing;
             menu.enabled = false;
+            FindObjectOfType<Util.GameState>().Reset();
             FindObjectOfType<Player.PlayerController>().Respawn();
-            ProceduralGen.LevelGenerator level = FindObjectOfType<ProceduralGen.LevelGenerator>();
-            level.EndLevel();
-            level.StartLevel();
+            Application.LoadLevel("ProcedualLevel");
         }
 
         public void Quit()
         {
+            FindObjectOfType<Util.GameState>().Reset();
             Util.GameState.state = Util.GameState.State.Playing;
             FindObjectOfType<Player.PlayerController>().Respawn();
             Application.LoadLevel("MainMenu");

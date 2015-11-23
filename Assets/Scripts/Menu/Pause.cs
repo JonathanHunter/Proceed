@@ -24,8 +24,11 @@ namespace Assets.Scripts.Menu
                 return;
             if (Util.CustomInput.BoolFreshPress(Util.CustomInput.UserInput.Pause))
             {
-                if(Util.GameState.state != Util.GameState.State.Paused)
+                if (Util.GameState.state != Util.GameState.State.Paused)
+                {
                     Util.GameState.state = Util.GameState.State.Paused;
+                    EventSystem.current.SetSelectedGameObject(selected);
+                }
                 else
                     Util.GameState.state = Util.GameState.State.Playing;
 

@@ -56,6 +56,7 @@ namespace Assets.Scripts.Menu
 
         public void Play()
         {
+            Util.GameState.state = Util.GameState.State.Playing;
             Application.LoadLevel("ProcedualLevel");
         }
 
