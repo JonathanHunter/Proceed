@@ -29,11 +29,13 @@ namespace Assets.Scripts.Util
 
         void Update()
         {
-            Debug.Log(state);
             if (state == State.Playing)
                 time += Time.deltaTime;
-            if (lives <= 0)
+            if (lives == 0)
+            {
                 FindObjectOfType<Menu.GameOver>().Activate();
+                lives = -1;
+            }
         }
 
         /// <summary> Reset the game state to default. </summary>
