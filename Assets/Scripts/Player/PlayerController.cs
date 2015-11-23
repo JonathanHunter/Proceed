@@ -39,6 +39,8 @@ namespace Assets.Scripts.Player
         private float groundDetectionRadius = 1f;
         [SerializeField]
         private LayerMask excludeLayersAsGround;
+        [SerializeField]
+        private bool disable;
 
         private static bool doOnce = false;
         private static bool jump = false;
@@ -106,7 +108,7 @@ namespace Assets.Scripts.Player
 
         void Update()
         {
-            if (!Util.GameState.paused)
+            if (!Util.GameState.paused && !disable)
             {
                 if (paused)
                 {
@@ -159,10 +161,6 @@ namespace Assets.Scripts.Player
                 if (CustomInput.Bool(CustomInput.UserInput.Up) || CustomInput.Bool(CustomInput.UserInput.Down) || CustomInput.Bool(CustomInput.UserInput.Left) || CustomInput.Bool(CustomInput.UserInput.Right))
                     move = true;
                 TouchingSomething();
-                if ((int)currState == 3 && !inAir)
-                {
-                    jump = true;
-                }
                 //get next state
                 currState = machine.update(inAir, move, hit, animDone);
                 if (invunTimer > 0)
@@ -235,22 +233,22 @@ namespace Assets.Scripts.Player
             if (col.gameObject.tag == "Level end")
             {
                 if (sluggish)
-                {
                     sluggish = false;
-                }
                 this.transform.parent = null;
+                //Menu Hookin
                 ProceduralGen.LevelGenerator level = FindObjectOfType<ProceduralGen.LevelGenerator>();
                 level.EndLevel();
                 level.StartLevel();
             }
             else if (col.gameObject.tag == "Sand")
-            {
                 sluggish = true;
-            }
             else if (col.gameObject.CompareTag("enemy"))
             {
                 hit = true;
+                sluggish = false;
             }
+            else
+                sluggish = false;
         }
 
         void OnTriggerStay(Collider col)
@@ -258,9 +256,7 @@ namespace Assets.Scripts.Player
             if (Util.GameState.paused)
                 return;
             if (col.gameObject.CompareTag("Sand"))
-            {
                 sluggish = true;
-            }
         }
 
         void OnTriggerExit(Collider col)
@@ -268,9 +264,7 @@ namespace Assets.Scripts.Player
             if (Util.GameState.paused)
                 return;
             if (col.gameObject.CompareTag("Sand"))
-            {
                 sluggish = false;
-            }
         }
 
         public void AnimDetector()
@@ -468,6 +462,8 @@ namespace Assets.Scripts.Player
         {
             dead = true;
             health = 0;
+            sluggish = false;
+            FindObjectOfType<Platforms.Floor>().Reset();
             gameObject.transform.localScale = new Vector3(.001f, .001f, .001f);
             if (!ragdollIsActive)
             {

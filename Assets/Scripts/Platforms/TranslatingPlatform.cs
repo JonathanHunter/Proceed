@@ -16,14 +16,12 @@ namespace Assets.Scripts.Platforms
         private float speed = 10f;
 
         /// <summary> The direction to travel in.</summary>
-        private bool direction;
+        private bool direction = false;
         /// <summary> The objects current location between the two points.</summary>
-        private float currentPoint;
+        private float currentPoint = 0;
 
         void Start()
         {
-            direction = false;
-            currentPoint = 0f;
         }
 
         void Update()
@@ -45,6 +43,18 @@ namespace Assets.Scripts.Platforms
                 currentPoint = 0f;
             }
             transform.position = Vector3.Lerp(pointA.position, pointB.position, currentPoint);
+        }
+
+        public bool Direction
+        {
+            get { return direction; }
+            set { direction = value; }
+        }
+
+        public float CurrentPoint
+        {
+            get { return currentPoint; }
+            set { currentPoint = value; }
         }
     }
 }
