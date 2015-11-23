@@ -9,6 +9,9 @@ namespace Assets.Scripts.ProceduralGen
         /// <summary> The set of blocks used to generate levels. </summary>
         [SerializeField]
         private BlockSet blockSet;
+        /// <summary> A piller prefab </summary>
+        [SerializeField]
+        private GameObject pillar;
         /// <summary> Ref to player </summary>
         [SerializeField]
         private Player.PlayerController player;
@@ -52,7 +55,6 @@ namespace Assets.Scripts.ProceduralGen
             if (!levelInProgress)
                 return;
             Destroy(levelRef);
-            //TODO: Clean up any spawned objects, bullets, enemies, etc.
             levelInProgress = false;
         }
 
@@ -99,6 +101,7 @@ namespace Assets.Scripts.ProceduralGen
         {
             levelRef = new GameObject("map");
             Block curBlock = null, lastBlock = null;
+            GameObject p;
             lastBlock = Instantiate(blockSet.startBlock.gameObject).GetComponent<Block>();
             lastBlock.transform.parent = levelRef.transform;
             lastBlock.transform.localPosition = new Vector3(0, 0, 0);
@@ -110,6 +113,18 @@ namespace Assets.Scripts.ProceduralGen
                     curBlock = Instantiate(blockSet.blocks[sequence[i]].gameObject).GetComponent<Block>();
                 curBlock.transform.parent = levelRef.transform;
                 curBlock.transform.localPosition = new Vector3(lastBlock.endBlock.position.x, 0, 0);
+                if (Random.Range(0f, 1f) < .6f)
+                {
+                    p = Instantiate(pillar);
+                    p.transform.parent = levelRef.transform;
+                    if (Random.Range(0f, 1f) < .5f)
+                        p.transform.localPosition = new Vector3(curBlock.transform.position.x, curBlock.transform.position.y, curBlock.transform.position.z + Random.Range(20f, 30f));
+                    else
+                        p.transform.localPosition = new Vector3(curBlock.transform.position.x, curBlock.transform.position.y, curBlock.transform.position.z - Random.Range(20f, 30f));
+                    Platforms.TranslatingPlatform translate = p.GetComponentInChildren<Platforms.TranslatingPlatform>();
+                    translate.Direction = Random.Range(0f, 1f) < .5f;
+                    translate.CurrentPoint = Random.Range(0f, 1f);
+                }
                 lastBlock = curBlock;
             }
             curBlock = Instantiate(blockSet.endBlock.gameObject).GetComponent<Block>();
