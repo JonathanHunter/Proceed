@@ -31,7 +31,7 @@ namespace Assets.Scripts.Menu
 
         void Update()
         {
-            if (!inInstructions)
+            if (!inInstructions && ! inCredits)
             {
                 if (EventSystem.current.currentSelectedGameObject == null)
                 {
