@@ -8,6 +8,7 @@ namespace Assets.Scripts.Player
 
         public float destructionTimer = 3f;
         public Transform HipN;
+		public bool shouldDisappear = true;
 
         // Use this for initialization
         void Start()
@@ -15,17 +16,20 @@ namespace Assets.Scripts.Player
 
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-            if (destructionTimer > 0)
-            {
-                destructionTimer -= Time.deltaTime;
-            }
-            else
-            {
-                Destroy(this.gameObject);
-            }
+		// Update is called once per frame
+		void Update()
+		{
+			if (shouldDisappear)
+			{
+				if (destructionTimer > 0)
+				{
+					destructionTimer -= Time.deltaTime;
+				}
+				else
+				{
+					Destroy(this.gameObject);
+				}
+			}
         }
     }
 }
