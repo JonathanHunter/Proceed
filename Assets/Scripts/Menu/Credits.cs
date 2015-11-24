@@ -76,5 +76,17 @@ namespace Assets.Scripts.Menu
             credits[currentImage - 1].MoveTo(middle);
             currentImage--;
         }
+
+        public void Left()
+        {
+            if (currentImage > 0)
+                RightShift();
+        }
+
+        public void Right()
+        {
+            if (currentImage < credits.Length - 1)
+                LeftShift();
+        }
     }
 }
