@@ -554,6 +554,7 @@ RectTransform:
   - {fileID: 146237361}
   - {fileID: 1700030694}
   - {fileID: 1421618874}
+  - {fileID: 505505729}
   m_Father: {fileID: 1866361816}
   m_RootOrder: 0
   m_AnchorMin: {x: .5, y: .5}
@@ -603,6 +604,97 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1500ab2ff5e0115499ff0564d3c95c18, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &505505728
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 505505729}
+  - 222: {fileID: 505505732}
+  - 114: {fileID: 505505731}
+  - 114: {fileID: 505505730}
+  m_Layer: 5
+  m_Name: Credit (4)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &505505729
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 505505728}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 424254543}
+  m_RootOrder: 4
+  m_AnchorMin: {x: .5, y: .5}
+  m_AnchorMax: {x: .5, y: .5}
+  m_AnchoredPosition: {x: 0, y: 1.99996948}
+  m_SizeDelta: {x: 800, y: 600}
+  m_Pivot: {x: .5, y: .5}
+--- !u!114 &505505730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 505505728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 6d4aa5a2112bf95448cc6f113863e27d, type: 3}
+    m_FontSize: 18
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: "Outside Resources:\r\nSounds:\r\nwood step: https://www.freesound.org/people/D%20W/sounds/152788/
+    \r\nice step: https://www.freesound.org/people/j_p_higgins/sounds/262635/ \r\nsand
+    step: https://www.freesound.org/people/pillonoise/sounds/160774/\r\nsand land:
+    https://www.freesound.org/people/nextmaking/sounds/85999/ \r\nice land: https://www.freesound.org/people/S.%20Dedalus/sounds/211160/
+    \r\nwood land: https://www.freesound.org/people/lucaslara/sounds/154465/ \r\nboing:
+    https://www.freesound.org/people/plingativator/sounds/188869/ \r\ncannon: http://www.freesound.org/people/Isaac200000/sounds/184650/
+    \r\n\nTextures:\r\nSand/Darkwood/Rope Texture : http://mayang.com/textures/Nature/images/Sand/sahara_sand_patterns_220511.JPG\r\n"
+--- !u!114 &505505731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 505505728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62a7dea9f0ba06247b66d0aa01071255, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 500
+--- !u!222 &505505732
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 505505728}
 --- !u!1 &523564116
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,7 +728,7 @@ RectTransform:
   m_RootOrder: 4
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 0, y: -108}
+  m_AnchoredPosition: {x: 0, y: -244}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &523564118
@@ -2703,6 +2795,7 @@ MonoBehaviour:
   - {fileID: 146237363}
   - {fileID: 1700030696}
   - {fileID: 1421618876}
+  - {fileID: 505505731}
   left: {fileID: 828335419}
   middle: {fileID: 340040358}
   right: {fileID: 321187398}
