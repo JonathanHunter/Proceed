@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Assets.Scripts.Util;
