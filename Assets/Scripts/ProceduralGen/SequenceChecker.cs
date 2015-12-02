@@ -9,15 +9,23 @@ namespace Assets.Scripts.ProceduralGen
     {
         /// <summary> One index per room with each element pointing to an array of illegal follow up rooms denoted by their number, -1 means any room can follow. </summary>
         private static int[][] invalidFollowUp = new int[][] {
-            new int[] { -1 },            // room 0
-            new int[] { -1 },            // room 1
-            new int[] { 2 },             // room 2
-            new int[] { -1 },            // room 3
-            new int[] { -1 },            // room 4
-            new int[] { -1 },            // room 5
-            new int[] { -1 },            // room 6
-            new int[] { -1 },            // room 7
-            new int[] { -1 } };          // room 8
+            new int[] { -1 },               // room 0   (Thin Platform)
+            new int[] { 1, 3, 9, 10 },      // room 1   (HBlock)
+            new int[] { 2, 5 },             // room 2   (Horizonal Translate)
+            new int[] { 1, 3, 9, 10 },      // room 3   (AI platform open)
+            new int[] { -1 },               // room 4   (Sandbox)
+            new int[] { 2, 5 },             // room 5   (Vertical Translate platform)
+            new int[] { 6 },                // room 6   (Cannon Spinning 1)
+            new int[] { -1 },               // room 7   (Spin)
+            new int[] { -1 },               // room 8   (trap)
+            new int[] { 1, 3, 9, 10 },      // room 9   (AI Obstacle Platform)
+            new int[] { 1, 3, 9, 10 },      // room 10  (AI Narrow Platform)
+            new int[] { -1 },               // room 11  (Ice spin)
+            new int[] { -1 },               // room 12  (Bounce Pads)
+            new int[] { 13 },               // room 13  (Cannon Spinning 2)
+            new int[] { 14, 16 },           // room 14  (Double spin 1)
+            new int[] { -1 },               // room 15  (Tall platform)
+            new int[] { 14, 16 } };         // room 16  (Double spin 2)
 
     private static int TotalAttempts = 10000;
           

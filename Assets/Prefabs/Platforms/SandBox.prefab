@@ -11,7 +11,7 @@ GameObject:
   - 114: {fileID: 11446148}
   m_Layer: 0
   m_Name: SandBox
-  m_TagString: Wood
+  m_TagString: Sand
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29,7 +29,7 @@ GameObject:
   - 23: {fileID: 2309752}
   m_Layer: 0
   m_Name: StationaryPlatform
-  m_TagString: Wood
+  m_TagString: Sand
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,7 +44,7 @@ GameObject:
   - 4: {fileID: 460886}
   m_Layer: 0
   m_Name: end
-  m_TagString: Untagged
+  m_TagString: Sand
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -62,7 +62,7 @@ GameObject:
   - 23: {fileID: 2308316}
   m_Layer: 0
   m_Name: StationaryPlatform (4)
-  m_TagString: Wood
+  m_TagString: Sand
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -80,7 +80,7 @@ GameObject:
   - 23: {fileID: 2319216}
   m_Layer: 0
   m_Name: StationaryPlatform (2)
-  m_TagString: Wood
+  m_TagString: Sand
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -98,7 +98,7 @@ GameObject:
   - 23: {fileID: 2340940}
   m_Layer: 0
   m_Name: StationaryPlatform (3)
-  m_TagString: Wood
+  m_TagString: Sand
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -116,7 +116,7 @@ GameObject:
   - 23: {fileID: 2396488}
   m_Layer: 0
   m_Name: StationaryPlatform (1)
-  m_TagString: Wood
+  m_TagString: Sand
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -446,7 +446,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_TagString
+      value: Sand
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 103808}

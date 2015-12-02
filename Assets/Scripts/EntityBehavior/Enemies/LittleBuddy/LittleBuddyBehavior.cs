@@ -1,6 +1,7 @@
 ﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
 using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Player;
 
 namespace Assets.Scripts.EntityBehavior
 {
@@ -56,7 +57,11 @@ namespace Assets.Scripts.EntityBehavior
         private float animSpeed = 0;
         private Vector3 vel = new Vector3();
 
-        void Start()
+
+		public ragdollBody ragdoll;
+		private ragdollBody tempRag;
+
+		void Start()
         {
             player = FindObjectOfType<Player.PlayerController>();
             state = 0;
@@ -111,14 +116,19 @@ namespace Assets.Scripts.EntityBehavior
                     case (int)EnemyStateMachine.State.Attack: Attack(); break;
                     case (int)EnemyStateMachine.State.Hit: Hit(); break;
                 }
-                if (hit)
-                {
-                    hit = false;
-                    health--;
-                    if (health <= 0)
-                        Destroy(this.gameObject);
-                }
-            }
+				if (hit)
+				{
+					hit = false;
+					health--;
+				}
+				if (health <= 0)
+				{
+					tempRag = GameObject.Instantiate<ragdollBody>(ragdoll);
+					tempRag.transform.position = this.transform.position;
+					tempRag.shouldDisappear = false;
+					Destroy(this.gameObject);
+				}
+			}
             else
             {
                 if (!paused)

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
+using UnityEngine;
 using System.Xml;
 
 namespace Assets.Scripts.Util
@@ -319,13 +320,15 @@ namespace Assets.Scripts.Util
 
             RawSign();
 
-            if (FileExists())
-                Load();
-            else
-            {
-                Default();
-                Store();
-            }
+            Default();
+
+            //if (FileExists())
+            //    Load();
+            //else
+            //{
+            //    Default();
+            //    Store();
+            //}
         }
 
         /// <summary> Resets all the bindings to default. </summary>

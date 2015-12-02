@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//Proceed: Jonathan Hunter, Larry Smith, Justin Coates, Chris Tansey
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.Menu
@@ -74,6 +75,18 @@ namespace Assets.Scripts.Menu
             images[currentImage].MoveTo(right);
             images[currentImage - 1].MoveTo(middle);
             currentImage--;
+        }
+
+        public void Left()
+        {
+            if (currentImage > 0)
+                RightShift();
+        }
+
+        public void Right()
+        {
+            if (currentImage < images.Length - 1)
+                LeftShift();
         }
     }
 }
