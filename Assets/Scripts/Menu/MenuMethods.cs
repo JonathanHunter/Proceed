@@ -34,6 +34,8 @@ namespace Assets.Scripts.Menu
         {
             if (!inInstructions && ! inCredits)
             {
+                if (Input.GetKey(KeyCode.Escape))
+                    Application.Quit();
                 if (EventSystem.current.currentSelectedGameObject == null)
                 {
                     if(inCredits)

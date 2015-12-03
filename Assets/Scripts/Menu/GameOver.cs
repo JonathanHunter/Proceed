@@ -15,9 +15,13 @@ namespace Assets.Scripts.Menu
         [SerializeField]
         private UnityEngine.UI.Text levelsCleared;
         [SerializeField]
+        private UnityEngine.UI.Text coins;
+        [SerializeField]
         private UnityEngine.UI.Text totalHigh;
         [SerializeField]
         private UnityEngine.UI.Text levelsClearedHigh;
+        [SerializeField]
+        private UnityEngine.UI.Text coinsHigh;
         [SerializeField]
         private GameObject newHigh;
         [SerializeField]
@@ -28,7 +32,7 @@ namespace Assets.Scripts.Menu
         private float startTime, timeTotal;
         private bool doOnce = false;
         private bool set = false;
-        private int numOfLevels;
+        private int numOfLevels, coinNum, coinTNum;
         private string hash = "Proceed";
 
         void Start()
@@ -53,21 +57,31 @@ namespace Assets.Scripts.Menu
                 {
                     int oldLevel = 0;
                     float oldTime = 999f;
+                    int oldCoins = 0;
+                    int oldCoinsT = 999;
                     if(PlayerPrefs.HasKey(hash + "Level"))
                     {
                         oldLevel = PlayerPrefs.GetInt(hash + "Level");
                         oldTime = PlayerPrefs.GetFloat(hash + "Time");
+                        oldCoins = PlayerPrefs.GetInt(hash + "Coins");
+                        oldCoinsT = PlayerPrefs.GetInt(hash + "CoinsT");
                     }
-                    timeTotal = FindObjectOfType<Util.GameState>().time;
-                    numOfLevels = FindObjectOfType<Util.GameState>().numOfLevels;
+                    Util.GameState state = FindObjectOfType<Util.GameState>();
+                    timeTotal = state.time;
+                    numOfLevels = state.numOfLevels;
+                    coinNum = state.totalCoins + state.currentCoins;
+                    coinTNum = state.totalObtainableCoins + state.currentObtainableCoins;
                     total.text = timeTotal.ToString("N2") + " sec";
                     levelsCleared.text = numOfLevels + "";
-                    if(numOfLevels > oldLevel || (numOfLevels == oldLevel && timeTotal < oldTime))
+                    coins.text = coinNum + " / " + coinTNum;
+                    if (numOfLevels > oldLevel || (numOfLevels == oldLevel && ((coinNum / coinTNum) > (oldCoins / oldCoinsT) || timeTotal < oldTime)))
                     {
                         newHigh.SetActive(true);
                         oldHigh.SetActive(false);
                         PlayerPrefs.SetInt(hash + "Level", numOfLevels);
                         PlayerPrefs.SetFloat(hash + "Time", timeTotal);
+                        PlayerPrefs.SetInt(hash + "Level", numOfLevels);
+                        PlayerPrefs.SetInt(hash + "Level", numOfLevels);
                     }
                     else
                     {
@@ -75,6 +89,7 @@ namespace Assets.Scripts.Menu
                         oldHigh.SetActive(true);
                         totalHigh.text = oldTime.ToString("N2") + " sec";
                         levelsClearedHigh.text = oldLevel + "";
+                        coinsHigh.text = oldCoins + " / " + oldCoinsT;
                     }
                     doOnce = true;
                 }

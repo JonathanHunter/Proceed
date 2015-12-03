@@ -36,6 +36,8 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private AudioClip[] landing;
         [SerializeField]
+        private AudioClip ping;
+        [SerializeField]
         private float groundDetectionRadius = 1f;
         [SerializeField]
         private LayerMask excludeLayersAsGround;
@@ -250,6 +252,12 @@ namespace Assets.Scripts.Player
             {
                 hit = true;
                 sluggish = false;
+            }
+            else if (col.gameObject.CompareTag("Coin"))
+            {
+                hit = false;
+                sluggish = false;
+                soundPlayer.PlayOneShot(ping);
             }
             else
                 sluggish = false;

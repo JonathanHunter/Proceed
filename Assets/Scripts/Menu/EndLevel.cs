@@ -16,6 +16,8 @@ namespace Assets.Scripts.Menu
         private UnityEngine.UI.Text total;
         [SerializeField]
         private UnityEngine.UI.Text livesLeft;
+        [SerializeField]
+        private UnityEngine.UI.Text coins;
 
         private GameObject currentSelected;
         private float startTime, time, timeTotal;
@@ -49,6 +51,7 @@ namespace Assets.Scripts.Menu
                     timeThisLevel.text = time.ToString("N2") + " sec";
                     total.text = timeTotal.ToString("N2") + " sec";
                     livesLeft.text = lives + "";
+                    coins.text = FindObjectOfType<Util.GameState>().currentCoins + " / " + FindObjectOfType<Util.GameState>().currentObtainableCoins;
                     doOnce = true;
                 }
 
@@ -88,6 +91,7 @@ namespace Assets.Scripts.Menu
             set = true;
             menu.enabled = true;
             EventSystem.current.SetSelectedGameObject(selected);
+            doOnce = false;
         }
     }
 }

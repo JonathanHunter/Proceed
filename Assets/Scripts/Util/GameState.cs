@@ -27,6 +27,18 @@ namespace Assets.Scripts.Util
         /// <summary> Current total playtime. </summary>
         public float time = 0f;
 
+        /// <summary> The number of coins the player has collected this level. </summary>
+        public int currentCoins;
+
+        /// <summary> The total number of coins the player can collect this level. </summary>
+        public int currentObtainableCoins;
+
+        /// <summary> The total number of coins the player has actually collected. </summary>
+        public int totalCoins;
+        
+        /// <summary> The total number of coins the player could have collected. </summary>
+        public int totalObtainableCoins;
+        
         void Update()
         {
             if (state == State.Playing)

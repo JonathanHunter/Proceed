@@ -43,7 +43,8 @@ namespace Assets.Scripts.ProceduralGen
             if (levelInProgress)
                 EndLevel();
             DetermineDifficulty();
-            int[] level = GenerateLevel(gameState.difficulty, 0, gameState.difficulty > blockSet.blocks.Length ? blockSet.blocks.Length : gameState.difficulty, Random.Range(0, 50000));
+            int[] level = GenerateLevel(gameState.difficulty, 0, gameState.difficulty > blockSet.blocks.Length ? blockSet.blocks.Length : gameState.difficulty,
+                (int)Random.Range(-500000000, 500000000));
             InstantiateGameObjects(level);
             levelInProgress = true;
             player.transform.position = new Vector3(0, 0, 0);
@@ -57,6 +58,10 @@ namespace Assets.Scripts.ProceduralGen
             Destroy(levelRef);
             levelInProgress = false;
             gameState.numOfLevels++;
+            gameState.totalCoins += gameState.currentCoins;
+            gameState.totalObtainableCoins += gameState.currentObtainableCoins;
+            gameState.currentCoins = 0;
+            gameState.currentObtainableCoins = 0;
         }
 
         /// <summary> Sets the difficulty for the next level based on  player performance. </summary>
