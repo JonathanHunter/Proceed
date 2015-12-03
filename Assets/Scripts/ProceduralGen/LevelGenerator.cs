@@ -56,6 +56,9 @@ namespace Assets.Scripts.ProceduralGen
             if (!levelInProgress)
                 return;
             Destroy(levelRef);
+            Player.ragdollBody[] rag = FindObjectsOfType<Player.ragdollBody>();
+            foreach (Player.ragdollBody r in rag)
+                Destroy(r.gameObject);
             levelInProgress = false;
             gameState.numOfLevels++;
             gameState.totalCoins += gameState.currentCoins;

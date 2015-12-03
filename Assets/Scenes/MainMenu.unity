@@ -23,7 +23,7 @@ RenderSettings:
   m_AmbientSkyColor: {r: .352999985, g: .352999985, b: .352999985, a: 1}
   m_AmbientEquatorColor: {r: .114, g: .125, b: .133000001, a: 1}
   m_AmbientGroundColor: {r: .0469999984, g: .0430000015, b: .0350000001, a: 1}
-  m_AmbientIntensity: 1
+  m_AmbientIntensity: .5
   m_AmbientMode: 3
   m_SkyboxMaterial: {fileID: 2100000, guid: 30257966b5c06d9469bde9fc2b4b92ab, type: 2}
   m_HaloStrength: .5
@@ -34,7 +34,7 @@ RenderSettings:
   m_DefaultReflectionMode: 0
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 1
-  m_ReflectionIntensity: 1
+  m_ReflectionIntensity: .100000001
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
 --- !u!157 &3
@@ -438,9 +438,9 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 11494098, guid: d09cd3f884b7f1a46817d1aeb14acf40, type: 2}
-      propertyPath: disable
-      value: 1
+    - target: {fileID: 10891340, guid: d09cd3f884b7f1a46817d1aeb14acf40, type: 2}
+      propertyPath: m_Intensity
+      value: .349999994
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d09cd3f884b7f1a46817d1aeb14acf40, type: 2}

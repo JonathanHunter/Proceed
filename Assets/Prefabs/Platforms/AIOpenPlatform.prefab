@@ -6555,7 +6555,7 @@ MonoBehaviour:
   chaseSpeed: .400000006
   backPedalSpeed: .0299999993
   maxTurnSpeed: 6
-  ragdoll: {fileID: 0}
+  ragdoll: {fileID: 11430930, guid: 687020a4c06dc044b8b7227e7822d459, type: 2}
 --- !u!114 &11481076
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6593,7 +6593,7 @@ MonoBehaviour:
   chaseSpeed: .400000006
   backPedalSpeed: .0299999993
   maxTurnSpeed: 6
-  ragdoll: {fileID: 0}
+  ragdoll: {fileID: 11430930, guid: 687020a4c06dc044b8b7227e7822d459, type: 2}
 --- !u!114 &11487872
 MonoBehaviour:
   m_ObjectHideFlags: 1

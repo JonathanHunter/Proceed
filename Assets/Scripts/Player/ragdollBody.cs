@@ -19,7 +19,7 @@ namespace Assets.Scripts.Player
 		// Update is called once per frame
 		void Update()
 		{
-			if (shouldDisappear)
+			if (shouldDisappear || transform.position.y < -20)
 			{
 				if (destructionTimer > 0)
 				{

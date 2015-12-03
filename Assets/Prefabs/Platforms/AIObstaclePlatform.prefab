@@ -4494,7 +4494,7 @@ MonoBehaviour:
   chaseSpeed: .200000003
   backPedalSpeed: .0299999993
   maxTurnSpeed: 5
-  ragdoll: {fileID: 0}
+  ragdoll: {fileID: 11463634, guid: 34677c79b68ff404b93656927fc78e44, type: 2}
 --- !u!137 &13710412
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

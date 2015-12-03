@@ -23,7 +23,7 @@ namespace Assets.Scripts.Util
 
         void Update()
         {
-            if (Util.GameState.state != Util.GameState.State.Playing)
+            if (Util.GameState.state != Util.GameState.State.Playing || player.transform.position.y < -20)
                 return;
             theta += (Util.CustomInput.Raw(CustomInput.UserInput.TurnCameraLeft) + Util.CustomInput.Raw(CustomInput.UserInput.TurnCameraRight)) * Time.deltaTime * 90;
             if (theta > 360f)

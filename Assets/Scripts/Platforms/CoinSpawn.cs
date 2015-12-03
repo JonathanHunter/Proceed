@@ -17,7 +17,9 @@ namespace Assets.Scripts.Platforms
             GameObject temp = Instantiate(Coin);
             temp.transform.position = spawnPoints[point].position;
             temp.transform.parent = this.gameObject.transform;
-            FindObjectOfType<Util.GameState>().currentObtainableCoins++;
+            Util.GameState g = FindObjectOfType<Util.GameState>();
+            if(g != null)
+                g.currentObtainableCoins++;
         }
     }
 }
